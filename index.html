@@ -91,17 +91,30 @@
             transition: transform 0.3s ease;
         }
         
+<style>
     /* Hover State applied via the link */
     .game-link:hover .game-button {
-        border: 4px solid transparent;
-        border-image: linear-gradient(to right, red, orange, yellow, green, blue, violet, red) 1;
+        /* Sets a solid 4px border */
+        border: 4px solid #ff0000; 
         
-        /* Triggers a smooth moving rainbow effect */
-        animation: rainbow-shift 3s linear infinite;
+        /* Triggers the rapid strobe effect (0.2 seconds per loop) */
+        animation: rainbow-strobe 0.2s steps(1) infinite;
         
         /* Keeps your original animations */
         transform: scale(1.08) translateY(-10px);
         box-shadow: 0 15px 30px rgba(255, 77, 77, 0.3);
+    }
+
+    /* Strobe animation logic - snaps instantly through rainbow colors */
+        rainbow-strobe {
+        0%   { border-color: #ff0000; } /* Red */
+        14%  { border-color: #ff7f00; } /* Orange */
+        28%  { border-color: #ffff00; } /* Yellow */
+        42%  { border-color: #00ff00; } /* Green */
+        56%  { border-color: #0000ff; } /* Blue */
+        70%  { border-color: #4b0082; } /* Indigo */
+        84%  { border-color: #9400d3; } /* Violet */
+        100% { border-color: #ff0000; } /* Loop back to Red */
     }
 
     /* Animation logic for shifting the gradient colors */
@@ -110,12 +123,11 @@
         50% { border-image-source: linear-gradient(to right, green, blue, violet, red, orange, yellow, green); }
         100% { border-image-source: linear-gradient(to right, red, orange, yellow, green, blue, violet, red); }
     }
-</style>
 
         .game-link:hover img {
             transform: scale(1.1);
         }
-    </style>
+        
 </head>
 <body>
 
