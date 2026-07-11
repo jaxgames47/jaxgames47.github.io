@@ -9,9 +9,9 @@
            PREMIUM DESIGN SYSTEM & 3D MATRIX CONSTANTS
         ------------------------------------------------------------- */
         :root {
-            --bg-main: #750800; /* Updated to deep crimson */
+            --bg-main: #750800; /* Deep crimson */
             --bg-card: #1f0302; /* Darker red-tinted card background */
-            --neon-cyan: #FF0800; /* Updated to vibrant neon red */
+            --neon-cyan: #FF0800; /* Vibrant neon red */
             --light-cyan: #ffcccc; /* Soft light red for highlight states */
             --dark-cyan: #540400; /* Dark shadow red for structural borders */
             
@@ -150,17 +150,16 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 45px;
-            transform-style: preserve-3d; /* Passes 3D space parameters down to elements */
+            transform-style: preserve-3d;
         }
 
         .game-link {
             text-decoration: none;
             display: block;
             outline: none;
-            perspective: 1000px; /* Individual card wrapper depth */
+            perspective: 1000px;
         }
 
-        /* Dramatic 3D Style Framework Container */
         .game-button {
             position: relative;
             width: 210px;
@@ -176,14 +175,12 @@
             padding: 0;
             box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 0 15px rgba(255, 8, 0, 0.05);
             
-            /* Hardware properties setup */
             transform-style: preserve-3d;
             transform: translateZ(0);
             transition: transform 0.5s var(--ultra-timing), border-color 0.5s var(--ultra-timing), box-shadow 0.5s var(--ultra-timing);
             will-change: transform, box-shadow, border-color;
         }
 
-        /* High-Definition Internal Visual Layer */
         .game-button img {
             width: 100%;
             height: 100%;
@@ -192,7 +189,6 @@
             transition: transform 0.6s var(--ultra-timing), filter 0.4s ease;
         }
 
-        /* Glare sweep container animation component */
         .game-button::before {
             content: '';
             position: absolute;
@@ -212,24 +208,21 @@
         ------------------------------------------------------------- */
         .game-link:hover .game-button {
             border-color: var(--neon-cyan);
-            /* Massive multi-tier 3D transformation and lift */
             transform: translateY(-15px) rotateX(12deg) rotateY(-8deg) translateZ(30px);
             box-shadow: 0 25px 40px rgba(0, 0, 0, 0.5), 
                         0 0 30px rgba(255, 8, 0, 0.4),
                         inset 0 0 20px rgba(255, 8, 0, 0.2);
         }
 
-        /* Active Glare sweep command on user interaction */
         .game-link:hover .game-button::before {
             left: 150%;
             transition: left 0.7s var(--ultra-timing);
         }
 
         .game-link:hover .game-button img {
-            transform: translateZ(15px) scale(1.12); /* Pop photo further outwards in 3D frame space */
+            transform: translateZ(15px) scale(1.12);
         }
 
-        /* Hidden Class for Search Filtering */
         .game-link.is-hidden {
             display: none;
         }
@@ -251,7 +244,6 @@
             perspective: 1000px;
         }
 
-        /* Flying active clone viewport component matrix */
         .focus-clone {
             position: absolute;
             width: 210px;
@@ -268,9 +260,8 @@
             transform: translateZ(50px);
         }
 
-        /* Zoom Destination modifiers executed perfectly inside global viewports */
         .focus-clone.is-zoomed {
-            transform: scale(1.8) rotateX(0deg) rotateY(0deg) rotateZ(360deg); /* Full cinematic 360 rotation zoom spin */
+            transform: scale(1.8) rotateX(0deg) rotateY(0deg) rotateZ(360deg);
             box-shadow: 0 0 100px var(--light-cyan), 
                         0 0 200px rgba(255, 8, 0, 0.6), 
                         0 30px 80px rgba(0,0,0,0.8);
@@ -283,7 +274,6 @@
             filter: blur(2px) brightness(0.6);
         }
 
-        /* High-fidelity internal dashboard overlay elements */
         .portal-overlay {
             position: absolute;
             top: 0;
@@ -298,7 +288,6 @@
             z-index: 10;
         }
 
-        /* Supercharged Loading Spinner */
         .spinner {
             width: 50px;
             height: 50px;
@@ -320,9 +309,6 @@
             text-shadow: 0 0 12px rgba(255, 8, 0, 0.6);
         }
 
-        /* -------------------------------------------------------------
-           KEYFRAMES MATRIX ENGINE
-        ------------------------------------------------------------- */
         @keyframes hyperSpin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -519,12 +505,20 @@
     <div class="cinematic-portal" id="cinematicPortal"></div>
 
     <script>
-        // 1. REAL-TIME SEARCH FILTER SYSTEM
+        // 1. REAL-TIME SEARCH & SECRET CODE SYSTEM
         const searchInput = document.getElementById('gameSearch');
         const gameLinks = document.querySelectorAll('.game-link');
 
         searchInput.addEventListener('input', function() {
             const filterText = this.value.toLowerCase().trim();
+
+            // --- SECRET CODE CHECK ---
+            if (filterText === 'jaxon secret games') {
+                window.open('https://jaxonsecretgames.w3spaces.com/', '_blank');
+                this.value = ''; // Clears input box immediately
+                return;
+            }
+            // -------------------------
 
             gameLinks.forEach(link => {
                 const gameTitle = link.getAttribute('data-title').toLowerCase();
@@ -537,7 +531,7 @@
             });
         });
 
-        // 2. DYNAMIC MOUSE TILT EFFECTS (Makes layout respond exactly to mouse position)
+        // 2. DYNAMIC MOUSE TILT EFFECTS
         gameLinks.forEach(link => {
             const button = link.querySelector('.game-button');
 
@@ -546,14 +540,12 @@
                 const x = e.clientX - rect.left - (rect.width / 2);
                 const y = e.clientY - rect.top - (rect.height / 2);
                 
-                // Maps coordinate data to precise tilt degrees
                 const tiltX = (y / (rect.height / 2)) * -18;
                 const tiltY = (x / (rect.width / 2)) * 18;
 
                 button.style.transform = `translateY(-15px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(35px)`;
             });
 
-            // Resets card positioning beautifully when cursor leaves boundaries
             link.addEventListener('mouseleave', () => {
                 button.style.transform = '';
             });
@@ -567,7 +559,6 @@
                 const portal = document.getElementById('cinematicPortal');
                 const rect = button.getBoundingClientRect();
 
-                // Build isolated standalone breakout instance clone
                 const clone = document.createElement('div');
                 clone.className = 'focus-clone';
                 clone.style.top = `${rect.top}px`;
@@ -582,9 +573,8 @@
                 `;
 
                 portal.appendChild(clone);
-                button.style.opacity = '0'; // Instantly hide base layer component
+                button.style.opacity = '0';
 
-                // Fire warp system properties inside global engine
                 document.body.classList.add('is-cinematic-loading');
 
                 requestAnimationFrame(() => {
@@ -596,7 +586,6 @@
                     clone.classList.add('is-zoomed');
                 });
 
-                // Complete data navigation pipe routines
                 setTimeout(() => {
                     window.location.href = targetUrl;
                 }, 1500);
