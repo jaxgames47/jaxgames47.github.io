@@ -6,17 +6,38 @@
     <title>Jax Games | Next-Gen</title>
     <style>
         /* -------------------------------------------------------------
-           PREMIUM DESIGN SYSTEM & 3D MATRIX CONSTANTS
+           DYNAMIC THEMES & DESIGN SYSTEM CONSTANTS
         ------------------------------------------------------------- */
         :root {
-            --bg-main: #750800; /* Deep crimson */
-            --bg-card: #1f0302; /* Darker red-tinted card background */
-            --neon-cyan: #FF0800; /* Vibrant neon red */
-            --light-cyan: #ffcccc; /* Soft light red for highlight states */
-            --dark-cyan: #540400; /* Dark shadow red for structural borders */
-            
+            /* Default: Crimson Neo */
+            --bg-main: #140504;
+            --bg-surface: #220a08;
+            --bg-card: #2e0e0b;
+            --neon-accent: #FF0800;
+            --text-main: #ffebee;
+            --text-muted: rgba(255, 235, 238, 0.6);
+            --border-color: #540400;
             --ultra-timing: cubic-bezier(0.25, 1, 0.3, 1);
-            --bounce-timing: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        [data-theme="midnight"] {
+            --bg-main: #0B0F19;
+            --bg-surface: #111827;
+            --bg-card: #1F2937;
+            --neon-accent: #3B82F6;
+            --text-main: #F3F4F6;
+            --text-muted: rgba(243, 244, 246, 0.6);
+            --border-color: #1E3A8A;
+        }
+
+        [data-theme="cyber"] {
+            --bg-main: #0A0A0C;
+            --bg-surface: #121216;
+            --bg-card: #1A1A22;
+            --neon-accent: #00FFCC;
+            --text-main: #E2E8F0;
+            --text-muted: rgba(226, 232, 240, 0.6);
+            --border-color: #004D40;
         }
 
         * {
@@ -28,13 +49,13 @@
         body {
             background-color: var(--bg-main);
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: #ffebee;
+            color: var(--text-main);
             overflow-x: hidden;
             min-height: 100vh;
-            perspective: 1200px; /* Establishes global 3D room spaces */
+            perspective: 1200px;
+            transition: background-color 0.5s ease, color 0.5s ease;
         }
 
-        /* Global Viewport Structural Wrapper */
         .page-wrapper {
             transition: transform 0.8s var(--ultra-timing), filter 0.8s var(--ultra-timing);
             will-change: transform, filter;
@@ -43,7 +64,6 @@
             transform-style: preserve-3d;
         }
 
-        /* Warp-back cinematic background state when card activates */
         body.is-cinematic-loading .page-wrapper {
             filter: blur(15px) brightness(0.3);
             transform: scale(0.92) translateZ(-100px);
@@ -51,16 +71,19 @@
         }
 
         /* -------------------------------------------------------------
-           HEADER & NAVIGATION ELEMENTS
+           HEADER, NAVIGATION & CONTROLS
         ------------------------------------------------------------- */
         header {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
+            align-items: center;
             padding: 30px 60px;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .logo {
-            font-size: 2.4rem;
+            font-size: 2rem;
             font-weight: 900;
             letter-spacing: 4px;
             text-transform: uppercase;
@@ -73,8 +96,31 @@
 
         .jax { color: #ffffff; }
         .games-cyan { 
-            color: var(--neon-cyan); 
-            text-shadow: 0 0 20px rgba(255, 8, 0, 0.7);
+            color: var(--neon-accent); 
+            text-shadow: 0 0 20px var(--neon-accent);
+        }
+
+        .controls-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .theme-select {
+            background: var(--bg-surface);
+            color: var(--text-main);
+            border: 2px solid var(--border-color);
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .theme-select:focus {
+            border-color: var(--neon-accent);
+            box-shadow: 0 0 15px var(--neon-accent);
         }
 
         .container {
@@ -85,15 +131,14 @@
         }
 
         h1.section-title {
-            font-size: 3.2rem;
-            margin-bottom: 40px;
+            font-size: 3rem;
+            margin-bottom: 30px;
             font-weight: 800;
             letter-spacing: 3px;
             text-transform: uppercase;
             position: relative;
             display: inline-block;
             color: #ffffff;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
         
         h1.section-title::after {
@@ -103,12 +148,12 @@
             bottom: -15px;
             width: 80%;
             height: 4px;
-            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-            box-shadow: 0 0 10px var(--neon-cyan);
+            background: linear-gradient(90deg, transparent, var(--neon-accent), transparent);
+            box-shadow: 0 0 10px var(--neon-accent);
         }
 
         /* -------------------------------------------------------------
-           SEARCH BAR INTERFACE
+           SEARCH INTERFACE
         ------------------------------------------------------------- */
         .search-container {
             margin-bottom: 60px;
@@ -124,8 +169,8 @@
             font-size: 1.1rem;
             font-weight: 600;
             border-radius: 50px;
-            border: 3px solid var(--dark-cyan);
-            background-color: var(--bg-card);
+            border: 3px solid var(--border-color);
+            background-color: var(--bg-surface);
             color: #ffffff;
             outline: none;
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
@@ -133,23 +178,23 @@
         }
 
         .search-bar::placeholder {
-            color: rgba(255, 255, 255, 0.4);
+            color: var(--text-muted);
         }
 
         .search-bar:focus {
-            border-color: var(--neon-cyan);
-            box-shadow: 0 0 25px rgba(255, 8, 0, 0.5), 0 10px 20px rgba(0,0,0,0.4);
+            border-color: var(--neon-accent);
+            box-shadow: 0 0 25px var(--neon-accent), 0 10px 20px rgba(0,0,0,0.4);
             transform: scale(1.02);
         }
 
         /* -------------------------------------------------------------
-           3D GAME GRID ARCHITECTURE
+           CLEAN FLUID GRID ARCHITECTURE
         ------------------------------------------------------------- */
         .game-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 45px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 30px;
+            justify-items: center;
             transform-style: preserve-3d;
         }
 
@@ -158,23 +203,23 @@
             display: block;
             outline: none;
             perspective: 1000px;
+            width: 100%;
+            max-width: 220px;
         }
 
         .game-button {
             position: relative;
-            width: 210px;
-            height: 210px;
+            width: 100%;
+            aspect-ratio: 1 / 1;
             background-color: var(--bg-card);
-            border: 3px solid var(--dark-cyan);
-            border-radius: 28px;
+            border: 3px solid var(--border-color);
+            border-radius: 24px;
             overflow: hidden;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 0 15px rgba(255, 8, 0, 0.05);
-            
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
             transform-style: preserve-3d;
             transform: translateZ(0);
             transition: transform 0.5s var(--ultra-timing), border-color 0.5s var(--ultra-timing), box-shadow 0.5s var(--ultra-timing);
@@ -186,49 +231,26 @@
             height: 100%;
             object-fit: cover;
             transform: translateZ(0) scale(1.01);
-            transition: transform 0.6s var(--ultra-timing), filter 0.4s ease;
+            transition: transform 0.6s var(--ultra-timing);
         }
 
-        .game-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -150%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-            transform: skewX(-30deg) translateZ(10px);
-            transition: none;
-            z-index: 3;
-            pointer-events: none;
-        }
-
-        /* -------------------------------------------------------------
-           HIGH-DRAMA HOVER ARCHITECTURE
-        ------------------------------------------------------------- */
+        /* Hover States */
         .game-link:hover .game-button {
-            border-color: var(--neon-cyan);
-            transform: translateY(-15px) rotateX(12deg) rotateY(-8deg) translateZ(30px);
-            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.5), 
-                        0 0 30px rgba(255, 8, 0, 0.4),
-                        inset 0 0 20px rgba(255, 8, 0, 0.2);
-        }
-
-        .game-link:hover .game-button::before {
-            left: 150%;
-            transition: left 0.7s var(--ultra-timing);
+            border-color: var(--neon-accent);
+            transform: translateY(-10px) rotateX(10deg) rotateY(-5deg) translateZ(20px);
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.6), 0 0 25px var(--neon-accent);
         }
 
         .game-link:hover .game-button img {
-            transform: translateZ(15px) scale(1.12);
+            transform: translateZ(15px) scale(1.1);
         }
 
         .game-link.is-hidden {
-            display: none;
+            display: none !important;
         }
 
         /* -------------------------------------------------------------
-           CINEMATIC HERO IMMERSIVE VIEWPAL INTERFACE
+           CINEMATIC ANIMATION OVERLAYS
         ------------------------------------------------------------- */
         .cinematic-portal {
             position: fixed;
@@ -249,22 +271,19 @@
             width: 210px;
             height: 210px;
             background-color: var(--bg-card);
-            border: 4px solid var(--light-cyan);
+            border: 4px solid #ffffff;
             border-radius: 28px;
             overflow: hidden;
-            box-shadow: 0 0 60px var(--light-cyan), 0 0 120px rgba(255, 8, 0, 0.4);
+            box-shadow: 0 0 60px rgba(255,255,255,0.4);
             transition: top 0.7s var(--ultra-timing), left 0.7s var(--ultra-timing), transform 0.7s var(--ultra-timing), box-shadow 0.7s var(--ultra-timing);
             display: flex;
             align-items: center;
             justify-content: center;
-            transform: translateZ(50px);
         }
 
         .focus-clone.is-zoomed {
-            transform: scale(1.8) rotateX(0deg) rotateY(0deg) rotateZ(360deg);
-            box-shadow: 0 0 100px var(--light-cyan), 
-                        0 0 200px rgba(255, 8, 0, 0.6), 
-                        0 30px 80px rgba(0,0,0,0.8);
+            transform: scale(1.8) rotateZ(360deg);
+            box-shadow: 0 0 100px var(--neon-accent), 0 30px 80px rgba(0,0,0,0.8);
         }
 
         .focus-clone img {
@@ -280,7 +299,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(21, 8, 8, 0.85);
+            background: rgba(10, 5, 5, 0.85);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -289,24 +308,20 @@
         }
 
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 8, 0, 0.1);
-            border-top: 4px solid var(--neon-cyan);
-            border-bottom: 4px solid var(--neon-cyan);
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid var(--neon-accent);
             border-radius: 50%;
             animation: hyperSpin 0.6s linear infinite;
             margin-bottom: 15px;
         }
 
         .loading-text {
-            color: var(--neon-cyan);
+            color: var(--neon-accent);
             font-weight: 900;
-            font-size: 1rem;
-            letter-spacing: 4px;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            animation: pulseText 1s ease-in-out infinite;
-            text-shadow: 0 0 12px rgba(255, 8, 0, 0.6);
         }
 
         @keyframes hyperSpin {
@@ -314,10 +329,154 @@
             100% { transform: rotate(360deg); }
         }
 
-        @keyframes pulseText {
-            0%, 100% { opacity: 0.4; transform: scale(0.93); }
-            50% { opacity: 1; transform: scale(1.05); }
+        /* -------------------------------------------------------------
+           MODERN UTILITY CAPABILITIES (AI CHAT & CALCULATOR)
+        ------------------------------------------------------------- */
+        /* Widgets Shared Style */
+        .utility-widget {
+            position: fixed;
+            bottom: 30px;
+            z-index: 5000;
+            display: flex;
+            flex-direction: column;
         }
+
+        .widget-trigger {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: var(--bg-surface);
+            border: 3px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .widget-trigger:hover {
+            transform: scale(1.1);
+            border-color: var(--neon-accent);
+            box-shadow: 0 0 20px var(--neon-accent);
+        }
+
+        .widget-panel {
+            position: absolute;
+            bottom: 70px;
+            width: 320px;
+            background: var(--bg-surface);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            animation: paneOpen 0.4s var(--ultra-timing);
+        }
+
+        @keyframes paneOpen {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Left Side: AI Assistant */
+        .ai-assistant-wrapper { left: 30px; }
+        .ai-panel { left: 0; height: 400px; }
+        .ai-header {
+            background: var(--bg-card);
+            padding: 15px;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+        }
+        .ai-chat-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+        .chat-msg {
+            padding: 8px 12px;
+            border-radius: 14px;
+            max-width: 85%;
+        }
+        .chat-msg.bot { background: var(--bg-card); align-self: flex-start; border-bottom-left-radius: 2px; }
+        .chat-msg.user { background: var(--neon-accent); color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
+        
+        .ai-input-area {
+            display: flex;
+            padding: 10px;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+        }
+        .ai-input-area input {
+            flex: 1;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 20px;
+            color: white;
+            outline: none;
+        }
+        .ai-input-area button {
+            background: transparent;
+            border: none;
+            color: var(--neon-accent);
+            padding: 0 10px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        /* Right Side: Calculator */
+        .calculator-wrapper { right: 30px; }
+        .calc-panel { right: 0; width: 280px; }
+        .calc-screen {
+            background: #000;
+            color: #00FFCC;
+            font-family: monospace;
+            text-align: right;
+            padding: 20px;
+            font-size: 1.8rem;
+            min-height: 70px;
+            word-wrap: break-word;
+        }
+        .calc-header-nav {
+            background: var(--bg-card);
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .calc-back-btn {
+            cursor: pointer;
+            color: var(--neon-accent);
+            font-weight: bold;
+        }
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: var(--border-color);
+        }
+        .calc-grid button {
+            background: var(--bg-card);
+            border: none;
+            color: var(--text-main);
+            padding: 18px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .calc-grid button:hover { background: var(--bg-surface); }
+        .calc-grid button.op { color: var(--neon-accent); }
     </style>
 </head>
 <body>
@@ -326,6 +485,13 @@
         <header>
             <div class="logo">
                 <span class="jax">JAX</span> <span class="games-cyan">GAMES</span>
+            </div>
+            <div class="controls-group">
+                <select id="themeSelect" class="theme-select" aria-label="Switch Design Theme">
+                    <option value="crimson">Crimson Neo</option>
+                    <option value="midnight">Midnight Dark</option>
+                    <option value="cyber">Cyber Shadow</option>
+                </select>
             </div>
         </header>
 
@@ -338,171 +504,136 @@
 
             <div class="game-grid">
                 <a href="https://jaxgames47.github.io/gtag/" class="game-link" data-title="gorilla tag gtag">
-                    <div class="game-button">
-                        <img src="gtag.jpeg" alt="Gorilla Tag">
-                    </div>
+                    <div class="game-button"><img src="gtag.jpeg" alt="Gorilla Tag"></div>
                 </a>
-
                 <a href="https://jaxgames47.github.io/blockblast/" class="game-link" data-title="block blast">
-                    <div class="game-button">
-                        <img src="blockblast.png" alt="Block Blast">
-                    </div>
+                    <div class="game-button"><img src="blockblast.png" alt="Block Blast"></div>
                 </a>
-
                 <a href="https://jaxgames47.github.io/minecraftpocket/" class="game-link" data-title="minecraft pocket edition pe mc">
-                    <div class="game-button">
-                        <img src="pocketminecraft.png" alt="Minecraft Pocket Edition">
-                    </div>
+                    <div class="game-button"><img src="pocketminecraft.png" alt="Minecraft Pocket Edition"></div>
                 </a>
-
                 <a href="https://jaxgames47.github.io/1v1.lol/" class="game-link" data-title="1v1.lol one v one shooter">
-                    <div class="game-button">
-                        <img src="6764d93be2b78_lol.onevone.png" alt="1v1.lol">
-                    </div>
+                    <div class="game-button"><img src="6764d93be2b78_lol.onevone.png" alt="1v1.lol"></div>
                 </a>
-                
                 <a href="https://jaxgames47.github.io/adgac/" class="game-link" data-title="adgac">
-                    <div class="game-button">
-                        <img src="672.png" alt="ADGAC">
-                    </div>
+                    <div class="game-button"><img src="672.png" alt="ADGAC"></div>
                 </a>
-                
                 <a href="https://jaxgames47.github.io/cookieclicker/" class="game-link" data-title="cookie clicker idle tycoon">
-                    <div class="game-button">
-                        <img src="cookiegames.png" alt="Cookie Clicker">
-                    </div>
+                    <div class="game-button"><img src="cookiegames.png" alt="Cookie Clicker"></div>
                 </a>
-                
                 <a href="https://jaxgames47.github.io/candy-crush/" class="game-link" data-title="candy crush match 3">
-                    <div class="game-button">
-                        <img src="171.png" alt="Candy Crush">
-                    </div>
+                    <div class="game-button"><img src="171.png" alt="Candy Crush"></div>
                 </a>
-            
                 <a href="https://jaxgames47.github.io/camoflaugeandsniper/" class="game-link" data-title="camoflauge and sniper shooter shooting">
-                    <div class="game-button">
-                        <img src="378.png" alt="Camoflauge and Sniper">
-                    </div>
-                 </a>
-            
+                    <div class="game-button"><img src="378.png" alt="Camoflauge and Sniper"></div>
+                </a>
                 <a href="https://jaxgames47.github.io/makeoverrun/" class="game-link" data-title="makeover run arcade">
-                    <div class="game-button">
-                        <img src="398.png" alt="Makeover Run">
-                    </div>
+                    <div class="game-button"><img src="398.png" alt="Makeover Run"></div>
                 </a>
-                    
                 <a href="https://jaxgames47.github.io/redball4/" class="game-link" data-title="red ball 4 platformer">
-                    <div class="game-button">
-                        <img src="242.png" alt="Red Ball 4">
-                    </div>
+                    <div class="game-button"><img src="242.png" alt="Red Ball 4"></div>
                 </a>
-                    
                 <a href="https://jaxgames47.github.io/hollowknightsilksong/" class="game-link" data-title="hollow knight silksong hk metroidvania">
-                    <div class="game-button">
-                        <img src="hollowknightsilksong.jpg" alt="Hollow Knight Silksong">
-                    </div>
+                    <div class="game-button"><img src="hollowknightsilksong.jpg" alt="Hollow Knight Silksong"></div>
                 </a>
-                    
                 <a href="https://jaxgames47.github.io/animalcrossing-game-cube-/" class="game-link" data-title="animal crossing gamecube retro simulator ac">
-                    <div class="game-button">
-                        <img src="animal crossing gc.png" alt="Animal Crossing (GAMECUBE)">
-                    </div>
+                    <div class="game-button"><img src="animal crossing gc.png" alt="Animal Crossing (GAMECUBE)"></div>
                 </a>
-                    
                 <a href="https://jaxgames47.github.io/attackhole/" class="game-link" data-title="attack hole arcade black hole">
-                    <div class="game-button">
-                        <img src="13.png" alt="Attack Hole">
-                    </div>
+                    <div class="game-button"><img src="13.png" alt="Attack Hole"></div>
                 </a>
-                    
                 <a href="https://jaxgames47.github.io/hidenseek/" class="game-link" data-title="hide and seek n">
-                    <div class="game-button">
-                        <img src="hide n seek.png" alt="Hide and Seek">
-                    </div>
+                    <div class="game-button"><img src="hide n seek.png" alt="Hide and Seek"></div>
                 </a>
-                    
                 <a href="https://jaxgames47.github.io/aquapark/" class="game-link" data-title="aquapark.io water slide runner">
-                    <div class="game-button">
-                        <img src="aquapark.webp" alt="Aquapark.io">
-                    </div>
+                    <div class="game-button"><img src="aquapark.webp" alt="Aquapark.io"></div>
                 </a>
-                    
                 <a href="https://jaxgames47.github.io/amaze/" class="game-link" data-title="amaze puzzle ball">
-                    <div class="game-button">
-                        <img src="26.png" alt="Amaze">
-                    </div>
+                    <div class="game-button"><img src="26.png" alt="Amaze"></div>
                 </a>
-                    
                 <a href="https://jaxgames47.github.io/2dworldcup/" class="game-link" data-title="a small world cup football soccer sports 2d">
-                    <div class="game-button">
-                        <img src="a small world cup.png" alt="A Small World Cup">
-                    </div>
+                    <div class="game-button"><img src="a small world cup.png" alt="A Small World Cup"></div>
                 </a>
-                    
                 <a href="https://jaxgames47.github.io/cheeserolling/" class="game-link" data-title="cheese rolling race arcade">
-                    <div class="game-button">
-                        <img src="cheeserolling.png" alt="Cheese Rolling">
-                    </div>
+                    <div class="game-button"><img src="cheeserolling.png" alt="Cheese Rolling"></div>
                 </a>
-                    
                 <a href="https://jaxgames47.github.io/peaksoundboard/" class="game-link" data-title="peak soundboard audio">
-                    <div class="game-button">
-                        <img src="Screenshot 2026-06-05 174505.png" alt="Peak Soundboard">
-                    </div>
+                    <div class="game-button"><img src="Screenshot 2026-06-05 174505.png" alt="Peak Soundboard"></div>
                 </a>
-                    
                 <a href="https://jaxgames47.github.io/flappybird/" class="game-link" data-title="flappy bird arcade retro classic tap">
-                    <div class="game-button">
-                        <img src="flappybird.png" alt="Flappy Bird">
-                    </div>
+                    <div class="game-button"><img src="flappybird.png" alt="Flappy Bird"></div>
                 </a>
-                    
                 <a href="https://jaxgames47.github.io/rocketgoal/" class="game-link" data-title="rocket goal soccer sports car">
-                    <div class="game-button">
-                        <img src="rocketgoal.png" alt="Rocket Goal">
-                    </div>
+                    <div class="game-button"><img src="rocketgoal.png" alt="Rocket Goal"></div>
                 </a>
-                    
                 <a href="https://jaxgames47.github.io/soundboard/" class="game-link" data-title="soundboard sound audio effects ear">
-                    <div class="game-button">
-                        <img src="ear.jpg" alt="Soundboard">
-                    </div>
-                 </a>
-                
-                 <a href="https://jaxgames47.github.io/basketbattle/" class="game-link" data-title="basket battle basketball sports hoops">
-                    <div class="game-button">
-                        <img src="basket battle.png" alt="Basket Batle">
-                    </div>
+                    <div class="game-button"><img src="ear.jpg" alt="Soundboard"></div>
                 </a>
-                
-                 <a href="https://jaxgames47.github.io/buildaqueen/" class="game-link" data-title="build a queen casual run">
-                    <div class="game-button">
-                        <img src="319.png" alt="Build A Queen">
-                    </div>
+                <a href="https://jaxgames47.github.io/basketbattle/" class="game-link" data-title="basket battle basketball sports hoops">
+                    <div class="game-button"><img src="basket battle.png" alt="Basket Batle"></div>
                 </a>
-                
+                <a href="https://jaxgames47.github.io/buildaqueen/" class="game-link" data-title="build a queen casual run">
+                    <div class="game-button"><img src="319.png" alt="Build A Queen"></div>
+                </a>
                 <a href="https://jaxgames47.github.io/drivemad/" class="game-link" data-title="drive mad car racing truck drivemad">
-                    <div class="game-button">
-                        <img src="drive mad.png" alt="Drive Mad">
-                    </div>
-                 </a>
-                
+                    <div class="game-button"><img src="drive mad.png" alt="Drive Mad"></div>
+                </a>
                 <a href="https://jaxgames47.github.io/amplerlauncher/" class="game-link" data-title="eagercraft minecraft ampler launcher">
-                    <div class="game-button">
-                        <img src="eaglercraft.jpg" alt="Ampler Launcher">
-                    </div>
+                    <div class="game-button"><img src="eaglercraft.jpg" alt="Ampler Launcher"></div>
                 </a>
-                
                 <a href="https://jaxgames47.github.io/geometerydashlite/" class="game-link" data-title="geometery dash lite rhythm arcade gd dash">
-                    <div class="game-button">
-                        <img src="geometery dash lite.png" alt="Geometery Dash Lite">
-                    </div>
+                    <div class="game-button"><img src="geometery dash lite.png" alt="Geometery Dash Lite"></div>
                 </a>
-                
                 <a href="https://jaxgames47.github.io/memesoundboard/" class="game-link" data-title="geometery dash lite rhythm arcade gd dash">
-                    <div class="game-button">
-                        <img src="soundboard.jpg" alt="Meme Sound Board">
-                    </div>
+                    <div class="game-button"><img src="soundboard.jpg" alt="Meme Sound Board"></div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="utility-widget ai-assistant-wrapper">
+        <button class="widget-trigger" id="aiTrigger" title="AI Companion">🤖</button>
+        <div class="widget-panel ai-panel" id="aiPanel">
+            <div class="ai-header">
+                <span>JaxBot AI</span>
+                <span style="cursor:pointer;" onclick="toggleWidget('aiPanel')">✕</span>
+            </div>
+            <div class="ai-chat-body" id="aiChatBody">
+                <div class="chat-msg bot">Hey! Need any clean gaming tips or structural site info today?</div>
+            </div>
+            <div class="ai-input-area">
+                <input type="text" id="aiInput" placeholder="Ask something...">
+                <button id="aiSendBtn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="utility-widget calculator-wrapper">
+        <button class="widget-trigger" id="calcTrigger" title="Open Game Tools">🧮</button>
+        <div class="widget-panel calc-panel" id="calcPanel">
+            <div class="calc-header-nav">
+                <span class="calc-back-btn" onclick="toggleWidget('calcPanel')">← Games</span>
+                <span>Math Tool</span>
+            </div>
+            <div class="calc-screen" id="calcScreen">0</div>
+            <div class="calc-grid">
+                <button onclick="pressCalc('C')">C</button>
+                <button class="op" onclick="pressCalc('/')">/</button>
+                <button class="op" onclick="pressCalc('*')">*</button>
+                <button class="op" onclick="pressCalc('-')">-</button>
+                <button onclick="pressCalc('7')">7</button>
+                <button onclick="pressCalc('8')">8</button>
+                <button onclick="pressCalc('9')">9</button>
+                <button class="op" style="grid-row: span 2; height:100%" onclick="pressCalc('+')">+</button>
+                <button onclick="pressCalc('4')">4</button>
+                <button onclick="pressCalc('5')">5</button>
+                <button onclick="pressCalc('6')">6</button>
+                <button onclick="pressCalc('1')">1</button>
+                <button onclick="pressCalc('2')">2</button>
+                <button onclick="pressCalc('3')">3</button>
+                <button class="op" style="grid-row: span 2; height:100%" onclick="pressCalc('=')">=</button>
+                <button style="grid-column: span 2;" onclick="pressCalc('0')">0</button>
+                <button onclick="pressCalc('.')">.</button>
             </div>
         </div>
     </div>
@@ -510,34 +641,37 @@
     <div class="cinematic-portal" id="cinematicPortal"></div>
 
     <script>
-        // 1. REAL-TIME SEARCH & SECRET CODE SYSTEM
+        // 1. DYNAMIC THEME SELECTOR ENGINE
+        const themeSelect = document.getElementById('themeSelect');
+        themeSelect.addEventListener('change', (e) => {
+            document.documentElement.setAttribute('data-theme', e.target.value);
+        });
+
+        // 2. REAL-TIME SEARCH & FIXED SECRET CODE SYSTEM
         const searchInput = document.getElementById('gameSearch');
         const gameLinks = document.querySelectorAll('.game-link');
 
         searchInput.addEventListener('input', function() {
             const filterText = this.value.toLowerCase().trim();
 
-            // --- SECRET CODE CHECK ---
             if (filterText === 'jaxon secret games') {
                 window.open('https://jaxonsecretgames.w3spaces.com/', '_blank');
-                this.value = ''; // Clears input box immediately
+                this.value = '';
                 return;
-            // --- SECRET CODE CHECK ---
+            } 
             if (filterText === 'duck proxy') {
                 window.open('https://duckproxy.onrender.com/', '_blank');
-                this.value = ''; // Clears input box immediately
+                this.value = '';
                 return;
-             // --- SECRET CODE CHECK ---
+            } 
             if (filterText === 'unblocked gn math') {
                 window.open('https://jaxgames47.github.io/gn-math/', '_blank');
-                this.value = ''; // Clears input box immediately
+                this.value = '';
                 return;
             }
-            // -------------------------
 
             gameLinks.forEach(link => {
                 const gameTitle = link.getAttribute('data-title').toLowerCase();
-                
                 if (gameTitle.includes(filterText)) {
                     link.classList.remove('is-hidden');
                 } else {
@@ -546,29 +680,86 @@
             });
         });
 
-        // 2. DYNAMIC MOUSE TILT EFFECTS
+        // 3. SEAMLESS INTERFACE WIDGET TOGGLES
+        function toggleWidget(id) {
+            const panel = document.getElementById(id);
+            panel.style.display = (panel.style.display === 'flex') ? 'none' : 'flex';
+        }
+        document.getElementById('aiTrigger').addEventListener('click', () => toggleWidget('aiPanel'));
+        document.getElementById('calcTrigger').addEventListener('click', () => toggleWidget('calcPanel'));
+
+        // 4. INTELLIGENT COMPANION BOT DYNAMICS
+        const aiInput = document.getElementById('aiInput');
+        const aiSendBtn = document.getElementById('aiSendBtn');
+        const aiChatBody = document.getElementById('aiChatBody');
+
+        function appendMessage(text, sender) {
+            const el = document.createElement('div');
+            el.className = `chat-msg ${sender}`;
+            el.innerText = text;
+            aiChatBody.appendChild(el);
+            aiChatBody.scrollTop = aiChatBody.scrollHeight;
+        }
+
+        aiSendBtn.addEventListener('click', () => {
+            const query = aiInput.value.trim();
+            if(!query) return;
+            appendMessage(query, 'user');
+            aiInput.value = '';
+
+            setTimeout(() => {
+                let lower = query.toLowerCase();
+                if(lower.includes('hello') || lower.includes('hi')) {
+                    appendMessage("Greetings player! Find any clean high scores today?", 'bot');
+                } else if(lower.includes('game') || lower.includes('best')) {
+                    appendMessage("All systems are structural here. Minecraft Pocket Edition or Geometry Dash Lite are classic alternatives!", 'bot');
+                } else {
+                    appendMessage("I am fully running online alongside your local setup. Use the workspace filter search bar to slice down titles quickly!", 'bot');
+                }
+            }, 600);
+        });
+
+        // 5. HIGH ACCURACY MATH CALCULATOR MODULE
+        let calcExpr = '';
+        const calcScreen = document.getElementById('calcScreen');
+        function pressCalc(val) {
+            if(val === 'C') {
+                calcExpr = '';
+                calcScreen.innerText = '0';
+            } else if(val === '=') {
+                try {
+                    if(!calcExpr) return;
+                    // Safely evaluate standard mathematical characters
+                    let result = Function('"use strict";return (' + calcExpr + ')')();
+                    calcScreen.innerText = result;
+                    calcExpr = String(result);
+                } catch(e) {
+                    calcScreen.innerText = 'Error';
+                    calcExpr = '';
+                }
+            } else {
+                if(calcScreen.innerText === '0' && !isNaN(val)) calcExpr = '';
+                calcExpr += val;
+                calcScreen.innerText = calcExpr;
+            }
+        }
+
+        // 6. DYNAMIC MOUSE TILT ENGINE
         gameLinks.forEach(link => {
             const button = link.querySelector('.game-button');
-
             link.addEventListener('mousemove', (e) => {
                 const rect = button.getBoundingClientRect();
                 const x = e.clientX - rect.left - (rect.width / 2);
                 const y = e.clientY - rect.top - (rect.height / 2);
-                
-                const tiltX = (y / (rect.height / 2)) * -18;
-                const tiltY = (x / (rect.width / 2)) * 18;
-
-                button.style.transform = `translateY(-15px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(35px)`;
+                const tiltX = (y / (rect.height / 2)) * -12;
+                const tiltY = (x / (rect.width / 2)) * 12;
+                button.style.transform = `translateY(-10px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(20px)`;
             });
+            link.addEventListener('mouseleave', () => { button.style.transform = ''; });
 
-            link.addEventListener('mouseleave', () => {
-                button.style.transform = '';
-            });
-
-            // 3. KINETIC OUTRO PORTAL ROUTINE
+            // 7. CINEMATIC SCENIC PORTAL DISPATCH
             link.addEventListener('click', function(e) {
                 e.preventDefault();
-
                 const img = button.querySelector('img');
                 const targetUrl = this.href;
                 const portal = document.getElementById('cinematicPortal');
@@ -578,35 +769,29 @@
                 clone.className = 'focus-clone';
                 clone.style.top = `${rect.top}px`;
                 clone.style.left = `${rect.left}px`;
-
                 clone.innerHTML = `
                     <div class="portal-overlay">
                         <div class="spinner"></div>
                         <div class="loading-text">Loading</div>
                     </div>
-                    <img src="${img.getAttribute('src')}" alt="Focus Link Assets">
+                    <img src="${img.getAttribute('src')}" alt="Loading Assets">
                 `;
 
                 portal.appendChild(clone);
                 button.style.opacity = '0';
-
                 document.body.classList.add('is-cinematic-loading');
 
                 requestAnimationFrame(() => {
                     const centerX = window.innerWidth / 2 - rect.width / 2;
                     const centerY = window.innerHeight / 2 - rect.height / 2;
-
                     clone.style.top = `${centerY}px`;
                     clone.style.left = `${centerX}px`;
                     clone.classList.add('is-zoomed');
                 });
 
-                setTimeout(() => {
-                    window.location.href = targetUrl;
-                }, 1500);
+                setTimeout(() => { window.location.href = targetUrl; }, 1400);
             });
         });
     </script>
-        
 </body>
 </html>
