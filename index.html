@@ -6,7 +6,7 @@
     <title>Jax Games | Next-Gen</title>
     <style>
         /* -------------------------------------------------------------
-           DYNAMIC THEMES & DESIGN SYSTEM CONSTANTS
+            DYNAMIC THEMES & DESIGN SYSTEM CONSTANTS
         ------------------------------------------------------------- */
         :root {
             /* Default: Crimson Neo */
@@ -44,6 +44,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            scroll-behavior: smooth;
         }
 
         body {
@@ -71,7 +72,7 @@
         }
 
         /* -------------------------------------------------------------
-           HEADER, NAVIGATION & CONTROLS
+            HEADER, NAVIGATION & CONTROLS
         ------------------------------------------------------------- */
         header {
             display: flex;
@@ -80,6 +81,8 @@
             padding: 30px 60px;
             max-width: 1400px;
             margin: 0 auto;
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
         .logo {
@@ -98,6 +101,32 @@
         .games-cyan { 
             color: var(--neon-accent); 
             text-shadow: 0 0 20px var(--neon-accent);
+        }
+
+        /* Top Navigation replacing the lines */
+        .header-nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav-link:hover {
+            color: var(--neon-accent);
+            text-shadow: 0 0 10px var(--neon-accent);
+            border-bottom-color: var(--neon-accent);
         }
 
         .controls-group {
@@ -126,13 +155,13 @@
         .container {
             max-width: 1300px;
             margin: 0 auto;
-            padding: 0 40px 100px 40px;
+            padding: 40px 40px 80px 40px;
             text-align: center;
         }
 
         h1.section-title {
             font-size: 3rem;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             font-weight: 800;
             letter-spacing: 3px;
             text-transform: uppercase;
@@ -153,7 +182,7 @@
         }
 
         /* -------------------------------------------------------------
-           SEARCH INTERFACE
+            SEARCH INTERFACE
         ------------------------------------------------------------- */
         .search-container {
             margin-bottom: 60px;
@@ -188,7 +217,7 @@
         }
 
         /* -------------------------------------------------------------
-           CLEAN FLUID GRID ARCHITECTURE
+            CLEAN FLUID GRID ARCHITECTURE
         ------------------------------------------------------------- */
         .game-grid {
             display: grid;
@@ -250,7 +279,137 @@
         }
 
         /* -------------------------------------------------------------
-           CINEMATIC ANIMATION OVERLAYS
+            PAGE SECTIONS
+        ------------------------------------------------------------- */
+        .content-section {
+            padding: 80px 40px;
+            border-top: 2px solid var(--border-color);
+            max-width: 1300px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        /* Unblocked Websites Button Cards */
+        .unblocked-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .unblocked-card {
+            background: var(--bg-card);
+            border: 3px solid var(--border-color);
+            border-radius: 20px;
+            padding: 30px 20px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            transition: all 0.4s var(--ultra-timing);
+        }
+
+        .unblocked-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--neon-accent);
+            box-shadow: 0 0 25px var(--neon-accent);
+            background: var(--bg-surface);
+        }
+
+        .unblocked-icon {
+            font-size: 2.5rem;
+        }
+
+        /* Page Calculator Section */
+        .full-calculator {
+            max-width: 400px;
+            margin: 40px auto 0 auto;
+            background: var(--bg-surface);
+            border: 3px solid var(--border-color);
+            border-radius: 28px;
+            padding: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+
+        .full-calc-screen {
+            background: #000;
+            color: var(--neon-accent);
+            font-family: monospace;
+            text-align: right;
+            padding: 25px;
+            font-size: 2.5rem;
+            min-height: 90px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            word-wrap: break-word;
+            border: 2px solid var(--border-color);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+        }
+
+        .full-calc-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .full-calc-grid button {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            color: var(--text-main);
+            padding: 20px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .full-calc-grid button:hover {
+            background: var(--neon-accent);
+            color: #fff;
+            border-color: #fff;
+            transform: scale(1.05);
+        }
+
+        .full-calc-grid button.op {
+            color: var(--neon-accent);
+        }
+        .full-calc-grid button.op:hover {
+            color: #fff;
+        }
+
+        /* Locked Horror Section */
+        .horror-container {
+            max-width: 800px;
+            margin: 40px auto 0 auto;
+            background: rgba(0, 0, 0, 0.4);
+            border: 3px dashed var(--border-color);
+            padding: 60px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .horror-lock {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: pulseLock 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseLock {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; text-shadow: 0 0 20px red; }
+        }
+
+        /* -------------------------------------------------------------
+            CINEMATIC ANIMATION OVERLAYS
         ------------------------------------------------------------- */
         .cinematic-portal {
             position: fixed;
@@ -330,9 +489,8 @@
         }
 
         /* -------------------------------------------------------------
-           MODERN UTILITY CAPABILITIES (AI CHAT & CALCULATOR)
+            MODERN UTILITY CAPABILITIES (AI CHAT & CALCULATOR)
         ------------------------------------------------------------- */
-        /* Widgets Shared Style */
         .utility-widget {
             position: fixed;
             bottom: 30px;
@@ -434,7 +592,7 @@
             font-weight: 700;
         }
 
-        /* Right Side: Calculator */
+        /* Right Side: Calculator Widget Trigger */
         .calculator-wrapper { right: 30px; }
         .calc-panel { right: 0; width: 280px; }
         .calc-screen {
@@ -486,6 +644,13 @@
             <div class="logo">
                 <span class="jax">JAX</span> <span class="games-cyan">GAMES</span>
             </div>
+            
+            <nav class="header-nav">
+                <a href="#unblocked-section" class="nav-link">Unblocked Websites</a>
+                <a href="#calculator-section" class="nav-link">Calculator</a>
+                <a href="#horror-section" class="nav-link">Horror Games 🔒</a>
+            </nav>
+
             <div class="controls-group">
                 <select id="themeSelect" class="theme-select" aria-label="Switch Design Theme">
                     <option value="crimson">Crimson Neo</option>
@@ -592,8 +757,78 @@
                 </a>
                 <a href="https://jaxgames47.github.io/subwaysurfers/" class="game-link" data-title="idk">
                     <div class="game-button"><img src="subway-surfers-logo.png" alt="Subway Surfers"></div>
+                </a>
             </div>
         </div>
+
+        <section id="unblocked-section" class="content-section">
+            <h1 class="section-title">Unblocked Websites</h1>
+            <div class="unblocked-grid">
+                <a href="https://duckproxy.onrender.com/" target="_blank" class="unblocked-card">
+                    <span class="unblocked-icon">🦆</span>
+                    <span>Duck Proxy</span>
+                </a>
+                <a href="https://jaxonsecretgames.w3spaces.com/" target="_blank" class="unblocked-card">
+                    <span class="unblocked-icon">🗝️</span>
+                    <span>Secret Games</span>
+                </a>
+                <a href="https://jaxgames47.github.io/gn-math/" target="_blank" class="unblocked-card">
+                    <span class="unblocked-icon">📐</span>
+                    <span>GN Math Portal</span>
+                </a>
+                <a href="https://github.com/" target="_blank" class="unblocked-card">
+                    <span class="unblocked-icon">🐙</span>
+                    <span>GitHub Mirror</span>
+                </a>
+                <a href="https://wikipedia.org/" target="_blank" class="unblocked-card">
+                    <span class="unblocked-icon">📚</span>
+                    <span>Research Vault</span>
+                </a>
+                <a href="https://google.com/" target="_blank" class="unblocked-card">
+                    <span class="unblocked-icon">🔍</span>
+                    <span>Direct Search</span>
+                </a>
+                <a href="https://w3schools.com/" target="_blank" class="unblocked-card">
+                    <span class="unblocked-icon">💻</span>
+                    <span>Code Lab unblock</span>
+                </a>
+            </div>
+        </section>
+
+        <section id="calculator-section" class="content-section">
+            <h1 class="section-title">Main Calculator</h1>
+            <div class="full-calculator">
+                <div class="full-calc-screen" id="fullCalcScreen">0</div>
+                <div class="full-calc-grid">
+                    <button onclick="pressFullCalc('C')">C</button>
+                    <button class="op" onclick="pressFullCalc('/')">/</button>
+                    <button class="op" onclick="pressFullCalc('*')">*</button>
+                    <button class="op" onclick="pressFullCalc('-')">-</button>
+                    <button onclick="pressFullCalc('7')">7</button>
+                    <button onclick="pressFullCalc('8')">8</button>
+                    <button onclick="pressFullCalc('9')">9</button>
+                    <button class="op" onclick="pressFullCalc('+')">+</button>
+                    <button onclick="pressFullCalc('4')">4</button>
+                    <button onclick="pressFullCalc('5')">5</button>
+                    <button onclick="pressFullCalc('6')">6</button>
+                    <button class="op" onclick="pressFullCalc('=')">=</button>
+                    <button onclick="pressFullCalc('1')">1</button>
+                    <button onclick="pressFullCalc('2')">2</button>
+                    <button onclick="pressFullCalc('3')">3</button>
+                    <button onclick="pressFullCalc('0')">0</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="horror-section" class="content-section">
+            <h1 class="section-title">Horror Games 🔒</h1>
+            <div class="horror-container">
+                <div class="horror-lock">🔒</div>
+                <h2>Vault Encrypted</h2>
+                <p style="margin-top: 15px; color: var(--text-muted);">This high-intensity, dark database is currently locked down for maintenance. Return under different cosmic clearance!</p>
+            </div>
+        </section>
+
     </div>
 
     <div class="utility-widget ai-assistant-wrapper">
@@ -724,7 +959,7 @@
             }, 600);
         });
 
-        // 5. HIGH ACCURACY MATH CALCULATOR MODULE
+        // 5. HIGH ACCURACY MATH CALCULATOR MODULE (WIDGET)
         let calcExpr = '';
         const calcScreen = document.getElementById('calcScreen');
         function pressCalc(val) {
@@ -734,7 +969,6 @@
             } else if(val === '=') {
                 try {
                     if(!calcExpr) return;
-                    // Safely evaluate standard mathematical characters
                     let result = Function('"use strict";return (' + calcExpr + ')')();
                     calcScreen.innerText = result;
                     calcExpr = String(result);
@@ -746,6 +980,30 @@
                 if(calcScreen.innerText === '0' && !isNaN(val)) calcExpr = '';
                 calcExpr += val;
                 calcScreen.innerText = calcExpr;
+            }
+        }
+
+        // 5b. HIGH ACCURACY MAIN CALCULATOR MODULE (PAGE SECTION)
+        let fullCalcExpr = '';
+        const fullCalcScreen = document.getElementById('fullCalcScreen');
+        function pressFullCalc(val) {
+            if(val === 'C') {
+                fullCalcExpr = '';
+                fullCalcScreen.innerText = '0';
+            } else if(val === '=') {
+                try {
+                    if(!fullCalcExpr) return;
+                    let result = Function('"use strict";return (' + fullCalcExpr + ')')();
+                    fullCalcScreen.innerText = result;
+                    fullCalcExpr = String(result);
+                } catch(e) {
+                    fullCalcScreen.innerText = 'Error';
+                    fullCalcExpr = '';
+                }
+            } else {
+                if(fullCalcScreen.innerText === '0' && !isNaN(val)) fullCalcExpr = '';
+                fullCalcExpr += val;
+                fullCalcScreen.innerText = fullCalcExpr;
             }
         }
 
@@ -769,32 +1027,9 @@
                 const targetUrl = this.href;
                 const portal = document.getElementById('cinematicPortal');
                 const rect = button.getBoundingClientRect();
-
-                const clone = document.createElement('div');
-                clone.className = 'focus-clone';
-                clone.style.top = `${rect.top}px`;
-                clone.style.left = `${rect.left}px`;
-                clone.innerHTML = `
-                    <div class="portal-overlay">
-                        <div class="spinner"></div>
-                        <div class="loading-text">Loading</div>
-                    </div>
-                    <img src="${img.getAttribute('src')}" alt="Loading Assets">
-                `;
-
-                portal.appendChild(clone);
-                button.style.opacity = '0';
-                document.body.classList.add('is-cinematic-loading');
-
-                requestAnimationFrame(() => {
-                    const centerX = window.innerWidth / 2 - rect.width / 2;
-                    const centerY = window.innerHeight / 2 - rect.height / 2;
-                    clone.style.top = `${centerY}px`;
-                    clone.style.left = `${centerX}px`;
-                    clone.classList.add('is-zoomed');
-                });
-
-                setTimeout(() => { window.location.href = targetUrl; }, 1400);
+                
+                // Keep default redirect action or cinematic simulation
+                window.open(targetUrl, '_blank');
             });
         });
     </script>
