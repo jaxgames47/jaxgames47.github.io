@@ -3,1035 +3,329 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jax Games | Next-Gen</title>
+    <title>Floating Game Portal</title>
     <style>
-        /* -------------------------------------------------------------
-            DYNAMIC THEMES & DESIGN SYSTEM CONSTANTS
-        ------------------------------------------------------------- */
-        :root {
-            /* Default: Crimson Neo */
-            --bg-main: #140504;
-            --bg-surface: #220a08;
-            --bg-card: #2e0e0b;
-            --neon-accent: #FF0800;
-            --text-main: #ffebee;
-            --text-muted: rgba(255, 235, 238, 0.6);
-            --border-color: #540400;
-            --ultra-timing: cubic-bezier(0.25, 1, 0.3, 1);
-        }
-
-        [data-theme="midnight"] {
-            --bg-main: #0B0F19;
-            --bg-surface: #111827;
-            --bg-card: #1F2937;
-            --neon-accent: #3B82F6;
-            --text-main: #F3F4F6;
-            --text-muted: rgba(243, 244, 246, 0.6);
-            --border-color: #1E3A8A;
-        }
-
-        [data-theme="cyber"] {
-            --bg-main: #0A0A0C;
-            --bg-surface: #121216;
-            --bg-card: #1A1A22;
-            --neon-accent: #00FFCC;
-            --text-main: #E2E8F0;
-            --text-muted: rgba(226, 232, 240, 0.6);
-            --border-color: #004D40;
-        }
-
+        /* --- Global Reset & Base Styles --- */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            scroll-behavior: smooth;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: var(--bg-main);
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: var(--text-main);
-            overflow-x: hidden;
+            background: radial-gradient(circle, #1a1a2e, #0f0f1b);
+            color: #fff;
             min-height: 100vh;
-            perspective: 1200px;
-            transition: background-color 0.5s ease, color 0.5s ease;
-        }
-
-        .page-wrapper {
-            transition: transform 0.8s var(--ultra-timing), filter 0.8s var(--ultra-timing);
-            will-change: transform, filter;
-            width: 100%;
-            min-height: 100vh;
-            transform-style: preserve-3d;
-        }
-
-        body.is-cinematic-loading .page-wrapper {
-            filter: blur(15px) brightness(0.3);
-            transform: scale(0.92) translateZ(-100px);
-            pointer-events: none;
-        }
-
-        /* -------------------------------------------------------------
-            HEADER, NAVIGATION & CONTROLS
-        ------------------------------------------------------------- */
-        header {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            padding: 30px 60px;
-            max-width: 1400px;
-            margin: 0 auto;
-            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+            letter-spacing: 2px;
+        }
+
+        /* --- Main Hub Buttons --- */
+        .hub-container {
+            display: flex;
             gap: 20px;
         }
 
-        .logo {
-            font-size: 2rem;
-            font-weight: 900;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            user-select: none;
-            transition: transform 0.3s ease;
-        }
-        .logo:hover {
-            transform: skewX(-5deg) scale(1.03);
-        }
-
-        .jax { color: #ffffff; }
-        .games-cyan { 
-            color: var(--neon-accent); 
-            text-shadow: 0 0 20px var(--neon-accent);
-        }
-
-        /* Top Navigation replacing the lines */
-        .header-nav {
-            display: flex;
-            gap: 30px;
-            align-items: center;
-        }
-
-        .nav-link {
-            color: var(--text-main);
-            text-decoration: none;
+        .hub-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 15px 30px;
             font-size: 1.1rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            padding: 8px 16px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            border-bottom: 2px solid transparent;
-        }
-
-        .nav-link:hover {
-            color: var(--neon-accent);
-            text-shadow: 0 0 10px var(--neon-accent);
-            border-bottom-color: var(--neon-accent);
-        }
-
-        .controls-group {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .theme-select {
-            background: var(--bg-surface);
-            color: var(--text-main);
-            border: 2px solid var(--border-color);
-            padding: 10px 15px;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .theme-select:focus {
-            border-color: var(--neon-accent);
-            box-shadow: 0 0 15px var(--neon-accent);
-        }
-
-        .container {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 40px 40px 80px 40px;
-            text-align: center;
-        }
-
-        h1.section-title {
-            font-size: 3rem;
-            margin-bottom: 40px;
-            font-weight: 800;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            position: relative;
-            display: inline-block;
-            color: #ffffff;
-        }
-        
-        h1.section-title::after {
-            content: '';
-            position: absolute;
-            left: 10%;
-            bottom: -15px;
-            width: 80%;
-            height: 4px;
-            background: linear-gradient(90deg, transparent, var(--neon-accent), transparent);
-            box-shadow: 0 0 10px var(--neon-accent);
-        }
-
-        /* -------------------------------------------------------------
-            SEARCH INTERFACE
-        ------------------------------------------------------------- */
-        .search-container {
-            margin-bottom: 60px;
-            position: relative;
-            display: inline-block;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .search-bar {
-            width: 100%;
-            padding: 15px 25px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border-radius: 50px;
-            border: 3px solid var(--border-color);
-            background-color: var(--bg-surface);
-            color: #ffffff;
-            outline: none;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            transition: all 0.4s var(--ultra-timing);
-        }
-
-        .search-bar::placeholder {
-            color: var(--text-muted);
-        }
-
-        .search-bar:focus {
-            border-color: var(--neon-accent);
-            box-shadow: 0 0 25px var(--neon-accent), 0 10px 20px rgba(0,0,0,0.4);
-            transform: scale(1.02);
-        }
-
-        /* -------------------------------------------------------------
-            CLEAN FLUID GRID ARCHITECTURE
-        ------------------------------------------------------------- */
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-            gap: 30px;
-            justify-items: center;
-            transform-style: preserve-3d;
-        }
-
-        .game-link {
-            text-decoration: none;
-            display: block;
-            outline: none;
-            perspective: 1000px;
-            width: 100%;
-            max-width: 220px;
-        }
-
-        .game-button {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            background-color: var(--bg-card);
-            border: 3px solid var(--border-color);
-            border-radius: 24px;
-            overflow: hidden;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-            transform-style: preserve-3d;
-            transform: translateZ(0);
-            transition: transform 0.5s var(--ultra-timing), border-color 0.5s var(--ultra-timing), box-shadow 0.5s var(--ultra-timing);
-            will-change: transform, box-shadow, border-color;
-        }
-
-        .game-button img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transform: translateZ(0) scale(1.01);
-            transition: transform 0.6s var(--ultra-timing);
-        }
-
-        /* Hover States */
-        .game-link:hover .game-button {
-            border-color: var(--neon-accent);
-            transform: translateY(-10px) rotateX(10deg) rotateY(-5deg) translateZ(20px);
-            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.6), 0 0 25px var(--neon-accent);
-        }
-
-        .game-link:hover .game-button img {
-            transform: translateZ(15px) scale(1.1);
-        }
-
-        .game-link.is-hidden {
-            display: none !important;
-        }
-
-        /* -------------------------------------------------------------
-            PAGE SECTIONS
-        ------------------------------------------------------------- */
-        .content-section {
-            padding: 80px 40px;
-            border-top: 2px solid var(--border-color);
-            max-width: 1300px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        /* Unblocked Websites Button Cards */
-        .unblocked-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 25px;
-            margin-top: 40px;
-        }
-
-        .unblocked-card {
-            background: var(--bg-card);
-            border: 3px solid var(--border-color);
-            border-radius: 20px;
-            padding: 30px 20px;
-            color: var(--text-main);
-            text-decoration: none;
-            font-weight: 800;
-            font-size: 1.2rem;
-            letter-spacing: 1px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-            transition: all 0.4s var(--ultra-timing);
-        }
-
-        .unblocked-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--neon-accent);
-            box-shadow: 0 0 25px var(--neon-accent);
-            background: var(--bg-surface);
-        }
-
-        .unblocked-icon {
-            font-size: 2.5rem;
-        }
-
-        /* Page Calculator Section */
-        .full-calculator {
-            max-width: 400px;
-            margin: 40px auto 0 auto;
-            background: var(--bg-surface);
-            border: 3px solid var(--border-color);
-            border-radius: 28px;
-            padding: 25px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-        }
-
-        .full-calc-screen {
-            background: #000;
-            color: var(--neon-accent);
-            font-family: monospace;
-            text-align: right;
-            padding: 25px;
-            font-size: 2.5rem;
-            min-height: 90px;
-            border-radius: 16px;
-            margin-bottom: 20px;
-            word-wrap: break-word;
-            border: 2px solid var(--border-color);
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
-        }
-
-        .full-calc-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-        }
-
-        .full-calc-grid button {
-            background: var(--bg-card);
-            border: 2px solid var(--border-color);
-            color: var(--text-main);
-            padding: 20px;
-            font-size: 1.4rem;
             font-weight: bold;
-            border-radius: 16px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
         }
 
-        .full-calc-grid button:hover {
-            background: var(--neon-accent);
-            color: #fff;
-            border-color: #fff;
-            transform: scale(1.05);
+        .hub-btn:hover {
+            background: rgba(0, 255, 204, 0.2);
+            border-color: #00ffcc;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+            transform: translateY(-3px);
         }
 
-        .full-calc-grid button.op {
-            color: var(--neon-accent);
-        }
-        .full-calc-grid button.op:hover {
-            color: #fff;
+        /* --- Floating Page Overlay (Modal) --- */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 10, 0.85);
+            backdrop-filter: blur(15px);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease forwards;
         }
 
-        /* Locked Horror Section */
-        .horror-container {
-            max-width: 800px;
-            margin: 40px auto 0 auto;
-            background: rgba(0, 0, 0, 0.4);
-            border: 3px dashed var(--border-color);
-            padding: 60px;
-            border-radius: 30px;
-            backdrop-filter: blur(10px);
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* --- Floating Window Content --- */
+        .floating-window {
+            background: rgba(20, 20, 35, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
             position: relative;
-            overflow: hidden;
+            text-align: center;
+            transform: scale(0.9);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
-        .horror-lock {
-            font-size: 5rem;
-            margin-bottom: 20px;
-            animation: pulseLock 2s infinite ease-in-out;
+        @keyframes popIn {
+            from { transform: scale(0.8); }
+            to { transform: scale(1); }
         }
 
-        @keyframes pulseLock {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 1; text-shadow: 0 0 20px red; }
-        }
-
-        /* -------------------------------------------------------------
-            CINEMATIC ANIMATION OVERLAYS
-        ------------------------------------------------------------- */
-        .cinematic-portal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 9999;
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            perspective: 1000px;
-        }
-
-        .focus-clone {
+        /* --- Back / Close Button --- */
+        .back-btn {
             position: absolute;
-            width: 210px;
-            height: 210px;
-            background-color: var(--bg-card);
-            border: 4px solid #ffffff;
-            border-radius: 28px;
-            overflow: hidden;
-            box-shadow: 0 0 60px rgba(255,255,255,0.4);
-            transition: top 0.7s var(--ultra-timing), left 0.7s var(--ultra-timing), transform 0.7s var(--ultra-timing), box-shadow 0.7s var(--ultra-timing);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .focus-clone.is-zoomed {
-            transform: scale(1.8) rotateZ(360deg);
-            box-shadow: 0 0 100px var(--neon-accent), 0 30px 80px rgba(0,0,0,0.8);
-        }
-
-        .focus-clone img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: blur(2px) brightness(0.6);
-        }
-
-        .portal-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 5, 5, 0.85);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255,255,255,0.1);
-            border-top: 4px solid var(--neon-accent);
-            border-radius: 50%;
-            animation: hyperSpin 0.6s linear infinite;
-            margin-bottom: 15px;
-        }
-
-        .loading-text {
-            color: var(--neon-accent);
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        @keyframes hyperSpin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* -------------------------------------------------------------
-            MODERN UTILITY CAPABILITIES (AI CHAT & CALCULATOR)
-        ------------------------------------------------------------- */
-        .utility-widget {
-            position: fixed;
-            bottom: 30px;
-            z-index: 5000;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .widget-trigger {
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            background: var(--bg-surface);
-            border: 3px solid var(--border-color);
-            color: var(--text-main);
-            font-size: 1.5rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .widget-trigger:hover {
-            transform: scale(1.1);
-            border-color: var(--neon-accent);
-            box-shadow: 0 0 20px var(--neon-accent);
-        }
-
-        .widget-panel {
-            position: absolute;
-            bottom: 70px;
-            width: 320px;
-            background: var(--bg-surface);
-            border: 2px solid var(--border-color);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            animation: paneOpen 0.4s var(--ultra-timing);
-        }
-
-        @keyframes paneOpen {
-            from { opacity: 0; transform: translateY(20px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        /* Left Side: AI Assistant */
-        .ai-assistant-wrapper { left: 30px; }
-        .ai-panel { left: 0; height: 400px; }
-        .ai-header {
-            background: var(--bg-card);
-            padding: 15px;
-            font-weight: 700;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-        }
-        .ai-chat-body {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            font-size: 0.9rem;
-        }
-        .chat-msg {
-            padding: 8px 12px;
-            border-radius: 14px;
-            max-width: 85%;
-        }
-        .chat-msg.bot { background: var(--bg-card); align-self: flex-start; border-bottom-left-radius: 2px; }
-        .chat-msg.user { background: var(--neon-accent); color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
-        
-        .ai-input-area {
-            display: flex;
-            padding: 10px;
-            background: var(--bg-card);
-            border-top: 1px solid var(--border-color);
-        }
-        .ai-input-area input {
-            flex: 1;
-            background: var(--bg-main);
-            border: 1px solid var(--border-color);
-            padding: 8px 12px;
-            border-radius: 20px;
-            color: white;
-            outline: none;
-        }
-        .ai-input-area button {
+            top: 15px;
+            left: 15px;
             background: transparent;
             border: none;
-            color: var(--neon-accent);
-            padding: 0 10px;
+            color: #ff4a4a;
+            font-size: 1rem;
             cursor: pointer;
-            font-weight: 700;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.2s;
         }
 
-        /* Right Side: Calculator Widget Trigger */
-        .calculator-wrapper { right: 30px; }
-        .calc-panel { right: 0; width: 280px; }
-        .calc-screen {
+        .back-btn:hover {
+            color: #ff1a1a;
+        }
+
+        /* --- Calculator Layout (Simple Placeholder) --- */
+        .calc-display {
             background: #000;
-            color: #00FFCC;
-            font-family: monospace;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.5rem;
             text-align: right;
-            padding: 20px;
-            font-size: 1.8rem;
-            min-height: 70px;
-            word-wrap: break-word;
+            margin-bottom: 15px;
+            border: 1px solid #333;
         }
-        .calc-header-nav {
-            background: var(--bg-card);
-            padding: 8px 12px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .calc-back-btn {
-            cursor: pointer;
-            color: var(--neon-accent);
-            font-weight: bold;
-        }
+
         .calc-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 1px;
-            background: var(--border-color);
+            gap: 10px;
         }
+
         .calc-grid button {
-            background: var(--bg-card);
-            border: none;
-            color: var(--text-main);
-            padding: 18px;
-            font-size: 1.1rem;
+            background: #222;
+            border: 1px solid #444;
+            color: #white;
+            padding: 15px;
+            font-size: 1.2rem;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.2s;
         }
-        .calc-grid button:hover { background: var(--bg-surface); }
-        .calc-grid button.op { color: var(--neon-accent); }
+
+        .calc-grid button:hover {
+            background: #333;
+        }
+
+        /* --- Pin Pad Interface --- */
+        .pin-display {
+            background: #111;
+            padding: 15px;
+            font-size: 1.8rem;
+            letter-spacing: 8px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ff4a4a;
+            color: #ff4a4a;
+            height: 60px;
+        }
+
+        .pin-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            max-width: 280px;
+            margin: 0 auto;
+        }
+
+        .pin-grid button {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 15px;
+            font-size: 1.3rem;
+            border-radius: 50%;
+            aspect-ratio: 1;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pin-grid button:hover {
+            background: rgba(255, 74, 74, 0.2);
+            border-color: #ff4a4a;
+        }
+
+        /* --- Horror Game Links Page --- */
+        .horror-links-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .horror-game-link {
+            display: block;
+            background: linear-gradient(135deg, #1b0000, #4a0000);
+            border: 1px solid #ff3333;
+            color: #fff;
+            padding: 15px;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(255, 0, 0, 0.1);
+        }
+
+        .horror-game-link:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+            background: linear-gradient(135deg, #320000, #660000);
+        }
     </style>
 </head>
 <body>
 
-    <div class="page-wrapper">
-        <header>
-            <div class="logo">
-                <span class="jax">JAX</span> <span class="games-cyan">GAMES</span>
-            </div>
-            
-            <nav class="header-nav">
-                <a href="#unblocked-section" class="nav-link">Unblocked Websites</a>
-                <a href="#calculator-section" class="nav-link">Calculator</a>
-                <a href="#horror-section" class="nav-link">Horror Games 🔒</a>
-            </nav>
+    <h1>ARCADE HUB</h1>
 
-            <div class="controls-group">
-                <select id="themeSelect" class="theme-select" aria-label="Switch Design Theme">
-                    <option value="crimson">Crimson Neo</option>
-                    <option value="midnight">Midnight Dark</option>
-                    <option value="cyber">Cyber Shadow</option>
-                </select>
-            </div>
-        </header>
-
-        <div class="container">
-            <h1 class="section-title">Popular Games</h1>
-
-            <div class="search-container">
-                <input type="text" id="gameSearch" class="search-bar" placeholder="Search for a game...">
-            </div>
-
-            <div class="game-grid">
-                <a href="https://jaxgames47.github.io/gtag/" class="game-link" data-title="gorilla tag gtag">
-                    <div class="game-button"><img src="gtag.jpeg" alt="Gorilla Tag"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/blockblast/" class="game-link" data-title="block blast">
-                    <div class="game-button"><img src="blockblast.png" alt="Block Blast"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/minecraftpocket/" class="game-link" data-title="minecraft pocket edition pe mc">
-                    <div class="game-button"><img src="pocketminecraft.png" alt="Minecraft Pocket Edition"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/1v1.lol/" class="game-link" data-title="1v1.lol one v one shooter">
-                    <div class="game-button"><img src="6764d93be2b78_lol.onevone.png" alt="1v1.lol"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/adgac/" class="game-link" data-title="adgac">
-                    <div class="game-button"><img src="672.png" alt="ADGAC"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/cookieclicker/" class="game-link" data-title="cookie clicker idle tycoon">
-                    <div class="game-button"><img src="cookiegames.png" alt="Cookie Clicker"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/candy-crush/" class="game-link" data-title="candy crush match 3">
-                    <div class="game-button"><img src="171.png" alt="Candy Crush"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/camoflaugeandsniper/" class="game-link" data-title="camoflauge and sniper shooter shooting">
-                    <div class="game-button"><img src="378.png" alt="Camoflauge and Sniper"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/makeoverrun/" class="game-link" data-title="makeover run arcade">
-                    <div class="game-button"><img src="398.png" alt="Makeover Run"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/redball4/" class="game-link" data-title="red ball 4 platformer">
-                    <div class="game-button"><img src="242.png" alt="Red Ball 4"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/hollowknightsilksong/" class="game-link" data-title="hollow knight silksong hk metroidvania">
-                    <div class="game-button"><img src="hollowknightsilksong.jpg" alt="Hollow Knight Silksong"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/animalcrossing-game-cube-/" class="game-link" data-title="animal crossing gamecube retro simulator ac">
-                    <div class="game-button"><img src="animal crossing gc.png" alt="Animal Crossing (GAMECUBE)"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/attackhole/" class="game-link" data-title="attack hole arcade black hole">
-                    <div class="game-button"><img src="13.png" alt="Attack Hole"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/hidenseek/" class="game-link" data-title="hide and seek n">
-                    <div class="game-button"><img src="hide n seek.png" alt="Hide and Seek"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/aquapark/" class="game-link" data-title="aquapark.io water slide runner">
-                    <div class="game-button"><img src="aquapark.webp" alt="Aquapark.io"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/amaze/" class="game-link" data-title="amaze puzzle ball">
-                    <div class="game-button"><img src="26.png" alt="Amaze"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/2dworldcup/" class="game-link" data-title="a small world cup football soccer sports 2d">
-                    <div class="game-button"><img src="a small world cup.png" alt="A Small World Cup"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/cheeserolling/" class="game-link" data-title="cheese rolling race arcade">
-                    <div class="game-button"><img src="cheeserolling.png" alt="Cheese Rolling"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/peaksoundboard/" class="game-link" data-title="peak soundboard audio">
-                    <div class="game-button"><img src="Screenshot 2026-06-05 174505.png" alt="Peak Soundboard"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/flappybird/" class="game-link" data-title="flappy bird arcade retro classic tap">
-                    <div class="game-button"><img src="flappybird.png" alt="Flappy Bird"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/rocketgoal/" class="game-link" data-title="rocket goal soccer sports car">
-                    <div class="game-button"><img src="rocketgoal.png" alt="Rocket Goal"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/soundboard/" class="game-link" data-title="soundboard sound audio effects ear">
-                    <div class="game-button"><img src="ear.jpg" alt="Soundboard"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/basketbattle/" class="game-link" data-title="basket battle basketball sports hoops">
-                    <div class="game-button"><img src="basket battle.png" alt="Basket Batle"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/buildaqueen/" class="game-link" data-title="build a queen casual run">
-                    <div class="game-button"><img src="319.png" alt="Build A Queen"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/drivemad/" class="game-link" data-title="drive mad car racing truck drivemad">
-                    <div class="game-button"><img src="drive mad.png" alt="Drive Mad"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/amplerlauncher/" class="game-link" data-title="eagercraft minecraft ampler launcher">
-                    <div class="game-button"><img src="eaglercraft.jpg" alt="Ampler Launcher"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/geometerydashlite/" class="game-link" data-title="geometery dash lite rhythm arcade gd dash">
-                    <div class="game-button"><img src="geometery dash lite.png" alt="Geometery Dash Lite"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/memesoundboard/" class="game-link" data-title="loud and meme sounds coming from ur chromebook">
-                    <div class="game-button"><img src="soundboard.jpg" alt="Meme Sound Board"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/amongusonline/" class="game-link" data-title="online multiplayer">
-                    <div class="game-button"><img src="amongus.jpg" alt="Among Us Online"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/subwaysurfers/" class="game-link" data-title="idk">
-                    <div class="game-button"><img src="subway-surfers-logo.png" alt="Subway Surfers"></div>
-                </a>
-            </div>
-        </div>
-
-        <section id="unblocked-section" class="content-section">
-            <h1 class="section-title">Unblocked Websites</h1>
-            <div class="unblocked-grid">
-                <a href="https://duckproxy.onrender.com/" target="_blank" class="unblocked-card">
-                    <span class="unblocked-icon">🦆</span>
-                    <span>Duck Proxy</span>
-                </a>
-                <a href="https://jaxonsecretgames.w3spaces.com/" target="_blank" class="unblocked-card">
-                    <span class="unblocked-icon">🗝️</span>
-                    <span>Secret Games</span>
-                </a>
-                <a href="https://jaxgames47.github.io/gn-math/" target="_blank" class="unblocked-card">
-                    <span class="unblocked-icon">📐</span>
-                    <span>GN Math Portal</span>
-                </a>
-                <a href="https://github.com/" target="_blank" class="unblocked-card">
-                    <span class="unblocked-icon">🐙</span>
-                    <span>GitHub Mirror</span>
-                </a>
-                <a href="https://wikipedia.org/" target="_blank" class="unblocked-card">
-                    <span class="unblocked-icon">📚</span>
-                    <span>Research Vault</span>
-                </a>
-                <a href="https://google.com/" target="_blank" class="unblocked-card">
-                    <span class="unblocked-icon">🔍</span>
-                    <span>Direct Search</span>
-                </a>
-                <a href="https://w3schools.com/" target="_blank" class="unblocked-card">
-                    <span class="unblocked-icon">💻</span>
-                    <span>Code Lab unblock</span>
-                </a>
-            </div>
-        </section>
-
-        <section id="calculator-section" class="content-section">
-            <h1 class="section-title">Main Calculator</h1>
-            <div class="full-calculator">
-                <div class="full-calc-screen" id="fullCalcScreen">0</div>
-                <div class="full-calc-grid">
-                    <button onclick="pressFullCalc('C')">C</button>
-                    <button class="op" onclick="pressFullCalc('/')">/</button>
-                    <button class="op" onclick="pressFullCalc('*')">*</button>
-                    <button class="op" onclick="pressFullCalc('-')">-</button>
-                    <button onclick="pressFullCalc('7')">7</button>
-                    <button onclick="pressFullCalc('8')">8</button>
-                    <button onclick="pressFullCalc('9')">9</button>
-                    <button class="op" onclick="pressFullCalc('+')">+</button>
-                    <button onclick="pressFullCalc('4')">4</button>
-                    <button onclick="pressFullCalc('5')">5</button>
-                    <button onclick="pressFullCalc('6')">6</button>
-                    <button class="op" onclick="pressFullCalc('=')">=</button>
-                    <button onclick="pressFullCalc('1')">1</button>
-                    <button onclick="pressFullCalc('2')">2</button>
-                    <button onclick="pressFullCalc('3')">3</button>
-                    <button onclick="pressFullCalc('0')">0</button>
-                </div>
-            </div>
-        </section>
-
-        <section id="horror-section" class="content-section">
-            <h1 class="section-title">Horror Games 🔒</h1>
-            <div class="horror-container">
-                <div class="horror-lock">🔒</div>
-                <h2>Vault Encrypted</h2>
-                <p style="margin-top: 15px; color: var(--text-muted);">This high-intensity, dark database is currently locked down for maintenance. Return under different cosmic clearance!</p>
-            </div>
-        </section>
-
+    <div class="hub-container">
+        <button class="hub-btn" onclick="openModal('calcModal')">Calculator</button>
+        <button class="hub-btn" onclick="openModal('pinModal')">Horror Games</button>
     </div>
 
-    <div class="utility-widget ai-assistant-wrapper">
-        <button class="widget-trigger" id="aiTrigger" title="AI Companion">🤖</button>
-        <div class="widget-panel ai-panel" id="aiPanel">
-            <div class="ai-header">
-                <span>JaxBot AI</span>
-                <span style="cursor:pointer;" onclick="toggleWidget('aiPanel')">✕</span>
-            </div>
-            <div class="ai-chat-body" id="aiChatBody">
-                <div class="chat-msg bot">Hey! Need any clean gaming tips or structural site info today?</div>
-            </div>
-            <div class="ai-input-area">
-                <input type="text" id="aiInput" placeholder="Ask something...">
-                <button id="aiSendBtn">Send</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="utility-widget calculator-wrapper">
-        <button class="widget-trigger" id="calcTrigger" title="Open Game Tools">🧮</button>
-        <div class="widget-panel calc-panel" id="calcPanel">
-            <div class="calc-header-nav">
-                <span class="calc-back-btn" onclick="toggleWidget('calcPanel')">← Games</span>
-                <span>Math Tool</span>
-            </div>
-            <div class="calc-screen" id="calcScreen">0</div>
+    <div id="calcModal" class="overlay">
+        <div class="floating-window">
+            <button class="back-btn" onclick="closeModal('calcModal')">← Back</button>
+            <h2 style="margin-top: 15px; margin-bottom: 15px;">Calculator</h2>
+            <div class="calc-display">0</div>
             <div class="calc-grid">
-                <button onclick="pressCalc('C')">C</button>
-                <button class="op" onclick="pressCalc('/')">/</button>
-                <button class="op" onclick="pressCalc('*')">*</button>
-                <button class="op" onclick="pressCalc('-')">-</button>
-                <button onclick="pressCalc('7')">7</button>
-                <button onclick="pressCalc('8')">8</button>
-                <button onclick="pressCalc('9')">9</button>
-                <button class="op" style="grid-row: span 2; height:100%" onclick="pressCalc('+')">+</button>
-                <button onclick="pressCalc('4')">4</button>
-                <button onclick="pressCalc('5')">5</button>
-                <button onclick="pressCalc('6')">6</button>
-                <button onclick="pressCalc('1')">1</button>
-                <button onclick="pressCalc('2')">2</button>
-                <button onclick="pressCalc('3')">3</button>
-                <button class="op" style="grid-row: span 2; height:100%" onclick="pressCalc('=')">=</button>
-                <button style="grid-column: span 2;" onclick="pressCalc('0')">0</button>
-                <button onclick="pressCalc('.')">.</button>
+                <button>7</button><button>8</button><button>9</button><button style="color: #00ffcc">/</button>
+                <button>4</button><button>5</button><button>6</button><button style="color: #00ffcc">*</button>
+                <button>1</button><button>2</button><button>3</button><button style="color: #00ffcc">-</button>
+                <button>C</button><button>0</button><button>=</button><button style="color: #00ffcc">+</button>
             </div>
         </div>
     </div>
 
-    <div class="cinematic-portal" id="cinematicPortal"></div>
+    <div id="pinModal" class="overlay">
+        <div class="floating-window">
+            <button class="back-btn" onclick="closeModal('pinModal')">← Cancel</button>
+            <h2 style="margin-top: 15px; color: #ff4a4a;">RESTRICTED AREA</h2>
+            <p style="font-size: 0.9rem; color: #888; margin-bottom: 15px;">Type in the secret code!</p>
+            
+            <div class="pin-display" id="pinDisplay"></div>
+            
+            <div class="pin-grid">
+                <button onclick="pressPin('1')">1</button>
+                <button onclick="pressPin('2')">2</button>
+                <button onclick="pressPin('3')">3</button>
+                <button onclick="pressPin('4')">4</button>
+                <button onclick="pressPin('5')">5</button>
+                <button onclick="pressPin('6')">6</button>
+                <button onclick="pressPin('7')">7</button>
+                <button onclick="pressPin('8')">8</button>
+                <button onclick="pressPin('9')">9</button>
+                <button onclick="clearPin()" style="color: #ff4a4a; font-size: 0.9rem;">CLR</button>
+                <button onclick="pressPin('0')">0</button>
+                <button onclick="submitPin()" style="color: #00ffcc; font-size: 0.9rem;">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="horrorModal" class="overlay">
+        <div class="floating-window" style="border: 1px solid #ff4a4a;">
+            <button class="back-btn" onclick="closeModal('horrorModal')">← Back</button>
+            <h2 style="margin-top: 15px; color: #ff3333; text-shadow: 0 0 10px rgba(255, 0, 0, 0.4);">HORROR COLLECTION</h2>
+            <p style="color: #aaa; margin-bottom: 20px;">Welcome to the dark side. Choose your game:</p>
+            
+            <div class="horror-links-list">
+                <a href="https://jaxgames47.github.io/granny" target="_blank" class="horror-game-link">Granny</a>
+                <a href="https://jaxgames47.github.io/fnaf1" target="_blank" class="horror-game-link">FNAF 1</a>
+                <a href="https://jaxgames47.github.io/thebackrooms" target="_blank" class="horror-game-link">The Backrooms</a>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // 1. DYNAMIC THEME SELECTOR ENGINE
-        const themeSelect = document.getElementById('themeSelect');
-        themeSelect.addEventListener('change', (e) => {
-            document.documentElement.setAttribute('data-theme', e.target.value);
-        });
+        // Open overlays
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
 
-        // 2. REAL-TIME SEARCH & FIXED SECRET CODE SYSTEM
-        const searchInput = document.getElementById('gameSearch');
-        const gameLinks = document.querySelectorAll('.game-link');
-
-        searchInput.addEventListener('input', function() {
-            const filterText = this.value.toLowerCase().trim();
-
-            if (filterText === 'jaxon secret games') {
-                window.open('https://jaxonsecretgames.w3spaces.com/', '_blank');
-                this.value = '';
-                return;
-            } 
-            if (filterText === 'duck proxy') {
-                window.open('https://duckproxy.onrender.com/', '_blank');
-                this.value = '';
-                return;
-            } 
-            if (filterText === 'unblocked gn math') {
-                window.open('https://jaxgames47.github.io/gn-math/', '_blank');
-                this.value = '';
-                return;
+        // Close overlays
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+            if (id === 'pinModal') {
+                clearPin(); // Clear entered code if canceled
             }
-
-            gameLinks.forEach(link => {
-                const gameTitle = link.getAttribute('data-title').toLowerCase();
-                if (gameTitle.includes(filterText)) {
-                    link.classList.remove('is-hidden');
-                } else {
-                    link.classList.add('is-hidden');
-                }
-            });
-        });
-
-        // 3. SEAMLESS INTERFACE WIDGET TOGGLES
-        function toggleWidget(id) {
-            const panel = document.getElementById(id);
-            panel.style.display = (panel.style.display === 'flex') ? 'none' : 'flex';
-        }
-        document.getElementById('aiTrigger').addEventListener('click', () => toggleWidget('aiPanel'));
-        document.getElementById('calcTrigger').addEventListener('click', () => toggleWidget('calcPanel'));
-
-        // 4. INTELLIGENT COMPANION BOT DYNAMICS
-        const aiInput = document.getElementById('aiInput');
-        const aiSendBtn = document.getElementById('aiSendBtn');
-        const aiChatBody = document.getElementById('aiChatBody');
-
-        function appendMessage(text, sender) {
-            const el = document.createElement('div');
-            el.className = `chat-msg ${sender}`;
-            el.innerText = text;
-            aiChatBody.appendChild(el);
-            aiChatBody.scrollTop = aiChatBody.scrollHeight;
         }
 
-        aiSendBtn.addEventListener('click', () => {
-            const query = aiInput.value.trim();
-            if(!query) return;
-            appendMessage(query, 'user');
-            aiInput.value = '';
+        // Pin Pad Logic
+        const SECRET_CODE = "5468";
+        let currentPin = "";
+        const pinDisplay = document.getElementById('pinDisplay');
 
-            setTimeout(() => {
-                let lower = query.toLowerCase();
-                if(lower.includes('hello') || lower.includes('hi')) {
-                    appendMessage("Greetings player! Find any clean high scores today?", 'bot');
-                } else if(lower.includes('game') || lower.includes('best')) {
-                    appendMessage("All systems are structural here. Minecraft Pocket Edition or Geometry Dash Lite are classic alternatives!", 'bot');
-                } else {
-                    appendMessage("I am fully running online alongside your local setup. Use the workspace filter search bar to slice down titles quickly!", 'bot');
-                }
-            }, 600);
-        });
+        function pressPin(num) {
+            if (currentPin.length < 4) {
+                currentPin += num;
+                // Display asterisks instead of actual numbers for secrecy
+                pinDisplay.innerText = "*".repeat(currentPin.length);
+            }
+        }
 
-        // 5. HIGH ACCURACY MATH CALCULATOR MODULE (WIDGET)
-        let calcExpr = '';
-        const calcScreen = document.getElementById('calcScreen');
-        function pressCalc(val) {
-            if(val === 'C') {
-                calcExpr = '';
-                calcScreen.innerText = '0';
-            } else if(val === '=') {
-                try {
-                    if(!calcExpr) return;
-                    let result = Function('"use strict";return (' + calcExpr + ')')();
-                    calcScreen.innerText = result;
-                    calcExpr = String(result);
-                } catch(e) {
-                    calcScreen.innerText = 'Error';
-                    calcExpr = '';
-                }
+        function clearPin() {
+            currentPin = "";
+            pinDisplay.innerText = "";
+        }
+
+        function submitPin() {
+            if (currentPin === SECRET_CODE) {
+                // Correct pin entered!
+                closeModal('pinModal');
+                openModal('horrorModal');
+                clearPin();
             } else {
-                if(calcScreen.innerText === '0' && !isNaN(val)) calcExpr = '';
-                calcExpr += val;
-                calcScreen.innerText = calcExpr;
+                // Wrong pin entered
+                pinDisplay.innerText = "WRONG";
+                pinDisplay.style.color = "#ff1a1a";
+                setTimeout(() => {
+                    clearPin();
+                    pinDisplay.style.color = "#ff4a4a";
+                }, 1000);
             }
         }
-
-        // 5b. HIGH ACCURACY MAIN CALCULATOR MODULE (PAGE SECTION)
-        let fullCalcExpr = '';
-        const fullCalcScreen = document.getElementById('fullCalcScreen');
-        function pressFullCalc(val) {
-            if(val === 'C') {
-                fullCalcExpr = '';
-                fullCalcScreen.innerText = '0';
-            } else if(val === '=') {
-                try {
-                    if(!fullCalcExpr) return;
-                    let result = Function('"use strict";return (' + fullCalcExpr + ')')();
-                    fullCalcScreen.innerText = result;
-                    fullCalcExpr = String(result);
-                } catch(e) {
-                    fullCalcScreen.innerText = 'Error';
-                    fullCalcExpr = '';
-                }
-            } else {
-                if(fullCalcScreen.innerText === '0' && !isNaN(val)) fullCalcExpr = '';
-                fullCalcExpr += val;
-                fullCalcScreen.innerText = fullCalcExpr;
-            }
-        }
-
-        // 6. DYNAMIC MOUSE TILT ENGINE
-        gameLinks.forEach(link => {
-            const button = link.querySelector('.game-button');
-            link.addEventListener('mousemove', (e) => {
-                const rect = button.getBoundingClientRect();
-                const x = e.clientX - rect.left - (rect.width / 2);
-                const y = e.clientY - rect.top - (rect.height / 2);
-                const tiltX = (y / (rect.height / 2)) * -12;
-                const tiltY = (x / (rect.width / 2)) * 12;
-                button.style.transform = `translateY(-10px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(20px)`;
-            });
-            link.addEventListener('mouseleave', () => { button.style.transform = ''; });
-
-            // 7. CINEMATIC SCENIC PORTAL DISPATCH
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const img = button.querySelector('img');
-                const targetUrl = this.href;
-                const portal = document.getElementById('cinematicPortal');
-                const rect = button.getBoundingClientRect();
-                
-                // Keep default redirect action or cinematic simulation
-                window.open(targetUrl, '_blank');
-            });
-        });
     </script>
 </body>
 </html>
