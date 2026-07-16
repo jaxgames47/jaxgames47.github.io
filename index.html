@@ -282,7 +282,7 @@
         }
 
         /* -------------------------------------------------------------
-           INTEGRATED SOCIAL AND DASHBOARD PANEL DUAL LAYOUT SECTION
+           INTEGRATED CHAT AND SOCIAL NETWORK PANEL
         ------------------------------------------------------------- */
         .social-dashboard-section {
             max-width: 1000px;
@@ -322,14 +322,23 @@
 
         .dashboard-tab-content {
             padding: 30px;
-            min-height: 300px;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .friends-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         .social-search-bar {
             display: flex;
             gap: 15px;
             max-width: 600px;
-            margin: 0 auto 25px auto;
+            margin: 0 auto 10px auto;
+            width: 100%;
         }
 
         .social-search-bar input {
@@ -358,14 +367,10 @@
             transition: background 0.2s;
         }
 
-        .social-search-bar button:hover {
-            opacity: 0.9;
-        }
-
         .friends-flex-list {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
             text-align: left;
         }
 
@@ -373,11 +378,10 @@
             background: var(--bg-card);
             border: 2px solid var(--border-color);
             border-radius: 16px;
-            padding: 20px;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
             gap: 15px;
         }
 
@@ -398,216 +402,107 @@
             font-weight: 600;
         }
 
-        .friend-call-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .call-action-btn {
-            padding: 10px 18px;
+        .chat-action-btn {
+            padding: 10px 20px;
             background: var(--bg-main);
             border: 2px solid var(--border-color);
             border-radius: 10px;
             color: #fff;
             cursor: pointer;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
             transition: all 0.2s;
         }
 
-        .call-action-btn:hover {
+        .chat-action-btn:hover {
             border-color: var(--neon-accent);
             background: rgba(255, 8, 0, 0.1);
         }
 
-        .inbox-item-row {
-            background: var(--bg-card);
-            border-left: 5px solid var(--neon-accent);
-            border-radius: 12px;
+        /* REAL-TIME HUB CHAT WINDOW INTERFACE */
+        .chat-pane-layout {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            height: 380px;
+        }
+
+        .chat-history-box {
+            flex-grow: 1;
+            background: var(--bg-main);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
             padding: 20px;
+            overflow-y: auto;
             margin-bottom: 15px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 12px;
             text-align: left;
         }
 
-        .inbox-msg-content {
+        .chat-message-bubble {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .chat-message-bubble.incoming {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            align-self: flex-start;
+            border-top-left-radius: 4px;
+        }
+
+        .chat-message-bubble.outgoing {
+            background: var(--neon-accent);
+            color: #fff;
+            align-self: flex-end;
+            border-top-right-radius: 4px;
+        }
+
+        .chat-meta-header {
+            font-size: 0.8rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+            opacity: 0.8;
+            display: block;
+        }
+
+        .chat-input-bar {
+            display: flex;
+            gap: 12px;
+        }
+
+        .chat-input-bar input {
+            flex: 1;
+            padding: 14px 20px;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            color: #fff;
+            outline: none;
             font-size: 1rem;
         }
 
-        .inbox-action-bar-buttons {
-            display: flex;
-            gap: 10px;
+        .chat-input-bar input:focus {
+            border-color: var(--neon-accent);
         }
 
-        .accept-call-btn {
-            background: #22c55e;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .decline-call-btn {
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        /* -------------------------------------------------------------
-           NETWORK CALL MEDIA STREAMING WINDOW OVERLAYS
-        ------------------------------------------------------------- */
-        .network-call-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(10, 5, 5, 0.95);
-            z-index: 120000;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 30px;
-        }
-
-        .call-container-box {
-            background: var(--bg-surface);
-            border: 3px solid var(--neon-accent);
-            border-radius: 24px;
-            width: 100%;
-            max-width: 700px;
-            padding: 30px;
-            text-align: center;
-            box-shadow: 0 0 50px rgba(255, 8, 0, 0.3);
-        }
-
-        .media-streams-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .dummy-video-box {
-            aspect-ratio: 4/3;
-            background: #000;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            font-weight: bold;
-            font-size: 0.9rem;
-            border: 2px solid var(--border-color);
-        }
-
-        .call-controls-footer {
-            margin-top: 25px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        .hangup-btn {
-            padding: 12px 35px;
-            background: #ef4444;
-            color: white;
+        .chat-send-btn {
+            padding: 0 25px;
+            background: var(--neon-accent);
+            color: #fff;
             border: none;
             border-radius: 12px;
-            font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
+            font-size: 1rem;
         }
 
-        /* -------------------------------------------------------------
-           CINEMATIC ANIMATION OVERLAYS
-        ------------------------------------------------------------- */
-        .cinematic-portal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 9999;
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            perspective: 1000px;
-        }
-
-        .focus-clone {
-            position: absolute;
-            width: 210px;
-            height: 210px;
-            background-color: var(--bg-card);
-            border: 4px solid #ffffff;
-            border-radius: 28px;
-            overflow: hidden;
-            box-shadow: 0 0 60px rgba(255,255,255,0.4);
-            transition: top 0.7s var(--ultra-timing), left 0.7s var(--ultra-timing), transform 0.7s var(--ultra-timing), box-shadow 0.7s var(--ultra-timing);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .focus-clone.is-zoomed {
-            transform: scale(1.8) rotateZ(360deg);
-            box-shadow: 0 0 100px var(--neon-accent), 0 30px 80px rgba(0,0,0,0.8);
-        }
-
-        .focus-clone img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: blur(2px) brightness(0.6);
-        }
-
-        .portal-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 5, 5, 0.85);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255,255,255,0.1);
-            border-top: 4px solid var(--neon-accent);
-            border-radius: 50%;
-            animation: hyperSpin 0.6s linear infinite;
-            margin-bottom: 15px;
-        }
-
-        .loading-text {
-            color: var(--neon-accent);
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        @keyframes hyperSpin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    
-        /* Horror overlay */
+        /* Horror Overlay Layout */
         .horror-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:99999}
         .horror-box{width:420px;max-width:90%;background:var(--bg-surface);border:3px solid var(--neon-accent);border-radius:20px;padding:25px;text-align:center}
         #pinInput{width:100%;padding:15px;font-size:24px;text-align:center;margin:10px 0}
@@ -616,9 +511,7 @@
         #horrorGames{display:none;margin-top:20px}
         #horrorGames .game-grid{grid-template-columns:repeat(2,1fr)}
 
-        /* -------------------------------------------------------------
-           ACCOUNT SYSTEMS LAYOUT
-        ------------------------------------------------------------- */
+        /* Account Overlays System Layout */
         .auth-overlay {
             position: fixed;
             inset: 0;
@@ -726,7 +619,7 @@
             </div>
         </header>
 
-        <div class="container">
+         <div class="container">
             <h1 class="section-title">Popular Games</h1>
 
             <div class="search-container">
@@ -827,59 +720,27 @@
             </div>
         </div>
     </div>
-
-    <div class="utility-widget ai-assistant-wrapper">
-        <button class="widget-trigger" id="aiTrigger" title="AI Companion">🤖</button>
-        <div class="widget-panel ai-panel" id="aiPanel">
-            <div class="ai-header">
-                <span>JaxBot AI</span>
-                <span style="cursor:pointer;" onclick="toggleWidget('aiPanel')">✕</span>
-            </div>
-            <div class="ai-chat-body" id="aiChatBody">
-                <div class="chat-msg bot">Hey! Need any clean gaming tips, structural site info, or complex mathematical formulas analyzed today? Send an equation or text statement!</div>
-            </div>
-            <div class="ai-input-area">
-                <input type="text" id="aiInput" placeholder="Ask something or type math...">
-                <button id="aiSendBtn">Send</button>
-            </div>
-        </div>
-    </div>
-
             <div class="social-dashboard-section">
                 <div class="dashboard-tabs">
-                    <button class="dashboard-tab-btn active" id="dashFriendsTabHead" onclick="toggleDashboardTab('friends')">Friends</button>
-                    <button class="dashboard-tab-btn" id="dashInboxTabHead" onclick="toggleDashboardTab('inbox')">Inbox 🔔</button>
+                    <button class="dashboard-tab-btn active" id="dashFriendsTabHead" onclick="toggleDashboardTab('friends')">Network Friends</button>
+                    <button class="dashboard-tab-btn" id="dashChatTabHead" onclick="toggleDashboardTab('chat')">Live Local Chat 💬</button>
                 </div>
                 
                 <div class="dashboard-tab-content" id="dashFriendsPane">
-                    <div class="social-search-bar">
-                        <input type="text" id="addFriendUsernameInput" placeholder="Enter target username...">
-                        <button onclick="handleAddFriendSubmit()">+ Add Friend</button>
+                    <div class="friends-layout">
+                        <div class="social-search-bar">
+                            <input type="text" id="addFriendUsernameInput" placeholder="Enter target username to link...">
+                            <button onclick="handleAddFriendSubmit()">+ Add Friend</button>
+                        </div>
+                        <div class="friends-flex-list" id="dashboardFriendsRenderBox">
+                            </div>
                     </div>
-                    <div class="friends-flex-list" id="dashboardFriendsRenderBox">
-                        </div>
                 </div>
 
-                <div class="dashboard-tab-content" id="dashInboxPane" style="display:none;">
-                    <div id="dashboardInboxRenderBox">
+                <div class="dashboard-tab-content" id="dashChatPane" style="display:none;">
+                    <div class="chat-pane-layout" id="chatActiveWindowArea">
                         </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="network-call-overlay" id="liveCallOverlay">
-        <div class="call-container-box">
-            <h2 id="callWindowHeader">📞 Live Peer Connection</h2>
-            <p id="callSubDetails" style="color:var(--text-muted); margin-bottom:15px;">Connecting over local network configuration...</p>
-            
-            <div class="media-streams-grid" id="videoStreamsBox" style="display:none;">
-                <div class="dummy-video-box">Your Local Feed (Camera Active)</div>
-                <div class="dummy-video-box" id="remoteFeedBox">Friend's Video Feed</div>
-            </div>
-
-            <div class="call-controls-footer">
-                <button class="hangup-btn" onclick="terminateLiveCall()">End Call</button>
             </div>
         </div>
     </div>
@@ -940,6 +801,7 @@
         let activeUser = JSON.parse(localStorage.getItem('jax_loggedInUser')) || null;
         let registrationMode = false;
         let currentActiveTab = 'friends';
+        let targetedChatPartnerEmail = null; // Keeps track of active conversation scope
 
         function openAuthSystem() {
             if (activeUser) {
@@ -973,7 +835,7 @@
             if (!email || !pass) { alert("Please complete form credentials."); return; }
 
             let usersList = JSON.parse(localStorage.getItem('jax_registeredUsers')) || {};
-            const chosenSeconds = Math.floor(Math.random() * (6 - 3 + 1)) + 3;
+            const chosenSeconds = Math.floor(Math.random() * (5 - 2 + 1)) + 2;
             
             const loader = document.getElementById('authGatewayLoader');
             loader.style.display = 'flex';
@@ -1054,26 +916,15 @@
         }
 
         // -------------------------------------------------------------
-        // DYNAMIC CONTENT DASHBOARD TAB ARCHITECTURE & INBOX LOGIC
+        // DYNAMIC CONTENT DASHBOARD TAB ARCHITECTURE
         // -------------------------------------------------------------
         function toggleDashboardTab(tabName) {
             currentActiveTab = tabName;
             document.getElementById('dashFriendsTabHead').classList.toggle('active', tabName === 'friends');
-            document.getElementById('dashInboxTabHead').classList.toggle('active', tabName === 'inbox');
+            document.getElementById('dashChatTabHead').classList.toggle('active', tabName === 'chat');
             document.getElementById('dashFriendsPane').style.display = tabName === 'friends' ? 'block' : 'none';
-            document.getElementById('dashInboxPane').style.display = tabName === 'inbox' ? 'block' : 'none';
+            document.getElementById('dashChatPane').style.display = tabName === 'chat' ? 'block' : 'none';
             renderSocialSystemDashboard();
-        }
-
-        function dispatchNetworkInboxNotification(recipientEmail, messageString, activeCallPayload = null) {
-            let inboxKey = `jax_inbox_${recipientEmail}`;
-            let inboxData = JSON.parse(localStorage.getItem(inboxKey)) || [];
-            inboxData.unshift({
-                id: 'msg_' + Date.now() + Math.random().toString(36).substr(2, 4),
-                text: messageString,
-                payload: activeCallPayload
-            });
-            localStorage.setItem(inboxKey, JSON.stringify(inboxData));
         }
 
         function handleAddFriendSubmit() {
@@ -1100,25 +951,39 @@
             currentFriends.push({ email: targetUser.email, username: targetUser.username });
             localStorage.setItem(friendsKey, JSON.stringify(currentFriends));
 
-            dispatchNetworkInboxNotification(targetUser.email, `🤝 ${activeUser.username} added you to their friends list!`);
+            // Auto reciprocate listing for easy testing inside simulation environments
+            let targetFriendsKey = `jax_friends_${targetUser.email}`;
+            let targetFriends = JSON.parse(localStorage.getItem(targetFriendsKey)) || [];
+            if (!targetFriends.some(f => f.email === activeUser.email)) {
+                targetFriends.push({ email: activeUser.email, username: activeUser.username });
+                localStorage.setItem(targetFriendsKey, JSON.stringify(targetFriends));
+            }
+
             document.getElementById('addFriendUsernameInput').value = '';
             renderSocialSystemDashboard();
         }
 
+        function openDirectChatPane(friendEmail) {
+            targetedChatPartnerEmail = friendEmail;
+            toggleDashboardTab('chat');
+        }
+
         function renderSocialSystemDashboard() {
+            if (!activeUser) {
+                document.getElementById('dashboardFriendsRenderBox').innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:20px;">Please Sign In to track your friends list activity.</div>`;
+                document.getElementById('chatActiveWindowArea').innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:40px;">Please Sign In to access live chat systems.</div>`;
+                return;
+            }
+
             if (currentActiveTab === 'friends') {
                 const box = document.getElementById('dashboardFriendsRenderBox');
                 box.innerHTML = '';
-                if (!activeUser) {
-                    box.innerHTML = `<div style="text-align:center;color:var(--text-muted);">Please Sign In to track your friends list activity.</div>`;
-                    return;
-                }
 
                 let currentFriends = JSON.parse(localStorage.getItem(`jax_friends_${activeUser.email}`)) || [];
                 let registeredProfiles = JSON.parse(localStorage.getItem('jax_registeredUsers')) || {};
 
                 if (currentFriends.length === 0) {
-                    box.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:0.95rem;">Your friends directory is currently empty. Add users by name above!</div>`;
+                    box.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:0.95rem;padding:20px;">Your friends directory is empty. Add users by username above!</div>`;
                     return;
                 }
 
@@ -1129,150 +994,117 @@
                     card.innerHTML = `
                         <div class="friend-info-block">
                             <span class="friend-name-tag">👤 ${friend.username}</span>
-                            <span class="friend-status-activity">🎮 Playing: ${profile.currentStatus || 'Offline'}</span>
+                            <span class="friend-status-activity">🎮 Activity: ${profile.currentStatus || 'Offline'}</span>
                         </div>
-                        <div class="friend-call-actions">
-                            <button class="call-action-btn" onclick="initiateNetworkMediaCall('${friend.email}', 'Audio')">🎙️ Audio Call</button>
-                            <button class="call-action-btn" onclick="initiateNetworkMediaCall('${friend.email}', 'Video')">📹 Video Call</button>
+                        <div>
+                            <button class="chat-action-btn" onclick="openDirectChatPane('${friend.email}')">💬 Chat</button>
                         </div>
                     `;
                     box.appendChild(card);
                 });
             } else {
-                const box = document.getElementById('dashboardInboxRenderBox');
-                box.innerHTML = '';
-                if (!activeUser) {
-                    box.innerHTML = `<div style="text-align:center;color:var(--text-muted);">Please Sign In to manage your incoming messages.</div>`;
+                // RENDER ACTIVE CHAT INTERFACE WINDOW
+                const area = document.getElementById('chatActiveWindowArea');
+                if (!targetedChatPartnerEmail) {
+                    area.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:40px;">Select a contact from your Friends list tab to start chatting!</div>`;
                     return;
                 }
 
-                let notifications = JSON.parse(localStorage.getItem(`jax_inbox_${activeUser.email}`)) || [];
-                if (notifications.length === 0) {
-                    box.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:20px;">Your inbox is clear. 🔔</div>`;
-                    return;
-                }
+                let registeredProfiles = JSON.parse(localStorage.getItem('jax_registeredUsers')) || {};
+                let partnerProfile = registeredProfiles[targetedChatPartnerEmail] || { username: "User" };
 
-                notifications.forEach(item => {
-                    const row = document.createElement('div');
-                    row.className = 'inbox-item-row';
-                    
-                    let actionsLayout = `<button class="decline-call-btn" onclick="dismissNotificationRow('${item.id}')">Dismiss</button>`;
-                    if (item.payload) {
-                        actionsLayout = `
-                            <div class="inbox-action-bar-buttons">
-                                <button class="accept-call-btn" onclick="respondToCallPayload('${item.id}', true)">Accept</button>
-                                <button class="decline-call-btn" onclick="respondToCallPayload('${item.id}', false)">Decline</button>
-                            </div>
-                        `;
-                    }
+                area.innerHTML = `
+                    <div style="text-align:left; font-weight:bold; margin-bottom:10px; color:var(--neon-accent);">💬 Chatting with: ${partnerProfile.username}</div>
+                    <div class="chat-history-box" id="chatMsgLogsContainer"></div>
+                    <div class="chat-input-bar">
+                        <input type="text" id="chatMessagePayloadInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') dispatchDirectTextMessage()">
+                        <button class="chat-send-btn" onclick="dispatchDirectTextMessage()">Send</button>
+                    </div>
+                `;
 
-                    row.innerHTML = `
-                        <div class="inbox-msg-content">${item.text}</div>
-                        ${actionsLayout}
-                    `;
-                    box.appendChild(row);
-                });
+                renderMessageLogBubbles();
             }
-        }
-
-        function dismissNotificationRow(id) {
-            let inboxKey = `jax_inbox_${activeUser.email}`;
-            let data = JSON.parse(localStorage.getItem(inboxKey)) || [];
-            data = data.filter(i => i.id !== id);
-            localStorage.setItem(inboxKey, JSON.stringify(data));
-            renderSocialSystemDashboard();
         }
 
         // -------------------------------------------------------------
-        // WIFI / LOCAL BROADCAST P2P MEDIA SIGNALING EMULATION
+        // WI-FI BROADCAST STORAGE ROUTINES LOGIC
         // -------------------------------------------------------------
-        let openActiveCallSession = null;
+        function getGlobalChatConversationKey(userA, userB) {
+            // Generates a unique tracking token independent of who initiates the message line
+            return [userA, userB].sort().join("_msgKey_");
+        }
 
-        function initiateNetworkMediaCall(targetEmail, type) {
-            alert(`Sending ${type} Call invite request to peer device on current Wi-Fi...`);
-            let callSessionId = 'call_' + Date.now();
+        function dispatchDirectTextMessage() {
+            const input = document.getElementById('chatMessagePayloadInput');
+            const messageText = input.value.trim();
+            if (!messageText || !targetedChatPartnerEmail || !activeUser) return;
+
+            const conversationToken = getGlobalChatConversationKey(activeUser.email, targetedChatPartnerEmail);
+            let messageLog = JSON.parse(localStorage.getItem(`jax_chatlog_${conversationToken}`)) || [];
+
+            messageLog.push({
+                senderEmail: activeUser.email,
+                senderName: activeUser.username,
+                text: messageText,
+                timestamp: Date.now()
+            });
+
+            localStorage.setItem(`jax_chatlog_${conversationToken}`, JSON.stringify(messageLog));
+            input.value = '';
+            renderMessageLogBubbles();
+
+            // Trigger a dummy storage event so it updates other matching frames instantly
+            localStorage.setItem('jax_chat_sync_ping', Date.now());
+        }
+
+        function renderMessageLogBubbles() {
+            const container = document.getElementById('chatMsgLogsContainer');
+            if (!container || !targetedChatPartnerEmail || !activeUser) return;
+
+            const conversationToken = getGlobalChatConversationKey(activeUser.email, targetedChatPartnerEmail);
+            let messageLog = JSON.parse(localStorage.getItem(`jax_chatlog_${conversationToken}`)) || [];
+
+            container.innerHTML = '';
             
-            let callConfig = {
-                id: callSessionId,
-                host: activeUser.email,
-                hostName: activeUser.username,
-                peer: targetEmail,
-                callType: type,
-                status: "pending"
-            };
-
-            localStorage.setItem(`jax_session_${callSessionId}`, JSON.stringify(callConfig));
-            dispatchNetworkInboxNotification(targetEmail, `🚨 Incoming ${type} Call from ${activeUser.username} on your Local Network!`, callConfig);
-            
-            launchCallUIWindow(type, `Calling ${targetEmail}...`);
-            openActiveCallSession = callConfig;
-
-            let callPollingCheck = setInterval(() => {
-                let check = JSON.parse(localStorage.getItem(`jax_session_${callSessionId}`));
-                if (check && check.status === "accepted") {
-                    clearInterval(callPollingCheck);
-                    document.getElementById('callSubDetails').innerText = `Connected with peer over local architecture loop.`;
-                    if (check.callType === 'Video') {
-                        document.getElementById('videoStreamsBox').style.display = 'grid';
-                    }
-                } else if (!check || check.status === "declined" || check.status === "ended") {
-                    clearInterval(callPollingCheck);
-                    terminateLiveCall();
-                    alert("Call invitation was rejected or disconnected.");
-                }
-            }, 1000);
-        }
-
-        function respondToCallPayload(notificationId, accept) {
-            let inboxKey = `jax_inbox_${activeUser.email}`;
-            let data = JSON.parse(localStorage.getItem(inboxKey)) || [];
-            let currentItem = data.find(i => i.id === notificationId);
-            if (!currentItem || !currentItem.payload) return;
-
-            let sessionKey = `jax_session_${currentItem.payload.id}`;
-            let session = JSON.parse(localStorage.getItem(sessionKey));
-
-            if (session) {
-                if (accept) {
-                    session.status = "accepted";
-                    localStorage.setItem(sessionKey, JSON.stringify(session));
-                    openActiveCallSession = session;
-                    launchCallUIWindow(session.callType, `Connected in conversation with ${session.hostName}`);
-                    if (session.callType === 'Video') {
-                        document.getElementById('videoStreamsBox').style.display = 'grid';
-                    }
-                } else {
-                    session.status = "declined";
-                    localStorage.setItem(sessionKey, JSON.stringify(session));
-                }
+            if(messageLog.length === 0) {
+                container.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:0.85rem;margin:auto 0;">No messages yet. Say hello! 👋</div>`;
+                return;
             }
-            data = data.filter(i => i.id !== notificationId);
-            localStorage.setItem(inboxKey, JSON.stringify(data));
-            renderSocialSystemDashboard();
+
+            messageLog.forEach(msg => {
+                const bubble = document.createElement('div');
+                const isOutgoing = msg.senderEmail === activeUser.email;
+                bubble.className = `chat-message-bubble ${isOutgoing ? 'outgoing' : 'incoming'}`;
+                
+                bubble.innerHTML = `
+                    <span class="chat-meta-header">${isOutgoing ? 'You' : msg.senderName}</span>
+                    <div>${escapeHtmlContent(msg.text)}</div>
+                `;
+                container.appendChild(bubble);
+            });
+
+            container.scrollTop = container.scrollHeight;
         }
 
-        function launchCallUIWindow(type, statusText) {
-            document.getElementById('callWindowHeader').innerText = `📞 Live Local ${type} Call`;
-            document.getElementById('callSubDetails').innerText = statusText;
-            document.getElementById('videoStreamsBox').style.display = 'none';
-            document.getElementById('liveCallOverlay').style.display = 'flex';
+        function escapeHtmlContent(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
 
-        function terminateLiveCall() {
-            document.getElementById('liveCallOverlay').style.display = 'none';
-            if (openActiveCallSession) {
-                let sessionKey = `jax_session_${openActiveCallSession.id}`;
-                let session = JSON.parse(localStorage.getItem(sessionKey));
-                if (session) {
-                    session.status = "ended";
-                    localStorage.setItem(sessionKey, JSON.stringify(session));
-                }
-                openActiveCallSession = null;
+        // Catch incoming events broadcasted from alternate tabs on the same local network
+        window.addEventListener('storage', (e) => {
+            if (currentActiveTab === 'chat' && (e.key === 'jax_chat_sync_ping' || e.key.startsWith('jax_chatlog_'))) {
+                renderMessageLogBubbles();
             }
-        }
+            if (e.key === 'jax_registeredUsers') {
+                renderSocialSystemDashboard();
+            }
+        });
 
+        // Periodic background poll updates for statuses 
         setInterval(() => {
-            renderSocialSystemDashboard();
+            if (activeUser && currentActiveTab === 'friends') {
+                renderSocialSystemDashboard();
+            }
         }, 3000);
 
         // -------------------------------------------------------------
