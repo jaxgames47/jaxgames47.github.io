@@ -3,82 +3,1423 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Portal</title>
+    <title>Jax Games | Next-Gen</title>
     <style>
-        /* --- Keeping Your Original Styles & Colors Exactly --- */
+        /* -------------------------------------------------------------
+           DYNAMIC THEMES & DESIGN SYSTEM CONSTANTS
+        ------------------------------------------------------------- */
+        :root {
+            /* Default: Crimson Neo */
+            --bg-main: #140504;
+            --bg-surface: #220a08;
+            --bg-card: #2e0e0b;
+            --neon-accent: #FF0800;
+            --text-main: #ffebee;
+            --text-muted: rgba(255, 235, 238, 0.6);
+            --border-color: #540400;
+            --ultra-timing: cubic-bezier(0.25, 1, 0.3, 1);
+        }
+
+        [data-theme="midnight"] {
+            --bg-main: #0B0F19;
+            --bg-surface: #111827;
+            --bg-card: #1F2937;
+            --neon-accent: #3B82F6;
+            --text-main: #F3F4F6;
+            --text-muted: rgba(243, 244, 246, 0.6);
+            --border-color: #1E3A8A;
+        }
+
+        [data-theme="cyber"] {
+            --bg-main: #0A0A0C;
+            --bg-surface: #121216;
+            --bg-card: #1A1A22;
+            --neon-accent: #00FFCC;
+            --text-main: #E2E8F0;
+            --text-muted: rgba(226, 232, 240, 0.6);
+            --border-color: #004D40;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background: radial-gradient(circle, #1a1a2e, #0f0f1b);
-            color: #fff;
+            background-color: var(--bg-main);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 40px 20px;
+            perspective: 1200px;
+            transition: background-color 0.5s ease, color 0.5s ease;
         }
 
-        /* --- Your 3 Sections Layout at the Top --- */
-        .sections-wrapper {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
+        .page-wrapper {
+            transition: transform 0.8s var(--ultra-timing), filter 0.8s var(--ultra-timing);
+            will-change: transform, filter;
             width: 100%;
-            max-width: 1200px;
-            margin-bottom: 40px;
+            min-height: 100vh;
+            transform-style: preserve-3d;
         }
 
-        .nav-section {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 25px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        body.is-cinematic-loading .page-wrapper {
+            filter: blur(15px) brightness(0.3);
+            transform: scale(0.92) translateZ(-100px);
+            pointer-events: none;
+        }
+
+        /* -------------------------------------------------------------
+           HEADER, NAVIGATION & CONTROLS
+        ------------------------------------------------------------- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            user-select: none;
             transition: transform 0.3s ease;
         }
-
-        .nav-section:hover {
-            transform: translateY(-5px);
+        .logo:hover {
+            transform: skewX(-5deg) scale(1.03);
         }
 
-        .nav-section h2 {
-            font-size: 1.4rem;
-            margin-bottom: 15px;
-            letter-spacing: 1px;
-            color: #00ffcc;
+        .jax { color: #ffffff; }
+        .games-cyan { 
+            color: var(--neon-accent); 
+            text-shadow: 0 0 20px var(--neon-accent);
         }
 
-        /* Your main section interaction buttons */
-        .action-btn {
-            background: linear-gradient(135deg, #00ffcc, #00b3ff);
-            border: none;
-            color: #0f0f1b;
-            padding: 12px 24px;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 8px;
+        .controls-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .theme-select {
+            background: var(--bg-surface);
+            color: var(--text-main);
+            border: 2px solid var(--border-color);
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-weight: 600;
             cursor: pointer;
-            width: 100%;
-            transition: all 0.2s ease;
+            outline: none;
+            transition: all 0.3s ease;
         }
 
-        .action-btn:hover {
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.6);
+        .theme-select:focus {
+            border-color: var(--neon-accent);
+            box-shadow: 0 0 15px var(--neon-accent);
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 40px 50px 40px;
+            text-align: center;
+        }
+
+        h1.section-title {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
+            color: #ffffff;
+        }
+        
+        h1.section-title::after {
+            content: '';
+            position: absolute;
+            left: 10%;
+            bottom: -15px;
+            width: 80%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--neon-accent), transparent);
+            box-shadow: 0 0 10px var(--neon-accent);
+        }
+
+        /* -------------------------------------------------------------
+           SEARCH INTERFACE
+        ------------------------------------------------------------- */
+        .search-container {
+            margin-bottom: 60px;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            border: 3px solid var(--border-color);
+            background-color: var(--bg-surface);
+            color: #ffffff;
+            outline: none;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: all 0.4s var(--ultra-timing);
+        }
+
+        .search-bar::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-bar:focus {
+            border-color: var(--neon-accent);
+            box-shadow: 0 0 25px var(--neon-accent), 0 10px 20px rgba(0,0,0,0.4);
             transform: scale(1.02);
         }
 
-        /* Special style for horror button to fit context */
-        .horror-trigger-btn {
-            background: linear-gradient(135deg, #ff3333, #990000);
+        /* -------------------------------------------------------------
+           CLEAN FLUID GRID ARCHITECTURE & FAVORITES SYSTEM
+        ------------------------------------------------------------- */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 30px;
+            justify-items: center;
+            transform-style: preserve-3d;
+        }
+
+        .game-link {
+            text-decoration: none;
+            display: block;
+            outline: none;
+            perspective: 1000px;
+            width: 100%;
+            max-width: 220px;
+            position: relative;
+        }
+
+        .game-button {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background-color: var(--bg-card);
+            border: 3px solid var(--border-color);
+            border-radius: 24px;
+            overflow: hidden;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            transform-style: preserve-3d;
+            transform: translateZ(0);
+            transition: transform 0.5s var(--ultra-timing), border-color 0.5s var(--ultra-timing), box-shadow 0.5s var(--ultra-timing);
+            will-change: transform, box-shadow, border-color;
+        }
+
+        .game-button img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: translateZ(0) scale(1.01);
+            transition: transform 0.6s var(--ultra-timing);
+        }
+
+        .favorite-heart-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.65);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #ccc;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s ease;
+        }
+        .favorite-heart-btn:hover {
+            transform: scale(1.15);
+            border-color: #ff3366;
+            color: #ff3366;
+        }
+        .favorite-heart-btn.is-active {
+            color: #ff3366;
+            border-color: #ff3366;
+            background: rgba(0, 0, 0, 0.85);
+            text-shadow: 0 0 8px #ff3366;
+        }
+
+        .game-link:hover .game-button {
+            border-color: var(--neon-accent);
+            transform: translateY(-10px) rotateX(10deg) rotateY(-5deg) translateZ(20px);
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.6), 0 0 25px var(--neon-accent);
+        }
+
+        .game-link:hover .game-button img {
+            transform: translateZ(15px) scale(1.1);
+        }
+
+        .game-link.is-hidden {
+            display: none !important;
+        }
+
+        /* -------------------------------------------------------------
+           INTEGRATED SOCIAL AND DASHBOARD PANEL DUAL LAYOUT SECTION
+        ------------------------------------------------------------- */
+        .social-dashboard-section {
+            max-width: 1000px;
+            margin: 60px auto 0 auto;
+            background: var(--bg-surface);
+            border: 3px solid var(--border-color);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+
+        .dashboard-tabs {
+            display: flex;
+            background: var(--bg-card);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .dashboard-tab-btn {
+            flex: 1;
+            padding: 18px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-tab-btn.active {
+            color: var(--neon-accent);
+            background: var(--bg-surface);
+            box-shadow: inset 0 -4px 0 var(--neon-accent);
+        }
+
+        .dashboard-tab-content {
+            padding: 30px;
+            min-height: 300px;
+        }
+
+        .social-search-bar {
+            display: flex;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto 25px auto;
+        }
+
+        .social-search-bar input {
+            flex: 1;
+            padding: 12px 20px;
+            background: var(--bg-main);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
             color: #fff;
+            outline: none;
+            font-size: 1rem;
         }
-        .horror-trigger-btn:hover {
-            box-shadow: 0 0 15px rgba(255, 51, 51, 0.6);
+
+        .social-search-bar input:focus {
+            border-color: var(--neon-accent);
         }
+
+        .social-search-bar button {
+            padding: 12px 25px;
+            background: var(--neon-accent);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .social-search-bar button:hover {
+            opacity: 0.9;
+        }
+
+        .friends-flex-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            text-align: left;
+        }
+
+        .friend-dashboard-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .friend-info-block {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .friend-name-tag {
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .friend-status-activity {
+            font-size: 0.9rem;
+            color: var(--neon-accent);
+            font-weight: 600;
+        }
+
+        .friend-call-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .call-action-btn {
+            padding: 10px 18px;
+            background: var(--bg-main);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .call-action-btn:hover {
+            border-color: var(--neon-accent);
+            background: rgba(255, 8, 0, 0.1);
+        }
+
+        .inbox-item-row {
+            background: var(--bg-card);
+            border-left: 5px solid var(--neon-accent);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+        }
+
+        .inbox-msg-content {
+            font-size: 1rem;
+        }
+
+        .inbox-action-bar-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .accept-call-btn {
+            background: #22c55e;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .decline-call-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* -------------------------------------------------------------
+           NETWORK CALL MEDIA STREAMING WINDOW OVERLAYS
+        ------------------------------------------------------------- */
+        .network-call-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 5, 5, 0.95);
+            z-index: 120000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        .call-container-box {
+            background: var(--bg-surface);
+            border: 3px solid var(--neon-accent);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 700px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(255, 8, 0, 0.3);
+        }
+
+        .media-streams-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .dummy-video-box {
+            aspect-ratio: 4/3;
+            background: #000;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-weight: bold;
+            font-size: 0.9rem;
+            border: 2px solid var(--border-color);
+        }
+
+        .call-controls-footer {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .hangup-btn {
+            padding: 12px 35px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* -------------------------------------------------------------
+           CINEMATIC ANIMATION OVERLAYS
+        ------------------------------------------------------------- */
+        .cinematic-portal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+        }
+
+        .focus-clone {
+            position: absolute;
+            width: 210px;
+            height: 210px;
+            background-color: var(--bg-card);
+            border: 4px solid #ffffff;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 0 60px rgba(255,255,255,0.4);
+            transition: top 0.7s var(--ultra-timing), left 0.7s var(--ultra-timing), transform 0.7s var(--ultra-timing), box-shadow 0.7s var(--ultra-timing);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .focus-clone.is-zoomed {
+            transform: scale(1.8) rotateZ(360deg);
+            box-shadow: 0 0 100px var(--neon-accent), 0 30px 80px rgba(0,0,0,0.8);
+        }
+
+        .focus-clone img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(2px) brightness(0.6);
+        }
+
+        .portal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 5, 5, 0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid var(--neon-accent);
+            border-radius: 50%;
+            animation: hyperSpin 0.6s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        .loading-text {
+            color: var(--neon-accent);
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        @keyframes hyperSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    
+        /* Horror overlay */
+        .horror-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:99999}
+        .horror-box{width:420px;max-width:90%;background:var(--bg-surface);border:3px solid var(--neon-accent);border-radius:20px;padding:25px;text-align:center}
+        #pinInput{width:100%;padding:15px;font-size:24px;text-align:center;margin:10px 0}
+        .pinpad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+        .pinpad button{padding:15px}
+        #horrorGames{display:none;margin-top:20px}
+        #horrorGames .game-grid{grid-template-columns:repeat(2,1fr)}
+
+        /* -------------------------------------------------------------
+           ACCOUNT SYSTEMS LAYOUT
+        ------------------------------------------------------------- */
+        .auth-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 99998;
+        }
+        .auth-modal-box {
+            width: 380px;
+            background: var(--bg-surface);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        .auth-modal-box h3 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+        .auth-modal-box input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: #fff;
+            outline: none;
+        }
+        .auth-modal-box input:focus {
+            border-color: var(--neon-accent);
+        }
+        .auth-action-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--neon-accent);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        .auth-switch-link {
+            font-size: 0.85rem;
+            margin-top: 15px;
+            color: var(--text-muted);
+        }
+        .auth-switch-link span {
+            color: var(--neon-accent);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        .name-setup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 5, 5, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100000;
+        }
+
+        .auth-gateway-loading-screen {
+            position: absolute;
+            inset: 0;
+            background: var(--bg-surface);
+            border-radius: 20px;
+            z-index: 50;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .gateway-timer-display {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-wrapper">
+        <header>
+            <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+                <div class="logo"><span class="jax">JAX</span> <span class="games-cyan">GAMES</span></div>
+                <button id="horrorBtn" class="theme-select">Horror Games 🔒</button>
+                <button id="authHeaderBtn" class="theme-select" onclick="openAuthSystem()">Sign In 👤</button>
+            </div>
+            <div class="controls-group">
+                <select id="themeSelect" class="theme-select" aria-label="Switch Design Theme">
+                    <option value="crimson">Crimson Neo</option>
+                    <option value="midnight">Midnight Dark</option>
+                    <option value="cyber">Cyber Shadow</option>
+                </select>
+            </div>
+        </header>
+
+        <div class="container">
+            <h1 class="section-title">All Games</h1>
+
+            <div class="search-container">
+                <input type="text" id="gameSearch" class="search-bar" placeholder="Search for a game...">
+            </div>
+
+            <div class="game-grid" id="mainGameGrid">
+                <a href="https://jaxgames47.github.io/gtag/" class="game-link" data-title="gorilla tag gtag" id="game-gtag">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-gtag')">♥</button>
+                    <div class="game-button"><img src="gtag.jpeg" alt="Gorilla Tag"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/blockblast/" class="game-link" data-title="block blast" id="game-blockblast">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-blockblast')">♥</button>
+                    <div class="game-button"><img src="blockblast.png" alt="Block Blast"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/minecraftpocket/" class="game-link" data-title="minecraft pocket edition pe mc" id="game-mcpe">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-mcpe')">♥</button>
+                    <div class="game-button"><img src="pocketminecraft.png" alt="Minecraft Pocket Edition"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/1v1.lol/" class="game-link" data-title="1v1.lol one v one shooter" id="game-1v1lol">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-1v1lol')">♥</button>
+                    <div class="game-button"><img src="6764d93be2b78_lol.onevone.png" alt="1v1.lol"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/adgac/" class="game-link" data-title="adgac" id="game-adgac">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-adgac')">♥</button>
+                    <div class="game-button"><img src="672.png" alt="ADGAC"></div>
+                </a>
+
+                <a href="https://jaxgames47.github.io/cookieclicker/" class="game-link" data-title="cookie clicker idle tycoon" id="game-cookie">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-cookie')">♥</button>
+                    <div class="game-button"><img src="cookiegames.png" alt="Cookie Clicker"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/candy-crush/" class="game-link" data-title="candy crush match 3" id="game-candy">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-candy')">♥</button>
+                    <div class="game-button"><img src="171.png" alt="Candy Crush"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/camoflaugeandsniper/" class="game-link" data-title="camoflauge and sniper shooter shooting" id="game-sniper">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-sniper')">♥</button>
+                    <div class="game-button"><img src="378.png" alt="Camoflauge and Sniper"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/makeoverrun/" class="game-link" data-title="makeover run arcade" id="game-makeover">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-makeover')">♥</button>
+                    <div class="game-button"><img src="398.png" alt="Makeover Run"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/redball4/" class="game-link" data-title="red ball 4 platformer" id="game-redball">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-redball')">♥</button>
+                    <div class="game-button"><img src="242.png" alt="Red Ball 4"></div>
+                </a>
+
+                <a href="https://jaxgames47.github.io/animalcrossing/" class="game-link" data-title="animal crossing life simulation" id="game-animalcrossing">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-animalcrossing')">♥</button>
+                    <div class="game-button"><img src="animalcrossing.png" alt="Animal Crossing"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/grenade-hit/" class="game-link" data-title="grenade hit action" id="game-grenadehit">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-grenadehit')">♥</button>
+                    <div class="game-button"><img src="grenadehit.png" alt="Grenade Hit"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/angry-tiger/" class="game-link" data-title="angry tiger simulator arcade" id="game-angrytiger">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-angrytiger')">♥</button>
+                    <div class="game-button"><img src="angrytiger.png" alt="Angry Tiger"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/aquapark.io/" class="game-link" data-title="aquapark io water slide racing" id="game-aquapark">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-aquapark')">♥</button>
+                    <div class="game-button"><img src="aquapark.io.png" alt="Aquapark.io"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/retro-bowl/" class="game-link" data-title="retro bowl football sports" id="game-retrobowl">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-retrobowl')">♥</button>
+                    <div class="game-button"><img src="retrobowl.png" alt="Retro Bowl"></div>
+                </a>
+
+                <a href="https://jaxgames47.github.io/worldcup/" class="game-link" data-title="world cup soccer football sports" id="game-worldcup">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-worldcup')">♥</button>
+                    <div class="game-button"><img src="worldcup.png" alt="World Cup"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/cheese-rolling/" class="game-link" data-title="cheese rolling funny physics" id="game-cheeserolling">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-cheeserolling')">♥</button>
+                    <div class="game-button"><img src="cheeserolling.png" alt="Cheese Rolling"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/geometrydash/" class="game-link" data-title="geometry dash gd rhythm platformer" id="game-geometrydash">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-geometrydash')">♥</button>
+                    <div class="game-button"><img src="geometrydash.png" alt="Geometry Dash"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/slope/" class="game-link" data-title="slope ball endless runner neon" id="game-slope">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-slope')">♥</button>
+                    <div class="game-button"><img src="slope.png" alt="Slope"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/subwaysurfers/" class="game-link" data-title="subway surfers endless runner" id="game-subwaysurfers">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-subwaysurfers')">♥</button>
+                    <div class="game-button"><img src="subwaysurfers.png" alt="Subway Surfers"></div>
+                </a>
+
+                <a href="https://jaxgames47.github.io/ear-doctor/" class="game-link" data-title="ear doctor medical simulation" id="game-eardoctor">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-eardoctor')">♥</button>
+                    <div class="game-button"><img src="eardoctor.png" alt="Ear Doctor"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/wobbly-life/" class="game-link" data-title="wobbly life funny sandbox" id="game-wobblylife">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-wobblylife')">♥</button>
+                    <div class="game-button"><img src="wobblylife.png" alt="Wobbly Life"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/run3/" class="game-link" data-title="run 3 space endless runner" id="game-run3">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-run3')">♥</button>
+                    <div class="game-button"><img src="run3.png" alt="Run 3"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/among-us/" class="game-link" data-title="among us space multiplayer deduction" id="game-amongus">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-amongus')">♥</button>
+                    <div class="game-button"><img src="amongus.png" alt="Among Us"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/drive-mad/" class="game-link" data-title="drive mad racing monster truck physics" id="game-drivemad">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-drivemad')">♥</button>
+                    <div class="game-button"><img src="drivemad.png" alt="Drive Mad"></div>
+                </a>
+
+                <a href="https://jaxgames47.github.io/geometrydashlite/" class="game-link" data-title="geometry dash lite gd rhythm platformer" id="game-geometrydashlite">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-geometrydashlite')">♥</button>
+                    <div class="game-button"><img src="geometrydashlite.png" alt="Geometry Dash Lite"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/meme-soundboard/" class="game-link" data-title="meme soundboard funny audio button" id="game-memesoundboard">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-memesoundboard')">♥</button>
+                    <div class="game-button"><img src="memesoundboard.png" alt="Meme Soundboard"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/stumble-guys/" class="game-link" data-title="stumble guys multiplayer battle royale knockout" id="game-stumbleguys">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-stumbleguys')">♥</button>
+                    <div class="game-button"><img src="stumbleguys.png" alt="Stumble Guys"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/tag/" class="game-link" data-title="tag chasing local multiplayer" id="game-tag">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-tag')">♥</button>
+                    <div class="game-button"><img src="tag.png" alt="Tag"></div>
+                </a>
+                <a href="https://jaxgames47.github.io/bitlife/" class="game-link" data-title="bitlife text life simulation tycoon" id="game-bitlife">
+                    <button class="favorite-heart-btn" onclick="toggleFavoriteGame(event, 'game-bitlife')">♥</button>
+                    <div class="game-button"><img src="bitlife.png" alt="BitLife"></div>
+                </a>
+            </div>
+
+            <div class="social-dashboard-section">
+                <div class="dashboard-tabs">
+                    <button class="dashboard-tab-btn active" id="dashFriendsTabHead" onclick="toggleDashboardTab('friends')">Friends</button>
+                    <button class="dashboard-tab-btn" id="dashInboxTabHead" onclick="toggleDashboardTab('inbox')">Inbox 🔔</button>
+                </div>
+                
+                <div class="dashboard-tab-content" id="dashFriendsPane">
+                    <div class="social-search-bar">
+                        <input type="text" id="addFriendUsernameInput" placeholder="Enter target username...">
+                        <button onclick="handleAddFriendSubmit()">+ Add Friend</button>
+                    </div>
+                    <div class="friends-flex-list" id="dashboardFriendsRenderBox">
+                        </div>
+                </div>
+
+                <div class="dashboard-tab-content" id="dashInboxPane" style="display:none;">
+                    <div id="dashboardInboxRenderBox">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="network-call-overlay" id="liveCallOverlay">
+        <div class="call-container-box">
+            <h2 id="callWindowHeader">📞 Live Peer Connection</h2>
+            <p id="callSubDetails" style="color:var(--text-muted); margin-bottom:15px;">Connecting over local network configuration...</p>
+            
+            <div class="media-streams-grid" id="videoStreamsBox" style="display:none;">
+                <div class="dummy-video-box">Your Local Feed (Camera Active)</div>
+                <div class="dummy-video-box" id="remoteFeedBox">Friend's Video Feed</div>
+            </div>
+
+            <div class="call-controls-footer">
+                <button class="hangup-btn" onclick="terminateLiveCall()">End Call</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="cinematic-portal" id="cinematicPortal"></div>
+
+    <div class="horror-overlay" id="horrorOverlay">
+        <div class="horror-box">
+            <div id="pinSection">
+                <h2>🔒 Horror Games</h2>
+                <input id="pinInput" type="password" readonly>
+                <div class="pinpad">
+                    <button onclick="pinPress('1')">1</button><button onclick="pinPress('2')">2</button><button onclick="pinPress('3')">3</button>
+                    <button onclick="pinPress('4')">4</button><button onclick="pinPress('5')">5</button><button onclick="pinPress('6')">6</button>
+                    <button onclick="pinPress('7')">7</button><button onclick="pinPress('8')">8</button><button onclick="pinPress('9')">9</button>
+                    <button onclick="clearPin()">C</button><button onclick="pinPress('0')">0</button><button onclick="closeHorror()">✕</button>
+                </div>
+            </div>
+            <div id="horrorGames">
+                <h2>Horror Games</h2>
+                <div class="game-grid">
+                    <a href="https://jaxgames47.github.io/granny/" class="game-link"><div class="game-button"><img src="Granny.png"></div></a>
+                    <a href="https://jaxgames47.github.io/thebackrooms/" class="game-link"><div class="game-button"><img src="backrooms.png"></div></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-overlay" id="authOverlay">
+        <div class="auth-modal-box" id="loginFormWindow">
+            <div class="auth-gateway-loading-screen" id="authGatewayLoader">
+                <div class="spinner"></div>
+                <div class="loading-text" id="gatewayStatusMessage">Verifying Identity...</div>
+                <div class="gateway-timer-display" id="gatewayTimer">Remaining: --s</div>
+            </div>
+            <div style="text-align: right; margin-bottom: 5px;"><span style="cursor:pointer;" onclick="closeAuthSystem()">✕</span></div>
+            <h3 id="authTitle">Sign In</h3>
+            <input type="email" id="authEmail" placeholder="Email Address">
+            <input type="password" id="authPassword" placeholder="Password">
+            <button class="auth-action-btn" id="authSubmitBtn" onclick="submitAuthData()">Submit</button>
+            <div class="auth-switch-link" id="authSwitchFooter">Don't have an account? <span onclick="toggleAuthMode(true)">Create Account</span></div>
+        </div>
+    </div>
+
+    <div class="name-setup-overlay" id="nameSetupOverlay">
+        <div class="auth-modal-box">
+            <h3>Choose a Display Name</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">This name allows other members to find you.</p>
+            <input type="text" id="displayUniqueNameInput" placeholder="Username / Display Name...">
+            <button class="auth-action-btn" onclick="saveChosenDisplayName()">Confirm Username</button>
+        </div>
+    </div>
+
+<script>
+        // -------------------------------------------------------------
+        // STATE CORE & ACCOUNT FRAMEWORK CONFIGURATION
+        // -------------------------------------------------------------
+        let activeUser = JSON.parse(localStorage.getItem('jax_loggedInUser')) || null;
+        let registrationMode = false;
+        let currentActiveTab = 'friends';
+
+        function openAuthSystem() {
+            if (activeUser) {
+                updateActiveUserGameStatus("Offline");
+                localStorage.removeItem('jax_loggedInUser');
+                activeUser = null;
+                alert("Logged out successfully!");
+                refreshAccountStatusUI();
+                renderSocialSystemDashboard();
+                return;
+            }
+            toggleAuthMode(false);
+            document.getElementById('authOverlay').style.display = 'flex';
+        }
+
+        function closeAuthSystem() {
+            document.getElementById('authOverlay').style.display = 'none';
+        }
+
+        function toggleAuthMode(isSignUp) {
+            registrationMode = isSignUp;
+            document.getElementById('authTitle').innerText = isSignUp ? "Create Account" : "Sign In";
+            document.getElementById('authSwitchFooter').innerHTML = isSignUp ? 
+                `Already registered? <span onclick="toggleAuthMode(false)">Sign In</span>` : 
+                `Don't have an account? <span onclick="toggleAuthMode(true)">Create Account</span>`;
+        }
+
+        function submitAuthData() {
+            const email = document.getElementById('authEmail').value.trim();
+            const pass = document.getElementById('authPassword').value;
+            if (!email || !pass) { alert("Please complete form credentials."); return; }
+
+            let usersList = JSON.parse(localStorage.getItem('jax_registeredUsers')) || {};
+            const chosenSeconds = Math.floor(Math.random() * (6 - 3 + 1)) + 3;
+            
+            const loader = document.getElementById('authGatewayLoader');
+            loader.style.display = 'flex';
+            
+            setTimeout(() => {
+                if (registrationMode) {
+                    if (usersList[email]) { loader.style.display = 'none'; alert("Email already exists."); return; }
+                    usersList[email] = { email: email, password: pass, username: "", currentStatus: "Browsing Hub" };
+                    localStorage.setItem('jax_registeredUsers', JSON.stringify(usersList));
+                    activeUser = usersList[email];
+                    localStorage.setItem('jax_loggedInUser', JSON.stringify(activeUser));
+                    closeAuthSystem();
+                    checkUsernameLockState();
+                } else {
+                    if (usersList[email] && usersList[email].password === pass) {
+                        activeUser = usersList[email];
+                        activeUser.currentStatus = "Browsing Hub";
+                        usersList[email].currentStatus = "Browsing Hub";
+                        localStorage.setItem('jax_registeredUsers', JSON.stringify(usersList));
+                        localStorage.setItem('jax_loggedInUser', JSON.stringify(activeUser));
+                        closeAuthSystem();
+                        checkUsernameLockState();
+                    } else {
+                        loader.style.display = 'none';
+                        alert("Invalid credentials.");
+                    }
+                }
+                loader.style.display = 'none';
+                refreshAccountStatusUI();
+            }, chosenSeconds * 1000);
+        }
+
+        function checkUsernameLockState() {
+            if (activeUser && !activeUser.username) {
+                document.getElementById('nameSetupOverlay').style.display = 'flex';
+            } else {
+                document.getElementById('nameSetupOverlay').style.display = 'none';
+            }
+            renderSocialSystemDashboard();
+        }
+
+        function saveChosenDisplayName() {
+            const chosenName = document.getElementById('displayUniqueNameInput').value.trim();
+            if (!chosenName || chosenName.length < 3) { alert("Username must be 3+ characters."); return; }
+
+            let usersList = JSON.parse(localStorage.getItem('jax_registeredUsers')) || {};
+            for (let userKey in usersList) {
+                if (usersList[userKey].username && usersList[userKey].username.toLowerCase() === chosenName.toLowerCase()) {
+                    alert("Username already taken!");
+                    return;
+                }
+            }
+
+            activeUser.username = chosenName;
+            usersList[activeUser.email] = activeUser;
+            localStorage.setItem('jax_registeredUsers', JSON.stringify(usersList));
+            localStorage.setItem('jax_loggedInUser', JSON.stringify(activeUser));
+            
+            document.getElementById('nameSetupOverlay').style.display = 'none';
+            refreshAccountStatusUI();
+            renderSocialSystemDashboard();
+        }
+
+        function refreshAccountStatusUI() {
+            const btn = document.getElementById('authHeaderBtn');
+            btn.innerText = activeUser ? `Logout (${activeUser.username || "Pending"}) 👤` : "Sign In 👤";
+        }
+
+        function updateActiveUserGameStatus(statusText) {
+            if (!activeUser) return;
+            let usersList = JSON.parse(localStorage.getItem('jax_registeredUsers')) || {};
+            if (usersList[activeUser.email]) {
+                usersList[activeUser.email].currentStatus = statusText;
+                localStorage.setItem('jax_registeredUsers', JSON.stringify(usersList));
+            }
+            activeUser.currentStatus = statusText;
+            localStorage.setItem('jax_loggedInUser', JSON.stringify(activeUser));
+        }
+
+        // -------------------------------------------------------------
+        // DYNAMIC CONTENT DASHBOARD TAB ARCHITECTURE & INBOX LOGIC
+        // -------------------------------------------------------------
+        function toggleDashboardTab(tabName) {
+            currentActiveTab = tabName;
+            document.getElementById('dashFriendsTabHead').classList.toggle('active', tabName === 'friends');
+            document.getElementById('dashInboxTabHead').classList.toggle('active', tabName === 'inbox');
+            document.getElementById('dashFriendsPane').style.display = tabName === 'friends' ? 'block' : 'none';
+            document.getElementById('dashInboxPane').style.display = tabName === 'inbox' ? 'block' : 'none';
+            renderSocialSystemDashboard();
+        }
+
+        function dispatchNetworkInboxNotification(recipientEmail, messageString, activeCallPayload = null) {
+            let inboxKey = `jax_inbox_${recipientEmail}`;
+            let inboxData = JSON.parse(localStorage.getItem(inboxKey)) || [];
+            inboxData.unshift({
+                id: 'msg_' + Date.now() + Math.random().toString(36).substr(2, 4),
+                text: messageString,
+                payload: activeCallPayload
+            });
+            localStorage.setItem(inboxKey, JSON.stringify(inboxData));
+        }
+
+        function handleAddFriendSubmit() {
+            if (!activeUser) { alert("Please log in to manage your network directory."); return; }
+            const nameVal = document.getElementById('addFriendUsernameInput').value.trim();
+            if (!nameVal) return;
+
+            let usersList = JSON.parse(localStorage.getItem('jax_registeredUsers')) || {};
+            let targetUser = null;
+            for (let e in usersList) {
+                if (usersList[e].username && usersList[e].username.toLowerCase() === nameVal.toLowerCase()) {
+                    targetUser = usersList[e];
+                    break;
+                }
+            }
+
+            if (!targetUser) { alert("Targeted user display name not found."); return; }
+            if (targetUser.email === activeUser.email) { alert("You can't add yourself."); return; }
+
+            let friendsKey = `jax_friends_${activeUser.email}`;
+            let currentFriends = JSON.parse(localStorage.getItem(friendsKey)) || [];
+            if (currentFriends.some(f => f.email === targetUser.email)) { alert("User already added."); return; }
+
+            currentFriends.push({ email: targetUser.email, username: targetUser.username });
+            localStorage.setItem(friendsKey, JSON.stringify(currentFriends));
+
+            dispatchNetworkInboxNotification(targetUser.email, `🤝 ${activeUser.username} added you to their friends list!`);
+            document.getElementById('addFriendUsernameInput').value = '';
+            renderSocialSystemDashboard();
+        }
+
+        function renderSocialSystemDashboard() {
+            if (currentActiveTab === 'friends') {
+                const box = document.getElementById('dashboardFriendsRenderBox');
+                box.innerHTML = '';
+                if (!activeUser) {
+                    box.innerHTML = `<div style="text-align:center;color:var(--text-muted);">Please Sign In to track your friends list activity.</div>`;
+                    return;
+                }
+
+                let currentFriends = JSON.parse(localStorage.getItem(`jax_friends_${activeUser.email}`)) || [];
+                let registeredProfiles = JSON.parse(localStorage.getItem('jax_registeredUsers')) || {};
+
+                if (currentFriends.length === 0) {
+                    box.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:0.95rem;">Your friends directory is currently empty. Add users by name above!</div>`;
+                    return;
+                }
+
+                currentFriends.forEach(friend => {
+                    const profile = registeredProfiles[friend.email] || { currentStatus: "Offline" };
+                    const card = document.createElement('div');
+                    card.className = 'friend-dashboard-card';
+                    card.innerHTML = `
+                        <div class="friend-info-block">
+                            <span class="friend-name-tag">👤 ${friend.username}</span>
+                            <span class="friend-status-activity">🎮 Playing: ${profile.currentStatus || 'Offline'}</span>
+                        </div>
+                        <div class="friend-call-actions">
+                            <button class="call-action-btn" onclick="initiateNetworkMediaCall('${friend.email}', 'Audio')">🎙️ Audio Call</button>
+                            <button class="call-action-btn" onclick="initiateNetworkMediaCall('${friend.email}', 'Video')">📹 Video Call</button>
+                        </div>
+                    `;
+                    box.appendChild(card);
+                });
+            } else {
+                const box = document.getElementById('dashboardInboxRenderBox');
+                box.innerHTML = '';
+                if (!activeUser) {
+                    box.innerHTML = `<div style="text-align:center;color:var(--text-muted);">Please Sign In to manage your incoming messages.</div>`;
+                    return;
+                }
+
+                let notifications = JSON.parse(localStorage.getItem(`jax_inbox_${activeUser.email}`)) || [];
+                if (notifications.length === 0) {
+                    box.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:20px;">Your inbox is clear. 🔔</div>`;
+                    return;
+                }
+
+                notifications.forEach(item => {
+                    const row = document.createElement('div');
+                    row.className = 'inbox-item-row';
+                    
+                    let actionsLayout = `<button class="decline-call-btn" onclick="dismissNotificationRow('${item.id}')">Dismiss</button>`;
+                    if (item.payload) {
+                        actionsLayout = `
+                            <div class="inbox-action-bar-buttons">
+                                <button class="accept-call-btn" onclick="respondToCallPayload('${item.id}', true)">Accept</button>
+                                <button class="decline-call-btn" onclick="respondToCallPayload('${item.id}', false)">Decline</button>
+                            </div>
+                        `;
+                    }
+
+                    row.innerHTML = `
+                        <div class="inbox-msg-content">${item.text}</div>
+                        ${actionsLayout}
+                    `;
+                    box.appendChild(row);
+                });
+            }
+        }
+
+        function dismissNotificationRow(id) {
+            let inboxKey = `jax_inbox_${activeUser.email}`;
+            let data = JSON.parse(localStorage.getItem(inboxKey)) || [];
+            data = data.filter(i => i.id !== id);
+            localStorage.setItem(inboxKey, JSON.stringify(data));
+            renderSocialSystemDashboard();
+        }
+
+        // -------------------------------------------------------------
+        // WIFI / LOCAL BROADCAST P2P MEDIA SIGNALING EMULATION
+        // -------------------------------------------------------------
+        let openActiveCallSession = null;
+
+        function initiateNetworkMediaCall(targetEmail, type) {
+            alert(`Sending ${type} Call invite request to peer device on current Wi-Fi...`);
+            let callSessionId = 'call_' + Date.now();
+            
+            let callConfig = {
+                id: callSessionId,
+                host: activeUser.email,
+                hostName: activeUser.username,
+                peer: targetEmail,
+                callType: type,
+                status: "pending"
+            };
+
+            localStorage.setItem(`jax_session_${callSessionId}`, JSON.stringify(callConfig));
+            dispatchNetworkInboxNotification(targetEmail, `🚨 Incoming ${type} Call from ${activeUser.username} on your Local Network!`, callConfig);
+            
+            launchCallUIWindow(type, `Calling ${targetEmail}...`);
+            openActiveCallSession = callConfig;
+
+            let callPollingCheck = setInterval(() => {
+                let check = JSON.parse(localStorage.getItem(`jax_session_${callSessionId}`));
+                if (check && check.status === "accepted") {
+                    clearInterval(callPollingCheck);
+                    document.getElementById('callSubDetails').innerText = `Connected with peer over local architecture loop.`;
+                    if (check.callType === 'Video') {
+                        document.getElementById('videoStreamsBox').style.display = 'grid';
+                    }
+                } else if (!check || check.status === "declined" || check.status === "ended") {
+                    clearInterval(callPollingCheck);
+                    terminateLiveCall();
+                    alert("Call invitation was rejected or disconnected.");
+                }
+            }, 1000);
+        }
+
+        function respondToCallPayload(notificationId, accept) {
+            let inboxKey = `jax_inbox_${activeUser.email}`;
+            let data = JSON.parse(localStorage.getItem(inboxKey)) || [];
+            let currentItem = data.find(i => i.id === notificationId);
+            if (!currentItem || !currentItem.payload) return;
+
+            let sessionKey = `jax_session_${currentItem.payload.id}`;
+            let session = JSON.parse(localStorage.getItem(sessionKey));
+
+            if (session) {
+                if (accept) {
+                    session.status = "accepted";
+                    localStorage.setItem(sessionKey, JSON.stringify(session));
+                    openActiveCallSession = session;
+                    launchCallUIWindow(session.callType, `Connected in conversation with ${session.hostName}`);
+                    if (session.callType === 'Video') {
+                        document.getElementById('videoStreamsBox').style.display = 'grid';
+                    }
+                } else {
+                    session.status = "declined";
+                    localStorage.setItem(sessionKey, JSON.stringify(session));
+                }
+            }
+            data = data.filter(i => i.id !== notificationId);
+            localStorage.setItem(inboxKey, JSON.stringify(data));
+            renderSocialSystemDashboard();
+        }
+
+        function launchCallUIWindow(type, statusText) {
+            document.getElementById('callWindowHeader').innerText = `📞 Live Local ${type} Call`;
+            document.getElementById('callSubDetails').innerText = statusText;
+            document.getElementById('videoStreamsBox').style.display = 'none';
+            document.getElementById('liveCallOverlay').style.display = 'flex';
+        }
+
+        function terminateLiveCall() {
+            document.getElementById('liveCallOverlay').style.display = 'none';
+            if (openActiveCallSession) {
+                let sessionKey = `jax_session_${openActiveCallSession.id}`;
+                let session = JSON.parse(localStorage.getItem(sessionKey));
+                if (session) {
+                    session.status = "ended";
+                    localStorage.setItem(sessionKey, JSON.stringify(session));
+                }
+                openActiveCallSession = null;
+            }
+        }
+
+        setInterval(() => {
+            renderSocialSystemDashboard();
+        }, 3000);
+
+        // -------------------------------------------------------------
+        // PERSISTENT FAVORITE GAMES ENGINE ALGORITHM
+        // -------------------------------------------------------------
+        function getFavoriteArray() {
+            if (!activeUser) return JSON.parse(localStorage.getItem('jax_guest_favorites')) || [];
+            return JSON.parse(localStorage.getItem(`jax_favorites_${activeUser.email}`)) || [];
+        }
+
+        function saveFavoriteArray(arr) {
+            if (!activeUser) {
+                localStorage.setItem('jax_guest_favorites', JSON.stringify(arr));
+            } else {
+                localStorage.setItem(`jax_favorites_${activeUser.email}`, JSON.stringify(arr));
+            }
+            applyFavoritesOrderingSort();
+        }
+
+        function toggleFavoriteGame(event, gameId) {
+            event.preventDefault();
+            event.stopPropagation();
+            let favorites = getFavoriteArray();
+            if (favorites.includes(gameId)) {
+                favorites = favorites.filter(id => id !== gameId);
+            } else {
+                favorites.push(gameId);
+            }
+            saveFavoriteArray(favorites);
+        }
+
+        function applyFavoritesOrderingSort() {
+            const grid = document.getElementById('mainGameGrid');
+            const games = Array.from(grid.querySelectorAll('.game-link'));
+            const favorites = getFavoriteArray();
+
+            games.forEach(game => {
+                const heartBtn = game.querySelector('.favorite-heart-btn');
+                if (favorites.includes(game.id)) {
+                    heartBtn.classList.add('is-active');
+                    game.dataset.favOrder = "1";
+                } else {
+                    heartBtn.classList.remove('is-active');
+                    game.dataset.favOrder = "2";
+                }
+            });
+
+            games.sort((a, b) => parseInt(a.dataset.favOrder) - parseInt(b.dataset.favOrder));
+            games.forEach(game => grid.appendChild(game));
+        }
+
+        // -------------------------------------------------------------
+        // CORE HANDLERS HOOKS
+        // -------------------------------------------------------------
+        const themeSelect = document.getElementById('themeSelect');
+        themeSelect.addEventListener('change', (e) => {
+            document.documentElement.setAttribute('data-theme', e.target.value);
+        });
+
+        const searchInput = document.getElementById('gameSearch');
+        const gameLinks = document.querySelectorAll('.game-link');
+
+        searchInput.addEventListener('input', function() {
+            const filterText = this.value.toLowerCase().trim();
+            if (filterText === 'jaxon secret games') { window.open('https://jaxonsecretgames.w3spaces.com/', '_blank'); this.value = ''; return; } 
+            if (filterText === 'duck proxy') { window.open('https://duckproxy.onrender.com/', '_blank'); this.value = ''; return; } 
+            if (filterText === 'unblocked gn math') { window.open('https://jaxgames47.github.io/gn-math/', '_blank'); this.value = ''; return; }
+
+            gameLinks.forEach(link => {
+                const gameTitle = link.getAttribute('data-title').toLowerCase();
+                link.classList.toggle('is-hidden', !gameTitle.includes(filterText));
+            });
+        });
+
+        gameLinks.forEach(link => {
+            const button = link.querySelector('.game-button');
+            if (!button) return;
+            link.addEventListener('mousemove', (e) => {
+                const rect = button.getBoundingClientRect();
+                const x = e.clientX - rect.left - (rect.width / 2);
+                const y = e.clientY - rect.top - (rect.height / 2);
+                button.style.transform = `translateY(-10px) rotateX(${(y / (rect.height / 2)) * -12}deg) rotateY(${(x / (rect.width / 2)) * 12}deg) translateZ(20px)`;
+            });
+            link.addEventListener('mouseleave', () => { button.style.transform = ''; });
+
+            link.addEventListener('click', function(e) {
+                if (e.target.classList.contains('favorite-heart-btn')) return;
+                e.preventDefault();
+                const img = button.querySelector('img');
+                const targetUrl = this.href;
+                const portal = document.getElementById('cinematicPortal');
+                const rect = button.getBoundingClientRect();
+
+                const parsedTitle = this.getAttribute('data-title').split(' ')[0].toUpperCase();
+                updateActiveUserGameStatus(parsedTitle);
+
+                const clone = document.createElement('div');
+                clone.className = 'focus-clone';
+                clone.style.top = `${rect.top}px`;
+                clone.style.left = `${rect.left}px`;
+                clone.innerHTML = `
+                    <div class="portal-overlay">
+                        <div class="spinner"></div>
+                        <div class="loading-text">Loading</div>
+                    </div>
+                    <img src="${img.getAttribute('src')}" alt="Assets">
+                `;
+
+                portal.appendChild(clone);
+                button.style.opacity = '0';
+                document.body.classList.add('is-cinematic-loading');
+
+                requestAnimationFrame(() => {
+                    clone.style.top = `${window.innerHeight / 2 - rect.height / 2}px`;
+                    clone.style.left = `${window.innerWidth / 2 - rect.width / 2}px`;
+                    clone.classList.add('is-zoomed');
+                });
+
+                setTimeout(() => { window.location.href = targetUrl; }, 1400);
+            });
+        });
+    
+        const horrorOverlay=document.getElementById('horrorOverlay'),horrorBtn=document.getElementById('horrorBtn'),pinInput=document.getElementById('pinInput'),pinSection=document.getElementById('pinSection'),horrorGames=document.getElementById('horrorGames');let currentPin='';
+        horrorBtn.onclick=()=>{currentPin='';pinInput.value='';pinSection.style.display='block';horrorGames.style.display='none';horrorOverlay.style.display='flex';}
+        function pinPress(n){if(currentPin.length>=4)return;currentPin+=n;pinInput.value='*'.repeat(currentPin.length);if(currentPin.length===4){if(currentPin==='0311'){pinSection.style.display='none';horrorGames.style.display='block';}else{alert('Incorrect PIN');clearPin();}}}
+        function clearPin(){currentPin='';pinInput.value='';}
+        function closeHorror(){horrorOverlay.style.display='none';}
+
+        refreshAccountStatusUI();
+        checkUsernameLockState();
+        applyFavoritesOrderingSort();
+</script>
+</body>
+</html>
