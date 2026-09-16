@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jax Games 47 | Next-Gen</title>
     <style>
-        /* -------------------------------------------------------------
-           DYNAMIC THEMES & DESIGN SYSTEM CONSTANTS
-        ------------------------------------------------------------- */
         :root {
-            /* Default: Crimson Neo */
             --bg-main: #140504;
             --bg-surface: #220a08;
             --bg-card: #2e0e0b;
@@ -40,6 +36,36 @@
             --border-color: #004D40;
         }
 
+        [data-theme="emerald"] {
+            --bg-main: #061A14;
+            --bg-surface: #0B2920;
+            --bg-card: #12382C;
+            --neon-accent: #10B981;
+            --text-main: #ECFDF5;
+            --text-muted: rgba(236, 253, 245, 0.6);
+            --border-color: #047857;
+        }
+
+        [data-theme="sunset"] {
+            --bg-main: #1A0C18;
+            --bg-surface: #291225;
+            --bg-card: #381A33;
+            --neon-accent: #F43F5E;
+            --text-main: #FFF1F2;
+            --text-muted: rgba(255, 241, 242, 0.6);
+            --border-color: #BE123C;
+        }
+
+        [data-theme="amethyst"] {
+            --bg-main: #120A21;
+            --bg-surface: #1C1033;
+            --bg-card: #271747;
+            --neon-accent: #A855F7;
+            --text-main: #FAF5FF;
+            --text-muted: rgba(250, 245, 255, 0.6);
+            --border-color: #6B21A8;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -52,131 +78,120 @@
             color: var(--text-main);
             overflow-x: hidden;
             min-height: 100vh;
-            perspective: 1200px;
             transition: background-color 0.5s ease, color 0.5s ease;
         }
 
         .page-wrapper {
-            transition: transform 0.8s var(--ultra-timing), filter 0.8s var(--ultra-timing);
-            will-change: transform, filter;
             width: 100%;
             min-height: 100vh;
-            transform-style: preserve-3d;
         }
 
-        body.is-cinematic-loading .page-wrapper {
-            filter: blur(15px) brightness(0.3);
-            transform: scale(0.92) translateZ(-100px);
-            pointer-events: none;
-        }
-
-        /* -------------------------------------------------------------
-           HEADER, NAVIGATION & CONTROLS
-        ------------------------------------------------------------- */
+        /* Compact Header Controls Toolbar */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 30px 60px;
+            padding: 15px 30px;
             max-width: 1400px;
             margin: 0 auto;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 15px;
+            background: var(--bg-surface);
+            border-bottom: 2px solid var(--border-color);
+            border-radius: 0 0 16px 16px;
         }
 
         .logo {
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: 900;
-            letter-spacing: 4px;
+            letter-spacing: 2px;
             text-transform: uppercase;
             user-select: none;
-            transition: transform 0.3s ease;
-        }
-        .logo:hover {
-            transform: skewX(-5deg) scale(1.03);
         }
 
         .jax { color: #ffffff; }
         .games-cyan { 
             color: var(--neon-accent); 
-            text-shadow: 0 0 20px var(--neon-accent);
+            text-shadow: 0 0 10px var(--neon-accent);
         }
 
-        .controls-group {
+        .action-toolbar {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
-        .theme-select {
-            background: var(--bg-surface);
+        .mini-btn {
+            background: var(--bg-card);
             color: var(--text-main);
-            border: 2px solid var(--border-color);
-            padding: 10px 15px;
-            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             outline: none;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            white-space: nowrap;
         }
 
-        .theme-select:focus {
+        .mini-btn:hover {
             border-color: var(--neon-accent);
-            box-shadow: 0 0 15px var(--neon-accent);
+            box-shadow: 0 0 8px var(--neon-accent);
+            transform: translateY(-1px);
+        }
+
+        select.mini-btn {
+            appearance: none;
+            padding-right: 20px;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 6px center;
+            background-size: 12px;
         }
 
         .container {
-            max-width: 1300px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 40px 50px 40px;
+            padding: 25px 20px 50px 20px;
             text-align: center;
         }
 
-        h1.section-title {
-            font-size: 3rem;
-            margin-bottom: 30px;
-            font-weight: 800;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            position: relative;
-            display: inline-block;
-            color: #ffffff;
-        }
-        
-        h1.section-title::after {
-            content: '';
-            position: absolute;
-            left: 10%;
-            bottom: -15px;
-            width: 80%;
-            height: 4px;
-            background: linear-gradient(90deg, transparent, var(--neon-accent), transparent);
-            box-shadow: 0 0 10px var(--neon-accent);
+        .top-shelf {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 15px;
+            flex-wrap: wrap;
         }
 
-        /* -------------------------------------------------------------
-           SEARCH INTERFACE
-        ------------------------------------------------------------- */
+        h1.section-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #ffffff;
+            margin: 0;
+        }
+
         .search-container {
-            margin-bottom: 60px;
-            position: relative;
-            display: inline-block;
             width: 100%;
-            max-width: 500px;
+            max-width: 300px;
         }
 
         .search-bar {
             width: 100%;
-            padding: 15px 25px;
-            font-size: 1.1rem;
+            padding: 8px 16px;
+            font-size: 0.9rem;
             font-weight: 600;
-            border-radius: 50px;
-            border: 3px solid var(--border-color);
+            border-radius: 20px;
+            border: 2px solid var(--border-color);
             background-color: var(--bg-surface);
             color: #ffffff;
             outline: none;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            transition: all 0.4s var(--ultra-timing);
+            transition: all 0.3s ease;
         }
 
         .search-bar::placeholder {
@@ -185,28 +200,20 @@
 
         .search-bar:focus {
             border-color: var(--neon-accent);
-            box-shadow: 0 0 25px var(--neon-accent), 0 10px 20px rgba(0,0,0,0.4);
-            transform: scale(1.02);
+            box-shadow: 0 0 10px var(--neon-accent);
         }
 
-        /* -------------------------------------------------------------
-           CLEAN FLUID GRID ARCHITECTURE & FAVORITES SYSTEM
-        ------------------------------------------------------------- */
         .game-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 15px;
             justify-items: center;
-            transform-style: preserve-3d;
         }
 
         .game-link {
             text-decoration: none;
             display: block;
-            outline: none;
-            perspective: 1000px;
             width: 100%;
-            max-width: 220px;
             position: relative;
         }
 
@@ -215,83 +222,65 @@
             width: 100%;
             aspect-ratio: 1 / 1;
             background-color: var(--bg-card);
-            border: 3px solid var(--border-color);
-            border-radius: 24px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
             overflow: hidden;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-            transform-style: preserve-3d;
-            transform: translateZ(0);
-            transition: transform 0.5s var(--ultra-timing), border-color 0.5s var(--ultra-timing), box-shadow 0.5s var(--ultra-timing);
-            will-change: transform, box-shadow, border-color;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
         }
 
         .game-button img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transform: translateZ(0) scale(1.01);
-            transition: transform 0.6s var(--ultra-timing);
+            transition: transform 0.3s ease;
         }
 
         .favorite-heart-btn {
             position: absolute;
-            top: 12px;
-            right: 12px;
-            z-index: 100;
-            background: rgba(0, 0, 0, 0.65);
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            top: 6px;
+            right: 6px;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: #ccc;
             border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            font-size: 0.95rem;
+            width: 24px;
+            height: 24px;
+            font-size: 0.75rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.25s ease;
         }
-        .favorite-heart-btn:hover {
-            transform: scale(1.15);
-            border-color: #ff3366;
-            color: #ff3366;
-        }
+
         .favorite-heart-btn.is-active {
             color: #ff3366;
             border-color: #ff3366;
-            background: rgba(0, 0, 0, 0.85);
-            text-shadow: 0 0 8px #ff3366;
         }
 
         .game-link:hover .game-button {
             border-color: var(--neon-accent);
-            transform: translateY(-10px) rotateX(10deg) rotateY(-5deg) translateZ(20px);
-            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.6), 0 0 25px var(--neon-accent);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5), 0 0 12px var(--neon-accent);
         }
 
         .game-link:hover .game-button img {
-            transform: translateZ(15px) scale(1.1);
+            transform: scale(1.05);
         }
 
         .game-link.is-hidden {
             display: none !important;
         }
 
-        /* -------------------------------------------------------------
-           INTEGRATED CHAT AND SOCIAL NETWORK PANEL
-        ------------------------------------------------------------- */
         .social-dashboard-section {
-            max-width: 1000px;
-            margin: 60px auto 0 auto;
+            max-width: 900px;
+            margin: 40px auto 0 auto;
             background: var(--bg-surface);
-            border: 3px solid var(--border-color);
-            border-radius: 24px;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
 
         .dashboard-tabs {
@@ -302,27 +291,26 @@
 
         .dashboard-tab-btn {
             flex: 1;
-            padding: 18px;
+            padding: 12px;
             background: transparent;
             border: none;
             color: var(--text-muted);
-            font-size: 1.2rem;
-            font-weight: 800;
-            letter-spacing: 1px;
+            font-size: 0.9rem;
+            font-weight: 700;
             text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         .dashboard-tab-btn.active {
             color: var(--neon-accent);
             background: var(--bg-surface);
-            box-shadow: inset 0 -4px 0 var(--neon-accent);
+            box-shadow: inset 0 -3px 0 var(--neon-accent);
         }
 
         .dashboard-tab-content {
-            padding: 30px;
-            min-height: 400px;
+            padding: 20px;
+            min-height: 280px;
             display: flex;
             flex-direction: column;
         }
@@ -330,274 +318,155 @@
         .friends-layout {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
         }
 
         .social-search-bar {
             display: flex;
-            gap: 15px;
-            max-width: 600px;
+            gap: 8px;
+            max-width: 500px;
             margin: 0 auto 10px auto;
             width: 100%;
         }
 
         .social-search-bar input {
             flex: 1;
-            padding: 12px 20px;
+            padding: 8px 12px;
             background: var(--bg-main);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             color: #fff;
             outline: none;
-            font-size: 1rem;
-        }
-
-        .social-search-bar input:focus {
-            border-color: var(--neon-accent);
-        }
-
-        .social-search-bar button {
-            padding: 12px 25px;
-            background: var(--neon-accent);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
+            font-size: 0.85rem;
         }
 
         .friends-flex-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 8px;
             text-align: left;
         }
 
         .friend-dashboard-card {
             background: var(--bg-card);
-            border: 2px solid var(--border-color);
-            border-radius: 16px;
-            padding: 15px 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 15px;
-        }
-
-        .friend-info-block {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
         }
 
         .friend-name-tag {
-            font-size: 1.15rem;
+            font-size: 0.95rem;
             font-weight: 700;
         }
 
         .friend-status-activity {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: var(--neon-accent);
-            font-weight: 600;
         }
 
-        .chat-action-btn {
-            padding: 10px 20px;
-            background: var(--bg-main);
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
-            color: #fff;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .chat-action-btn:hover {
-            border-color: var(--neon-accent);
-            background: rgba(255, 8, 0, 0.1);
-        }
-
-        /* REAL-TIME HUB CHAT WINDOW INTERFACE */
         .chat-pane-layout {
             display: flex;
             flex-direction: column;
             flex-grow: 1;
-            height: 380px;
+            height: 280px;
         }
 
         .chat-history-box {
             flex-grow: 1;
             background: var(--bg-main);
-            border: 2px solid var(--border-color);
-            border-radius: 16px;
-            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
             overflow-y: auto;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 8px;
             text-align: left;
         }
 
         .chat-message-bubble {
-            max-width: 75%;
-            padding: 12px 16px;
-            border-radius: 16px;
-            font-size: 0.95rem;
-            line-height: 1.4;
-            word-wrap: break-word;
+            max-width: 80%;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 0.85rem;
         }
 
         .chat-message-bubble.incoming {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             align-self: flex-start;
-            border-top-left-radius: 4px;
         }
 
         .chat-message-bubble.outgoing {
             background: var(--neon-accent);
             color: #fff;
             align-self: flex-end;
-            border-top-right-radius: 4px;
         }
 
         .chat-meta-header {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-weight: 800;
-            margin-bottom: 4px;
-            opacity: 0.8;
             display: block;
+            margin-bottom: 2px;
+            opacity: 0.8;
         }
 
         .chat-input-bar {
             display: flex;
-            gap: 12px;
+            gap: 8px;
         }
 
         .chat-input-bar input {
             flex: 1;
-            padding: 14px 20px;
+            padding: 8px 12px;
             background: var(--bg-card);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             color: #fff;
             outline: none;
-            font-size: 1rem;
+            font-size: 0.85rem;
         }
 
-        .chat-input-bar input:focus {
-            border-color: var(--neon-accent);
-        }
-
-        .chat-send-btn {
-            padding: 0 25px;
-            background: var(--neon-accent);
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        /* Horror Overlay Layout */
-        .horror-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:99999}
-        .horror-box{width:420px;max-width:90%;background:var(--bg-surface);border:3px solid var(--neon-accent);border-radius:20px;padding:25px;text-align:center}
-        #pinInput{width:100%;padding:15px;font-size:24px;text-align:center;margin:10px 0}
-        .pinpad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-        .pinpad button{padding:15px}
-        #horrorGames{display:none;margin-top:20px}
-        #horrorGames .game-grid{grid-template-columns:repeat(2,1fr)}
-
-        /* Account Overlays System Layout */
-        .auth-overlay {
+        .horror-overlay, .auth-overlay, .name-setup-overlay {
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.85);
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 99998;
-        }
-        .auth-modal-box {
-            width: 380px;
-            background: var(--bg-surface);
-            border: 2px solid var(--border-color);
-            border-radius: 20px;
-            padding: 25px;
-            text-align: center;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-            position: relative;
-        }
-        .auth-modal-box h3 {
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            letter-spacing: 1px;
-        }
-        .auth-modal-box input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 12px;
-            background: var(--bg-main);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: #fff;
-            outline: none;
-        }
-        .auth-modal-box input:focus {
-            border-color: var(--neon-accent);
-        }
-        .auth-action-btn {
-            width: 100%;
-            padding: 12px;
-            background: var(--neon-accent);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 5px;
-        }
-        .auth-switch-link {
-            font-size: 0.85rem;
-            margin-top: 15px;
-            color: var(--text-muted);
-        }
-        .auth-switch-link span {
-            color: var(--neon-accent);
-            cursor: pointer;
-            text-decoration: underline;
-        }
-        
-        .name-setup-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(10, 5, 5, 0.95);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 100000;
+            z-index: 99999;
         }
 
-        .auth-gateway-loading-screen {
-            position: absolute;
-            inset: 0;
+        .modal-box {
+            width: 320px;
             background: var(--bg-surface);
-            border-radius: 20px;
-            z-index: 50;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            border: 2px solid var(--neon-accent);
+            border-radius: 14px;
             padding: 20px;
+            text-align: center;
         }
-        .gateway-timer-display {
-            font-size: 0.85rem;
-            color: var(--text-muted);
+
+        .pinpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
             margin-top: 10px;
-            font-family: monospace;
+        }
+
+        #pinInput {
+            width: 100%;
+            padding: 8px;
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 8px;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            border-radius: 6px;
         }
     </style>
 </head>
@@ -605,25 +474,27 @@
 
     <div class="page-wrapper">
         <header>
-            <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
-                <div class="logo"><span class="jax">JAX</span> <span class="games-cyan">GAMES</span></div>
-                <button id="horrorBtn" class="theme-select">Horror Games 🔒</button>
-                <button id="authHeaderBtn" class="theme-select" onclick="openAuthSystem()">Sign In 👤</button>
-            </div>
-            <div class="controls-group">
-                <select id="themeSelect" class="theme-select" aria-label="Switch Design Theme">
+            <div class="logo"><span class="jax">JAX</span> <span class="games-cyan">GAMES</span></div>
+            <div class="action-toolbar">
+                <button id="horrorBtn" class="mini-btn">Horror 🔒</button>
+                <button id="authHeaderBtn" class="mini-btn" onclick="openAuthSystem()">Sign In 👤</button>
+                <select id="themeSelect" class="mini-btn" aria-label="Switch Design Theme">
                     <option value="crimson">Crimson Neo</option>
                     <option value="midnight">Midnight Dark</option>
                     <option value="cyber">Cyber Shadow</option>
+                    <option value="emerald">Emerald Matrix</option>
+                    <option value="sunset">Sunset Neon</option>
+                    <option value="amethyst">Amethyst Void</option>
                 </select>
             </div>
         </header>
 
-         <div class="container">
-            <h1 class="section-title">Popular Games</h1>
-
-            <div class="search-container">
-                <input type="text" id="gameSearch" class="search-bar" placeholder="Search for a game...">
+        <div class="container">
+            <div class="top-shelf">
+                <h1 class="section-title">Popular Games</h1>
+                <div class="search-container">
+                    <input type="text" id="gameSearch" class="search-bar" placeholder="Search game...">
+                </div>
             </div>
 
             <div class="game-grid">
@@ -694,7 +565,7 @@
                     <div class="game-button"><img src="ear.jpg" alt="Soundboard"></div>
                 </a>
                 <a href="https://jaxgames47.github.io/basketbattle/" class="game-link" data-title="basket battle basketball sports hoops">
-                    <div class="game-button"><img src="basket battle.png" alt="Basket Batle"></div>
+                    <div class="game-button"><img src="basket battle.png" alt="Basket Battle"></div>
                 </a>
                 <a href="https://jaxgames47.github.io/buildaqueen/" class="game-link" data-title="build a queen casual run">
                     <div class="game-button"><img src="319.png" alt="Build A Queen"></div>
@@ -714,36 +585,29 @@
                 <a href="https://jaxgames47.github.io/amongusonline/" class="game-link" data-title="online multiplayer">
                     <div class="game-button"><img src="amongus.jpg" alt="Among Us Online"></div>
                 </a>
-                <a href="https://jaxgames47.github.io/subwaysurfers/" class="game-link" data-title="idk">
+                <a href="https://jaxgames47.github.io/subwaysurfers/" class="game-link" data-title="subway surfers runner">
                     <div class="game-button"><img src="subway-surfers-logo.png" alt="Subway Surfers"></div>
                 </a>
-                
-                <a href="https://jaxgames47.github.io/slope1/" class="game-link" data-title="fun ball games 1">
-                    <div class="game-button"><img src="slope1.png" alt="Slope"></div>
+                <a href="https://jaxgames47.github.io/slope1/" class="game-link" data-title="fun ball games 1 slope">
+                    <div class="game-button"><img src="slope1.png" alt="Slope 1"></div>
                 </a>
-                
-                <a href="https://jaxgames47.github.io/slope2/" class="game-link" data-title="fun ball games 2">
-                    <div class="game-button"><img src="slope2.png" alt="Slope"></div>
+                <a href="https://jaxgames47.github.io/slope2/" class="game-link" data-title="fun ball games 2 slope">
+                    <div class="game-button"><img src="slope2.png" alt="Slope 2"></div>
                 </a>
-                
-                <a href="https://jaxgames47.github.io/tinyfishing/" class="game-link" data-title="fishing game">
-                    <div class="game-button"><img src="tinyfishing.png" alt="Slope"></div>
+                <a href="https://jaxgames47.github.io/tinyfishing/" class="game-link" data-title="fishing game tiny">
+                    <div class="game-button"><img src="tinyfishing.png" alt="Tiny Fishing"></div>
                 </a>
-
                 <a href="https://jaxgames47.github.io/stickmanhook/" class="game-link" data-title="hook on stickman">
                     <div class="game-button"><img src="stckman hook.png" alt="Stickman Hook"></div>
                 </a>
-
-               <a href="https://jaxgames47.github.io/bitlife/" class="game-link" data-title="growing new lifw game">
+                <a href="https://jaxgames47.github.io/bitlife/" class="game-link" data-title="growing new life game bitlife">
                     <div class="game-button"><img src="bitlife.png" alt="BitLife"></div>
                 </a>
-
-                <a href="https://jaxgames47.github.io/magictiles3" class="game-link" data-title="growing new lifw game">
-                    <div class="game-button"><img src="IMG_0100.jpeg" alt="BitLife"></div>
+                <a href="https://jaxgames47.github.io/magictiles3" class="game-link" data-title="magic tiles 3 music piano">
+                    <div class="game-button"><img src="IMG_0100.jpeg" alt="Magic Tiles 3"></div>
                 </a>
             </div>
-        </div>
-    </div>
+
             <div class="social-dashboard-section">
                 <div class="dashboard-tabs">
                     <button class="dashboard-tab-btn active" id="dashFriendsTabHead" onclick="toggleDashboardTab('friends')">Network Friends</button>
@@ -754,512 +618,296 @@
                     <div class="friends-layout">
                         <div class="social-search-bar">
                             <input type="text" id="addFriendUsernameInput" placeholder="Enter target username to link...">
-                            <button onclick="handleAddFriendSubmit()">+ Add Friend</button>
+                            <button class="mini-btn" onclick="handleAddFriendSubmit()">+ Add</button>
                         </div>
-                        <div class="friends-flex-list" id="dashboardFriendsRenderBox">
-                            </div>
+                        <div class="friends-flex-list" id="dashboardFriendsRenderBox"></div>
                     </div>
                 </div>
 
                 <div class="dashboard-tab-content" id="dashChatPane" style="display:none;">
-                    <div class="chat-pane-layout" id="chatActiveWindowArea">
-                        </div>
+                    <div class="chat-pane-layout" id="chatActiveWindowArea"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="cinematic-portal" id="cinematicPortal"></div>
-
     <div class="horror-overlay" id="horrorOverlay">
-        <div class="horror-box">
+        <div class="modal-box">
             <div id="pinSection">
-                <h2>🔒 Horror Games</h2>
+                <h3>🔒 Horror Games</h3>
                 <input id="pinInput" type="password" readonly>
                 <div class="pinpad">
-                    <button onclick="pinPress('1')">1</button><button onclick="pinPress('2')">2</button><button onclick="pinPress('3')">3</button>
-                    <button onclick="pinPress('4')">4</button><button onclick="pinPress('5')">5</button><button onclick="pinPress('6')">6</button>
-                    <button onclick="pinPress('7')">7</button><button onclick="pinPress('8')">8</button><button onclick="pinPress('9')">9</button>
-                    <button onclick="clearPin()">C</button><button onclick="pinPress('0')">0</button><button onclick="closeHorror()">✕</button>
+                    <button class="mini-btn" onclick="pinPress('1')">1</button>
+                    <button class="mini-btn" onclick="pinPress('2')">2</button>
+                    <button class="mini-btn" onclick="pinPress('3')">3</button>
+                    <button class="mini-btn" onclick="pinPress('4')">4</button>
+                    <button class="mini-btn" onclick="pinPress('5')">5</button>
+                    <button class="mini-btn" onclick="pinPress('6')">6</button>
+                    <button class="mini-btn" onclick="pinPress('7')">7</button>
+                    <button class="mini-btn" onclick="pinPress('8')">8</button>
+                    <button class="mini-btn" onclick="pinPress('9')">9</button>
+                    <button class="mini-btn" onclick="clearPin()">C</button>
+                    <button class="mini-btn" onclick="pinPress('0')">0</button>
+                    <button class="mini-btn" onclick="closeHorror()">✕</button>
                 </div>
             </div>
-            <div id="horrorGames">
-                <h2>Horror Games</h2>
-                <div class="game-grid">
+            <div id="horrorGames" style="display:none;">
+                <h3 style="margin-bottom:12px;">Horror Games</h3>
+                <div class="game-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <a href="https://jaxgames47.github.io/granny/" class="game-link"><div class="game-button"><img src="Granny.png"></div></a>
                     <a href="https://jaxgames47.github.io/thebackrooms/" class="game-link"><div class="game-button"><img src="backrooms.png"></div></a>
                 </div>
+                <button class="mini-btn" style="margin-top:12px;" onclick="closeHorror()">Close</button>
             </div>
         </div>
     </div>
 
     <div class="auth-overlay" id="authOverlay">
-        <div class="auth-modal-box" id="loginFormWindow">
-            <div class="auth-gateway-loading-screen" id="authGatewayLoader">
-                <div class="spinner"></div>
-                <div class="loading-text" id="gatewayStatusMessage">Verifying Identity...</div>
-                <div class="gateway-timer-display" id="gatewayTimer">Remaining: --s</div>
-            </div>
+        <div class="modal-box">
             <div style="text-align: right; margin-bottom: 5px;"><span style="cursor:pointer;" onclick="closeAuthSystem()">✕</span></div>
-            <h3 id="authTitle">Sign In</h3>
-            <input type="email" id="authEmail" placeholder="Email Address">
-            <input type="password" id="authPassword" placeholder="Password">
-            <button class="auth-action-btn" id="authSubmitBtn" onclick="submitAuthData()">Submit</button>
-            <div class="auth-switch-link" id="authSwitchFooter">Don't have an account? <span onclick="toggleAuthMode(true)">Create Account</span></div>
+            <h3 id="authTitle" style="margin-bottom:12px;">Sign In</h3>
+            <input type="email" id="authEmail" class="search-bar" style="margin-bottom:8px; border-radius:8px;" placeholder="Email Address">
+            <input type="password" id="authPassword" class="search-bar" style="margin-bottom:8px; border-radius:8px;" placeholder="Password">
+            <button class="mini-btn" style="width:100%; padding:8px;" id="authSubmitBtn" onclick="submitAuthData()">Submit</button>
         </div>
     </div>
 
     <div class="name-setup-overlay" id="nameSetupOverlay">
-        <div class="auth-modal-box">
-            <h3>Choose a Display Name</h3>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">This name allows other members to find you.</p>
-            <input type="text" id="displayUniqueNameInput" placeholder="Username / Display Name...">
-            <button class="auth-action-btn" onclick="saveChosenDisplayName()">Confirm Username</button>
+        <div class="modal-box">
+            <h3>Choose Display Name</h3>
+            <p style="color:var(--text-muted); font-size:0.8rem; margin: 8px 0 12px 0;">Set your public tag for chat & friends.</p>
+            <input type="text" id="displayNameInput" class="search-bar" style="margin-bottom:8px; border-radius:8px;" placeholder="Gamertag...">
+            <button class="mini-btn" style="width:100%; padding:8px;" onclick="saveDisplayName()">Save Tag</button>
         </div>
     </div>
 
-<script>
-        // -------------------------------------------------------------
-        // STATE CORE & ACCOUNT FRAMEWORK CONFIGURATION
-        // -------------------------------------------------------------
-        let activeUser = JSON.parse(localStorage.getItem('jax_loggedInUser')) || null;
-        let registrationMode = false;
-        let currentActiveTab = 'friends';
-        let targetedChatPartnerEmail = null; // Keeps track of active conversation scope
+    <script>
+        const themeSelect = document.getElementById('themeSelect');
+        themeSelect.addEventListener('change', (e) => {
+            const theme = e.target.value;
+            if (theme === 'crimson') {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
+                document.documentElement.setAttribute('data-theme', theme);
+            }
+        });
+
+        const gameSearch = document.getElementById('gameSearch');
+        const gameLinks = document.querySelectorAll('.game-grid .game-link');
+
+        gameSearch.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            gameLinks.forEach(link => {
+                const title = link.getAttribute('data-title') || '';
+                const altText = link.querySelector('img')?.alt.toLowerCase() || '';
+                if (title.toLowerCase().includes(query) || altText.includes(query)) {
+                    link.classList.remove('is-hidden');
+                } else {
+                    link.classList.add('is-hidden');
+                }
+            });
+        });
+
+        let favorites = JSON.parse(localStorage.getItem('jax_favorites') || '[]');
+        gameLinks.forEach((link, index) => {
+            const heartBtn = document.createElement('button');
+            heartBtn.className = 'favorite-heart-btn';
+            heartBtn.innerHTML = '♥';
+            if (favorites.includes(index)) {
+                heartBtn.classList.add('is-active');
+            }
+
+            heartBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (favorites.includes(index)) {
+                    favorites = favorites.filter(i => i !== index);
+                    heartBtn.classList.remove('is-active');
+                } else {
+                    favorites.push(index);
+                    heartBtn.classList.add('is-active');
+                }
+                localStorage.setItem('jax_favorites', JSON.stringify(favorites));
+            });
+
+            link.appendChild(heartBtn);
+        });
+
+        const horrorBtn = document.getElementById('horrorBtn');
+        const horrorOverlay = document.getElementById('horrorOverlay');
+        const pinInput = document.getElementById('pinInput');
+        const pinSection = document.getElementById('pinSection');
+        const horrorGames = document.getElementById('horrorGames');
+        const CORRECT_PIN = "1234";
+
+        horrorBtn.addEventListener('click', () => {
+            horrorOverlay.style.display = 'flex';
+        });
+
+        function pinPress(num) {
+            if (pinInput.value.length < 4) {
+                pinInput.value += num;
+            }
+            if (pinInput.value === CORRECT_PIN) {
+                pinSection.style.display = 'none';
+                horrorGames.style.display = 'block';
+            } else if (pinInput.value.length === 4) {
+                setTimeout(() => {
+                    alert('Incorrect PIN!');
+                    clearPin();
+                }, 100);
+            }
+        }
+
+        function clearPin() {
+            pinInput.value = '';
+        }
+
+        function closeHorror() {
+            horrorOverlay.style.display = 'none';
+            clearPin();
+            pinSection.style.display = 'block';
+            horrorGames.style.display = 'none';
+        }
+
+        const authOverlay = document.getElementById('authOverlay');
+        const nameSetupOverlay = document.getElementById('nameSetupOverlay');
+        let currentUser = localStorage.getItem('jax_user') || null;
+
+        function updateAuthHeader() {
+            const authHeaderBtn = document.getElementById('authHeaderBtn');
+            if (currentUser) {
+                authHeaderBtn.textContent = `${currentUser} 👤`;
+            } else {
+                authHeaderBtn.textContent = 'Sign In 👤';
+            }
+        }
+        updateAuthHeader();
 
         function openAuthSystem() {
-            if (activeUser) {
-                updateActiveUserGameStatus("Offline");
-                localStorage.removeItem('jax_loggedInUser');
-                activeUser = null;
-                alert("Logged out successfully!");
-                refreshAccountStatusUI();
-                renderSocialSystemDashboard();
-                return;
-            }
-            toggleAuthMode(false);
-            document.getElementById('authOverlay').style.display = 'flex';
+            authOverlay.style.display = 'flex';
         }
 
         function closeAuthSystem() {
-            document.getElementById('authOverlay').style.display = 'none';
-        }
-
-        function toggleAuthMode(isSignUp) {
-            registrationMode = isSignUp;
-            document.getElementById('authTitle').innerText = isSignUp ? "Create Account" : "Sign In";
-            document.getElementById('authSwitchFooter').innerHTML = isSignUp ? 
-                `Already registered? <span onclick="toggleAuthMode(false)">Sign In</span>` : 
-                `Don't have an account? <span onclick="toggleAuthMode(true)">Create Account</span>`;
+            authOverlay.style.display = 'none';
         }
 
         function submitAuthData() {
-            const email = document.getElementById('authEmail').value.trim();
-            const pass = document.getElementById('authPassword').value;
-            if (!email || !pass) { alert("Please complete form credentials."); return; }
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
 
-            let usersList = JSON.parse(localStorage.getItem('jax_registeredUsers')) || {};
-            const chosenSeconds = Math.floor(Math.random() * (5 - 2 + 1)) + 2;
-            
-            const loader = document.getElementById('authGatewayLoader');
-            loader.style.display = 'flex';
-            
-            setTimeout(() => {
-                if (registrationMode) {
-                    if (usersList[email]) { loader.style.display = 'none'; alert("Email already exists."); return; }
-                    usersList[email] = { email: email, password: pass, username: "", currentStatus: "Browsing Hub" };
-                    localStorage.setItem('jax_registeredUsers', JSON.stringify(usersList));
-                    activeUser = usersList[email];
-                    localStorage.setItem('jax_loggedInUser', JSON.stringify(activeUser));
-                    closeAuthSystem();
-                    checkUsernameLockState();
-                } else {
-                    if (usersList[email] && usersList[email].password === pass) {
-                        activeUser = usersList[email];
-                        activeUser.currentStatus = "Browsing Hub";
-                        usersList[email].currentStatus = "Browsing Hub";
-                        localStorage.setItem('jax_registeredUsers', JSON.stringify(usersList));
-                        localStorage.setItem('jax_loggedInUser', JSON.stringify(activeUser));
-                        closeAuthSystem();
-                        checkUsernameLockState();
-                    } else {
-                        loader.style.display = 'none';
-                        alert("Invalid credentials.");
-                    }
-                }
-                loader.style.display = 'none';
-                refreshAccountStatusUI();
-            }, chosenSeconds * 1000);
+            if (!email || !password) {
+                alert('Please enter both email and password.');
+                return;
+            }
+
+            closeAuthSystem();
+            nameSetupOverlay.style.display = 'flex';
         }
 
-        function checkUsernameLockState() {
-            if (activeUser && !activeUser.username) {
-                document.getElementById('nameSetupOverlay').style.display = 'flex';
+        function saveDisplayName() {
+            const nameInput = document.getElementById('displayNameInput').value.trim();
+            if (nameInput) {
+                currentUser = nameInput;
+                localStorage.setItem('jax_user', currentUser);
+                updateAuthHeader();
+                nameSetupOverlay.style.display = 'none';
+                renderFriendsList();
             } else {
-                document.getElementById('nameSetupOverlay').style.display = 'none';
+                alert('Please enter a valid display name.');
             }
-            renderSocialSystemDashboard();
         }
 
-        function saveChosenDisplayName() {
-            const chosenName = document.getElementById('displayUniqueNameInput').value.trim();
-            if (!chosenName || chosenName.length < 3) { alert("Username must be 3+ characters."); return; }
+        let friends = JSON.parse(localStorage.getItem('jax_friends') || '["GamerTag99", "PixelNinja"]');
+        let messages = [
+            { sender: 'System', text: 'Welcome to Jax Games Live Chat!' }
+        ];
 
-            let usersList = JSON.parse(localStorage.getItem('jax_registeredUsers')) || {};
-            for (let userKey in usersList) {
-                if (usersList[userKey].username && usersList[userKey].username.toLowerCase() === chosenName.toLowerCase()) {
-                    alert("Username already taken!");
-                    return;
-                }
+        function toggleDashboardTab(tab) {
+            const friendsTab = document.getElementById('dashFriendsTabHead');
+            const chatTab = document.getElementById('dashChatTabHead');
+            const friendsPane = document.getElementById('dashFriendsPane');
+            const chatPane = document.getElementById('dashChatPane');
+
+            if (tab === 'friends') {
+                friendsTab.classList.add('active');
+                chatTab.classList.remove('active');
+                friendsPane.style.display = 'flex';
+                chatPane.style.display = 'none';
+            } else {
+                chatTab.classList.add('active');
+                friendsTab.classList.remove('active');
+                chatPane.style.display = 'flex';
+                friendsPane.style.display = 'none';
+                renderChatWindow();
             }
+        }
 
-            activeUser.username = chosenName;
-            usersList[activeUser.email] = activeUser;
-            localStorage.setItem('jax_registeredUsers', JSON.stringify(usersList));
-            localStorage.setItem('jax_loggedInUser', JSON.stringify(activeUser));
+        function renderFriendsList() {
+            const box = document.getElementById('dashboardFriendsRenderBox');
+            box.innerHTML = '';
             
-            document.getElementById('nameSetupOverlay').style.display = 'none';
-            refreshAccountStatusUI();
-            renderSocialSystemDashboard();
-        }
-
-        function refreshAccountStatusUI() {
-            const btn = document.getElementById('authHeaderBtn');
-            btn.innerText = activeUser ? `Logout (${activeUser.username || "Pending"}) 👤` : "Sign In 👤";
-        }
-
-        function updateActiveUserGameStatus(statusText) {
-            if (!activeUser) return;
-            let usersList = JSON.parse(localStorage.getItem('jax_registeredUsers')) || {};
-            if (usersList[activeUser.email]) {
-                usersList[activeUser.email].currentStatus = statusText;
-                localStorage.setItem('jax_registeredUsers', JSON.stringify(usersList));
+            if (friends.length === 0) {
+                box.innerHTML = '<p style="color:var(--text-muted); font-size:0.85rem;">No friends added yet.</p>';
+                return;
             }
-            activeUser.currentStatus = statusText;
-            localStorage.setItem('jax_loggedInUser', JSON.stringify(activeUser));
-        }
 
-        // -------------------------------------------------------------
-        // DYNAMIC CONTENT DASHBOARD TAB ARCHITECTURE
-        // -------------------------------------------------------------
-        function toggleDashboardTab(tabName) {
-            currentActiveTab = tabName;
-            document.getElementById('dashFriendsTabHead').classList.toggle('active', tabName === 'friends');
-            document.getElementById('dashChatTabHead').classList.toggle('active', tabName === 'chat');
-            document.getElementById('dashFriendsPane').style.display = tabName === 'friends' ? 'block' : 'none';
-            document.getElementById('dashChatPane').style.display = tabName === 'chat' ? 'block' : 'none';
-            renderSocialSystemDashboard();
+            friends.forEach(name => {
+                const card = document.createElement('div');
+                card.className = 'friend-dashboard-card';
+                card.innerHTML = `
+                    <div>
+                        <span class="friend-name-tag">${name}</span>
+                        <div class="friend-status-activity">Online</div>
+                    </div>
+                    <button class="mini-btn" onclick="toggleDashboardTab('chat')">Message</button>
+                `;
+                box.appendChild(card);
+            });
         }
+        renderFriendsList();
 
         function handleAddFriendSubmit() {
-            if (!activeUser) { alert("Please log in to manage your network directory."); return; }
-            const nameVal = document.getElementById('addFriendUsernameInput').value.trim();
-            if (!nameVal) return;
-
-            let usersList = JSON.parse(localStorage.getItem('jax_registeredUsers')) || {};
-            let targetUser = null;
-            for (let e in usersList) {
-                if (usersList[e].username && usersList[e].username.toLowerCase() === nameVal.toLowerCase()) {
-                    targetUser = usersList[e];
-                    break;
-                }
-            }
-
-            if (!targetUser) { alert("Targeted user display name not found."); return; }
-            if (targetUser.email === activeUser.email) { alert("You can't add yourself."); return; }
-
-            let friendsKey = `jax_friends_${activeUser.email}`;
-            let currentFriends = JSON.parse(localStorage.getItem(friendsKey)) || [];
-            if (currentFriends.some(f => f.email === targetUser.email)) { alert("User already added."); return; }
-
-            currentFriends.push({ email: targetUser.email, username: targetUser.username });
-            localStorage.setItem(friendsKey, JSON.stringify(currentFriends));
-
-            // Auto reciprocate listing for easy testing inside simulation environments
-            let targetFriendsKey = `jax_friends_${targetUser.email}`;
-            let targetFriends = JSON.parse(localStorage.getItem(targetFriendsKey)) || [];
-            if (!targetFriends.some(f => f.email === activeUser.email)) {
-                targetFriends.push({ email: activeUser.email, username: activeUser.username });
-                localStorage.setItem(targetFriendsKey, JSON.stringify(targetFriends));
-            }
-
-            document.getElementById('addFriendUsernameInput').value = '';
-            renderSocialSystemDashboard();
-        }
-
-        function openDirectChatPane(friendEmail) {
-            targetedChatPartnerEmail = friendEmail;
-            toggleDashboardTab('chat');
-        }
-
-        function renderSocialSystemDashboard() {
-            if (!activeUser) {
-                document.getElementById('dashboardFriendsRenderBox').innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:20px;">Please Sign In to track your friends list activity.</div>`;
-                document.getElementById('chatActiveWindowArea').innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:40px;">Please Sign In to access live chat systems.</div>`;
-                return;
-            }
-
-            if (currentActiveTab === 'friends') {
-                const box = document.getElementById('dashboardFriendsRenderBox');
-                box.innerHTML = '';
-
-                let currentFriends = JSON.parse(localStorage.getItem(`jax_friends_${activeUser.email}`)) || [];
-                let registeredProfiles = JSON.parse(localStorage.getItem('jax_registeredUsers')) || {};
-
-                if (currentFriends.length === 0) {
-                    box.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:0.95rem;padding:20px;">Your friends directory is empty. Add users by username above!</div>`;
-                    return;
-                }
-
-                currentFriends.forEach(friend => {
-                    const profile = registeredProfiles[friend.email] || { currentStatus: "Offline" };
-                    const card = document.createElement('div');
-                    card.className = 'friend-dashboard-card';
-                    card.innerHTML = `
-                        <div class="friend-info-block">
-                            <span class="friend-name-tag">👤 ${friend.username}</span>
-                            <span class="friend-status-activity">🎮 Activity: ${profile.currentStatus || 'Offline'}</span>
-                        </div>
-                        <div>
-                            <button class="chat-action-btn" onclick="openDirectChatPane('${friend.email}')">💬 Chat</button>
-                        </div>
-                    `;
-                    box.appendChild(card);
-                });
-            } else {
-                // RENDER ACTIVE CHAT INTERFACE WINDOW
-                const area = document.getElementById('chatActiveWindowArea');
-                if (!targetedChatPartnerEmail) {
-                    area.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:40px;">Select a contact from your Friends list tab to start chatting!</div>`;
-                    return;
-                }
-
-                let registeredProfiles = JSON.parse(localStorage.getItem('jax_registeredUsers')) || {};
-                let partnerProfile = registeredProfiles[targetedChatPartnerEmail] || { username: "User" };
-
-                area.innerHTML = `
-                    <div style="text-align:left; font-weight:bold; margin-bottom:10px; color:var(--neon-accent);">💬 Chatting with: ${partnerProfile.username}</div>
-                    <div class="chat-history-box" id="chatMsgLogsContainer"></div>
-                    <div class="chat-input-bar">
-                        <input type="text" id="chatMessagePayloadInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') dispatchDirectTextMessage()">
-                        <button class="chat-send-btn" onclick="dispatchDirectTextMessage()">Send</button>
-                    </div>
-                `;
-
-                renderMessageLogBubbles();
+            const input = document.getElementById('addFriendUsernameInput');
+            const target = input.value.trim();
+            if (target && !friends.includes(target)) {
+                friends.push(target);
+                localStorage.setItem('jax_friends', JSON.stringify(friends));
+                input.value = '';
+                renderFriendsList();
             }
         }
 
-        // -------------------------------------------------------------
-        // WI-FI BROADCAST STORAGE ROUTINES LOGIC
-        // -------------------------------------------------------------
-        function getGlobalChatConversationKey(userA, userB) {
-            // Generates a unique tracking token independent of who initiates the message line
-            return [userA, userB].sort().join("_msgKey_");
-        }
+        function renderChatWindow() {
+            const chatArea = document.getElementById('chatActiveWindowArea');
+            chatArea.innerHTML = `
+                <div class="chat-history-box" id="chatHistoryBox"></div>
+                <div class="chat-input-bar">
+                    <input type="text" id="chatMessageInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+                    <button class="mini-btn" onclick="sendChatMessage()">Send</button>
+                </div>
+            `;
 
-        function dispatchDirectTextMessage() {
-            const input = document.getElementById('chatMessagePayloadInput');
-            const messageText = input.value.trim();
-            if (!messageText || !targetedChatPartnerEmail || !activeUser) return;
-
-            const conversationToken = getGlobalChatConversationKey(activeUser.email, targetedChatPartnerEmail);
-            let messageLog = JSON.parse(localStorage.getItem(`jax_chatlog_${conversationToken}`)) || [];
-
-            messageLog.push({
-                senderEmail: activeUser.email,
-                senderName: activeUser.username,
-                text: messageText,
-                timestamp: Date.now()
-            });
-
-            localStorage.setItem(`jax_chatlog_${conversationToken}`, JSON.stringify(messageLog));
-            input.value = '';
-            renderMessageLogBubbles();
-
-            // Trigger a dummy storage event so it updates other matching frames instantly
-            localStorage.setItem('jax_chat_sync_ping', Date.now());
-        }
-
-        function renderMessageLogBubbles() {
-            const container = document.getElementById('chatMsgLogsContainer');
-            if (!container || !targetedChatPartnerEmail || !activeUser) return;
-
-            const conversationToken = getGlobalChatConversationKey(activeUser.email, targetedChatPartnerEmail);
-            let messageLog = JSON.parse(localStorage.getItem(`jax_chatlog_${conversationToken}`)) || [];
-
-            container.innerHTML = '';
-            
-            if(messageLog.length === 0) {
-                container.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:0.85rem;margin:auto 0;">No messages yet. Say hello! 👋</div>`;
-                return;
-            }
-
-            messageLog.forEach(msg => {
+            const historyBox = document.getElementById('chatHistoryBox');
+            messages.forEach(msg => {
+                const isUser = msg.sender === (currentUser || 'You');
                 const bubble = document.createElement('div');
-                const isOutgoing = msg.senderEmail === activeUser.email;
-                bubble.className = `chat-message-bubble ${isOutgoing ? 'outgoing' : 'incoming'}`;
-                
-                bubble.innerHTML = `
-                    <span class="chat-meta-header">${isOutgoing ? 'You' : msg.senderName}</span>
-                    <div>${escapeHtmlContent(msg.text)}</div>
-                `;
-                container.appendChild(bubble);
+                bubble.className = `chat-message-bubble ${isUser ? 'outgoing' : 'incoming'}`;
+                bubble.innerHTML = `<span class="chat-meta-header">${msg.sender}</span>${msg.text}`;
+                historyBox.appendChild(bubble);
             });
-
-            container.scrollTop = container.scrollHeight;
+            historyBox.scrollTop = historyBox.scrollHeight;
         }
 
-        function escapeHtmlContent(str) {
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
-
-        // Catch incoming events broadcasted from alternate tabs on the same local network
-        window.addEventListener('storage', (e) => {
-            if (currentActiveTab === 'chat' && (e.key === 'jax_chat_sync_ping' || e.key.startsWith('jax_chatlog_'))) {
-                renderMessageLogBubbles();
+        function sendChatMessage() {
+            const input = document.getElementById('chatMessageInput');
+            const text = input.value.trim();
+            if (text) {
+                messages.push({ sender: currentUser || 'You', text: text });
+                input.value = '';
+                renderChatWindow();
             }
-            if (e.key === 'jax_registeredUsers') {
-                renderSocialSystemDashboard();
-            }
-        });
-
-        // Periodic background poll updates for statuses 
-        setInterval(() => {
-            if (activeUser && currentActiveTab === 'friends') {
-                renderSocialSystemDashboard();
-            }
-        }, 3000);
-
-        // -------------------------------------------------------------
-        // PERSISTENT FAVORITE GAMES ENGINE ALGORITHM
-        // -------------------------------------------------------------
-        function getFavoriteArray() {
-            if (!activeUser) return JSON.parse(localStorage.getItem('jax_guest_favorites')) || [];
-            return JSON.parse(localStorage.getItem(`jax_favorites_${activeUser.email}`)) || [];
         }
-
-        function saveFavoriteArray(arr) {
-            if (!activeUser) {
-                localStorage.setItem('jax_guest_favorites', JSON.stringify(arr));
-            } else {
-                localStorage.setItem(`jax_favorites_${activeUser.email}`, JSON.stringify(arr));
-            }
-            applyFavoritesOrderingSort();
-        }
-
-        function toggleFavoriteGame(event, gameId) {
-            event.preventDefault();
-            event.stopPropagation();
-            let favorites = getFavoriteArray();
-            if (favorites.includes(gameId)) {
-                favorites = favorites.filter(id => id !== gameId);
-            } else {
-                favorites.push(gameId);
-            }
-            saveFavoriteArray(favorites);
-        }
-
-        function applyFavoritesOrderingSort() {
-            const grid = document.getElementById('mainGameGrid');
-            const games = Array.from(grid.querySelectorAll('.game-link'));
-            const favorites = getFavoriteArray();
-
-            games.forEach(game => {
-                const heartBtn = game.querySelector('.favorite-heart-btn');
-                if (favorites.includes(game.id)) {
-                    heartBtn.classList.add('is-active');
-                    game.dataset.favOrder = "1";
-                } else {
-                    heartBtn.classList.remove('is-active');
-                    game.dataset.favOrder = "2";
-                }
-            });
-
-            games.sort((a, b) => parseInt(a.dataset.favOrder) - parseInt(b.dataset.favOrder));
-            games.forEach(game => grid.appendChild(game));
-        }
-
-        // -------------------------------------------------------------
-        // CORE HANDLERS HOOKS
-        // -------------------------------------------------------------
-        const themeSelect = document.getElementById('themeSelect');
-        themeSelect.addEventListener('change', (e) => {
-            document.documentElement.setAttribute('data-theme', e.target.value);
-        });
-
-        const searchInput = document.getElementById('gameSearch');
-        const gameLinks = document.querySelectorAll('.game-link');
-
-        searchInput.addEventListener('input', function() {
-            const filterText = this.value.toLowerCase().trim();
-            if (filterText === 'jaxon secret games') { window.open('https://jaxonsecretgames.w3spaces.com/', '_blank'); this.value = ''; return; } 
-            if (filterText === 'duck proxy') { window.open('https://duckproxy.onrender.com/', '_blank'); this.value = ''; return; } 
-            if (filterText === 'unblocked gn math') { window.open('https://jaxgames47.github.io/gn-math/', '_blank'); this.value = ''; return; }
-
-            gameLinks.forEach(link => {
-                const gameTitle = link.getAttribute('data-title').toLowerCase();
-                link.classList.toggle('is-hidden', !gameTitle.includes(filterText));
-            });
-        });
-
-        gameLinks.forEach(link => {
-            const button = link.querySelector('.game-button');
-            if (!button) return;
-            link.addEventListener('mousemove', (e) => {
-                const rect = button.getBoundingClientRect();
-                const x = e.clientX - rect.left - (rect.width / 2);
-                const y = e.clientY - rect.top - (rect.height / 2);
-                button.style.transform = `translateY(-10px) rotateX(${(y / (rect.height / 2)) * -12}deg) rotateY(${(x / (rect.width / 2)) * 12}deg) translateZ(20px)`;
-            });
-            link.addEventListener('mouseleave', () => { button.style.transform = ''; });
-
-            link.addEventListener('click', function(e) {
-                if (e.target.classList.contains('favorite-heart-btn')) return;
-                e.preventDefault();
-                const img = button.querySelector('img');
-                const targetUrl = this.href;
-                const portal = document.getElementById('cinematicPortal');
-                const rect = button.getBoundingClientRect();
-
-                const parsedTitle = this.getAttribute('data-title').split(' ')[0].toUpperCase();
-                updateActiveUserGameStatus(parsedTitle);
-
-                const clone = document.createElement('div');
-                clone.className = 'focus-clone';
-                clone.style.top = `${rect.top}px`;
-                clone.style.left = `${rect.left}px`;
-                clone.innerHTML = `
-                    <div class="portal-overlay">
-                        <div class="spinner"></div>
-                        <div class="loading-text">Loading</div>
-                    </div>
-                    <img src="${img.getAttribute('src')}" alt="Assets">
-                `;
-
-                portal.appendChild(clone);
-                button.style.opacity = '0';
-                document.body.classList.add('is-cinematic-loading');
-
-                requestAnimationFrame(() => {
-                    clone.style.top = `${window.innerHeight / 2 - rect.height / 2}px`;
-                    clone.style.left = `${window.innerWidth / 2 - rect.width / 2}px`;
-                    clone.classList.add('is-zoomed');
-                });
-
-                setTimeout(() => { window.location.href = targetUrl; }, 1400);
-            });
-        });
-    
-        const horrorOverlay=document.getElementById('horrorOverlay'),horrorBtn=document.getElementById('horrorBtn'),pinInput=document.getElementById('pinInput'),pinSection=document.getElementById('pinSection'),horrorGames=document.getElementById('horrorGames');let currentPin='';
-        horrorBtn.onclick=()=>{currentPin='';pinInput.value='';pinSection.style.display='block';horrorGames.style.display='none';horrorOverlay.style.display='flex';}
-        function pinPress(n){if(currentPin.length>=4)return;currentPin+=n;pinInput.value='*'.repeat(currentPin.length);if(currentPin.length===4){if(currentPin==='0311'){pinSection.style.display='none';horrorGames.style.display='block';}else{alert('Incorrect PIN');clearPin();}}}
-        function clearPin(){currentPin='';pinInput.value='';}
-        function closeHorror(){horrorOverlay.style.display='none';}
-
-        refreshAccountStatusUI();
-        checkUsernameLockState();
-        applyFavoritesOrderingSort();
-</script>
+    </script>
 </body>
 </html>
