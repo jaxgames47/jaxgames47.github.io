@@ -68,7 +68,7 @@ select.btn{appearance:none;padding-right:14px}
 .tile{position:relative}
 .tile a{display:block;text-decoration:none;color:inherit}
 .thumb{position:relative;aspect-ratio:1;border-radius:16px;overflow:hidden;background:var(--card);border:1px solid var(--line);transition:transform .25s,border-color .25s,box-shadow .25s}
-.thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}
+.thumb img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}
 .thumb .ph{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:2.4rem;background:linear-gradient(135deg,var(--accent),var(--card));color:var(--on-accent)}
 .tile a:hover .thumb,.tile a:focus-visible .thumb{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 12px 24px rgba(0,0,0,.45)}
 .tile a:hover img{transform:scale(1.06)}
@@ -227,6 +227,9 @@ select.btn{appearance:none;padding-right:14px}
 
 <script>
 const BASE='https://jaxgames47.github.io/';
+// Your game images (gtag.jpeg, blockblast.png, ...) must sit in the same folder as this file.
+// If they live somewhere else, put that folder here, e.g. 'images/' or 'https://jaxgames47.github.io/yourrepo/'
+const IMG_BASE='';
 const CATS=['arcade','shooter','sports','puzzle','sandbox','multiplayer','tools'];
 // slug | name | image | category
 const GAMES=`guessit|Guess It!||multiplayer
