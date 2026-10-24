@@ -1,913 +1,420 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jax Games 47 | Next-Gen</title>
-    <style>
-        :root {
-            --bg-main: #140504;
-            --bg-surface: #220a08;
-            --bg-card: #2e0e0b;
-            --neon-accent: #FF0800;
-            --text-main: #ffebee;
-            --text-muted: rgba(255, 235, 238, 0.6);
-            --border-color: #540400;
-            --ultra-timing: cubic-bezier(0.25, 1, 0.3, 1);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jax Games 47</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#140504;--surface:#1d0907;--card:#2a0e0b;--line:#4a1612;
+  --accent:#ff2a1f;--on-accent:#fff;--text:#ffeceb;--muted:#b99794;
+  --display:'Bricolage Grotesque','Trebuchet MS',system-ui,sans-serif;
+  --body:'DM Sans','Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+}
+[data-theme=midnight]{--bg:#0a0e18;--surface:#101626;--card:#18203a;--line:#26335a;--accent:#4d8dff;--text:#eef2fb;--muted:#93a0bf}
+[data-theme=cyber]{--bg:#08090b;--surface:#0f1114;--card:#171a20;--line:#25302f;--accent:#00ffcc;--on-accent:#00231c;--text:#e6edf3;--muted:#8a9a9a}
+[data-theme=emerald]{--bg:#05180f;--surface:#0a2218;--card:#10311f;--line:#1c5238;--accent:#2fd69a;--on-accent:#032014;--text:#ebfcf3;--muted:#85b3a0}
+[data-theme=sunset]{--bg:#190b16;--surface:#241020;--card:#341830;--line:#5b2650;--accent:#ff4d73;--text:#fff0f3;--muted:#c49aac}
+[data-theme=amethyst]{--bg:#0f0920;--surface:#170f2e;--card:#221645;--line:#3c2672;--accent:#b36bff;--on-accent:#18072e;--text:#f6f0ff;--muted:#a898cc}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);min-height:100vh;transition:background .4s,color .4s}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
 
-        [data-theme="midnight"] {
-            --bg-main: #0B0F19;
-            --bg-surface: #111827;
-            --bg-card: #1F2937;
-            --neon-accent: #3B82F6;
-            --text-main: #F3F4F6;
-            --text-muted: rgba(243, 244, 246, 0.6);
-            --border-color: #1E3A8A;
-        }
+/* sidebar */
+.side{position:sticky;top:0;height:100vh;padding:24px 16px;background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:22px;overflow-y:auto}
+.logo{font-family:var(--display);font-weight:800;font-size:1.6rem;line-height:.95;letter-spacing:-.5px;padding:0 8px}
+.logo b{display:block;color:var(--accent);font-size:2.3rem}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{display:flex;justify-content:space-between;align-items:center;gap:8px;background:none;border:0;border-radius:10px;padding:10px 12px;text-align:left;color:var(--muted);font-weight:500;transition:background .15s,color .15s}
+.nav button:hover{background:var(--card);color:var(--text)}
+.nav button.on{background:var(--accent);color:var(--on-accent);font-weight:700}
+.nav small{font-size:.75rem;opacity:.75}
+.side-note{margin-top:auto;font-size:.8rem;color:var(--muted);padding:0 8px;line-height:1.4}
 
-        [data-theme="cyber"] {
-            --bg-main: #0A0A0C;
-            --bg-surface: #121216;
-            --bg-card: #1A1A22;
-            --neon-accent: #00FFCC;
-            --text-main: #E2E8F0;
-            --text-muted: rgba(226, 232, 240, 0.6);
-            --border-color: #004D40;
-        }
+/* top bar */
+main{min-width:0;padding:0 clamp(16px,3vw,40px) 60px}
+.top{position:sticky;top:0;z-index:20;display:flex;gap:10px;align-items:center;padding:16px 0;background:linear-gradient(var(--bg) 75%,transparent)}
+.search{flex:1;min-width:0;position:relative}
+.search input{width:100%;padding:11px 44px 11px 16px;border-radius:12px;border:1px solid var(--line);background:var(--surface);outline:none;transition:border-color .2s,box-shadow .2s}
+.search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+.search kbd{position:absolute;right:12px;top:50%;transform:translateY(-50%);font:600 .75rem var(--body);color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1px 7px}
+.btn{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-weight:600;white-space:nowrap;transition:border-color .15s,transform .15s}
+.btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+select.btn{appearance:none;padding-right:14px}
 
-        [data-theme="emerald"] {
-            --bg-main: #061A14;
-            --bg-surface: #0B2920;
-            --bg-card: #12382C;
-            --neon-accent: #10B981;
-            --text-main: #ECFDF5;
-            --text-muted: rgba(236, 253, 245, 0.6);
-            --border-color: #047857;
-        }
+/* hero */
+.hero{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;margin:8px 0 34px}
+.hero-main{border-radius:20px;padding:32px;border:1px solid var(--line);background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--accent) 38%,var(--card)),var(--card) 62%);display:flex;flex-direction:column;justify-content:space-between;gap:28px;min-height:210px}
+.hero-main h1{font-family:var(--display);font-weight:800;font-size:clamp(1.9rem,4vw,3rem);line-height:1;letter-spacing:-1px;max-width:14ch}
+.hero-main p{color:var(--muted);margin-top:10px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+.recent{border-radius:20px;padding:20px;border:1px solid var(--line);background:var(--surface)}
+.recent h2,.sec-head h2{font-family:var(--display);font-size:1.15rem;font-weight:600}
+.recent-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.recent-empty{color:var(--muted);font-size:.9rem;margin-top:12px;line-height:1.45}
 
-        [data-theme="sunset"] {
-            --bg-main: #1A0C18;
-            --bg-surface: #291225;
-            --bg-card: #381A33;
-            --neon-accent: #F43F5E;
-            --text-main: #FFF1F2;
-            --text-muted: rgba(255, 241, 242, 0.6);
-            --border-color: #BE123C;
-        }
+/* grid */
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px}
+.sec-head span{color:var(--muted);font-size:.9rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:18px}
+.tile{position:relative}
+.tile a{display:block;text-decoration:none;color:inherit}
+.thumb{position:relative;aspect-ratio:1;border-radius:16px;overflow:hidden;background:var(--card);border:1px solid var(--line);transition:transform .25s,border-color .25s,box-shadow .25s}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}
+.thumb .ph{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:2.4rem;background:linear-gradient(135deg,var(--accent),var(--card));color:var(--on-accent)}
+.tile a:hover .thumb,.tile a:focus-visible .thumb{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 12px 24px rgba(0,0,0,.45)}
+.tile a:hover img{transform:scale(1.06)}
+.name{margin-top:9px;font-weight:700;font-size:.92rem;line-height:1.2}
+.cat{color:var(--muted);font-size:.78rem;margin-top:2px;text-transform:capitalize}
+.badge{position:absolute;left:8px;top:8px;z-index:2;background:var(--accent);color:var(--on-accent);font-size:.7rem;font-weight:800;border-radius:6px;padding:2px 7px}
+.heart{position:absolute;top:8px;right:8px;z-index:3;width:30px;height:30px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#ddd;font-size:.95rem;display:grid;place-items:center;backdrop-filter:blur(4px);transition:transform .15s,color .15s}
+.heart:hover{transform:scale(1.15)}
+.heart.on{color:#ff4d6d}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:50px 10px}
+.hidden{display:none!important}
 
-        [data-theme="amethyst"] {
-            --bg-main: #120A21;
-            --bg-surface: #1C1033;
-            --bg-card: #271747;
-            --neon-accent: #A855F7;
-            --text-main: #FAF5FF;
-            --text-muted: rgba(250, 245, 255, 0.6);
-            --border-color: #6B21A8;
-        }
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .25s;z-index:60}
+.scrim.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(400px,100%);z-index:70;background:var(--surface);border-left:1px solid var(--line);transform:translateX(100%);transition:transform .3s cubic-bezier(.25,1,.3,1);display:flex;flex-direction:column}
+.drawer.open{transform:none}
+.drawer-head{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--line)}
+.drawer-head h2{font-family:var(--display);font-size:1.2rem}
+.x{background:none;border:0;font-size:1.3rem;color:var(--muted);padding:4px 8px;border-radius:8px}
+.x:hover{color:var(--text);background:var(--card)}
+.tabs{display:flex;gap:6px;padding:12px 20px 0}
+.tabs button{flex:1;padding:9px;border-radius:10px 10px 0 0;border:0;border-bottom:2px solid transparent;background:none;color:var(--muted);font-weight:700}
+.tabs button.on{color:var(--accent);border-color:var(--accent)}
+.pane{flex:1;min-height:0;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.row{display:flex;gap:8px}
+.row input,.field{flex:1;min-width:0;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);outline:none}
+.row input:focus,.field:focus{border-color:var(--accent)}
+.list{display:flex;flex-direction:column;gap:8px;overflow-y:auto}
+.friend{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-weight:800;flex:none}
+.friend span.n{flex:1;font-weight:700;overflow:hidden;text-overflow:ellipsis}
+.chat-log{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px}
+.msg{max-width:82%;padding:8px 12px;border-radius:12px;font-size:.9rem;background:var(--card);border:1px solid var(--line);align-self:flex-start;overflow-wrap:anywhere}
+.msg.me{background:var(--accent);color:var(--on-accent);border-color:var(--accent);align-self:flex-end}
+.msg b{display:block;font-size:.72rem;opacity:.75;margin-bottom:1px}
+.hint{color:var(--muted);font-size:.82rem;line-height:1.4}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+/* modals */
+.modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.72);display:none;place-items:center;padding:16px;backdrop-filter:blur(3px)}
+.modal.show{display:grid}
+.box{width:min(340px,100%);background:var(--surface);border:1px solid var(--accent);border-radius:20px;padding:24px;text-align:center;box-shadow:0 0 40px color-mix(in srgb,var(--accent) 30%,transparent)}
+.box h3{font-family:var(--display);font-size:1.3rem;margin-bottom:6px}
+.dots{display:flex;justify-content:center;gap:12px;margin:18px 0}
+.dots i{width:14px;height:14px;border-radius:50%;border:2px solid var(--line);transition:background .15s}
+.dots i.f{background:var(--accent);border-color:var(--accent)}
+.dots.bad{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pad .btn{padding:14px 0;font-size:1.1rem}
+.hgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
 
-        body {
-            background-color: var(--bg-main);
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: var(--text-main);
-            overflow-x: hidden;
-            min-height: 100vh;
-            transition: background-color 0.5s ease, color 0.5s ease;
-        }
-
-        .page-wrapper {
-            width: 100%;
-            min-height: 100vh;
-        }
-
-        /* Compact Header Controls Toolbar */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 30px;
-            max-width: 1400px;
-            margin: 0 auto;
-            flex-wrap: wrap;
-            gap: 15px;
-            background: var(--bg-surface);
-            border-bottom: 2px solid var(--border-color);
-            border-radius: 0 0 16px 16px;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            user-select: none;
-        }
-
-        .jax { color: #ffffff; }
-        .games-cyan { 
-            color: var(--neon-accent); 
-            text-shadow: 0 0 10px var(--neon-accent);
-        }
-
-        .action-toolbar {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .mini-btn {
-            background: var(--bg-card);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            outline: none;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .mini-btn:hover {
-            border-color: var(--neon-accent);
-            box-shadow: 0 0 8px var(--neon-accent);
-            transform: translateY(-1px);
-        }
-
-        select.mini-btn {
-            appearance: none;
-            padding-right: 20px;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 6px center;
-            background-size: 12px;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 25px 20px 50px 20px;
-            text-align: center;
-        }
-
-        .top-shelf {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        h1.section-title {
-            font-size: 1.8rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #ffffff;
-            margin: 0;
-        }
-
-        .search-container {
-            width: 100%;
-            max-width: 300px;
-        }
-
-        .search-bar {
-            width: 100%;
-            padding: 8px 16px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            border-radius: 20px;
-            border: 2px solid var(--border-color);
-            background-color: var(--bg-surface);
-            color: #ffffff;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .search-bar::placeholder {
-            color: var(--text-muted);
-        }
-
-        .search-bar:focus {
-            border-color: var(--neon-accent);
-            box-shadow: 0 0 10px var(--neon-accent);
-        }
-
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 15px;
-            justify-items: center;
-        }
-
-        .game-link {
-            text-decoration: none;
-            display: block;
-            width: 100%;
-            position: relative;
-        }
-
-        .game-button {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            background-color: var(--bg-card);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            overflow: hidden;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            transition: all 0.3s ease;
-        }
-
-        .game-button img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        .favorite-heart-btn {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            z-index: 10;
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #ccc;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .favorite-heart-btn.is-active {
-            color: #ff3366;
-            border-color: #ff3366;
-        }
-
-        .game-link:hover .game-button {
-            border-color: var(--neon-accent);
-            transform: translateY(-4px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5), 0 0 12px var(--neon-accent);
-        }
-
-        .game-link:hover .game-button img {
-            transform: scale(1.05);
-        }
-
-        .game-link.is-hidden {
-            display: none !important;
-        }
-
-        .social-dashboard-section {
-            max-width: 900px;
-            margin: 40px auto 0 auto;
-            background: var(--bg-surface);
-            border: 2px solid var(--border-color);
-            border-radius: 16px;
-            overflow: hidden;
-        }
-
-        .dashboard-tabs {
-            display: flex;
-            background: var(--bg-card);
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .dashboard-tab-btn {
-            flex: 1;
-            padding: 12px;
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .dashboard-tab-btn.active {
-            color: var(--neon-accent);
-            background: var(--bg-surface);
-            box-shadow: inset 0 -3px 0 var(--neon-accent);
-        }
-
-        .dashboard-tab-content {
-            padding: 20px;
-            min-height: 280px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .friends-layout {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .social-search-bar {
-            display: flex;
-            gap: 8px;
-            max-width: 500px;
-            margin: 0 auto 10px auto;
-            width: 100%;
-        }
-
-        .social-search-bar input {
-            flex: 1;
-            padding: 8px 12px;
-            background: var(--bg-main);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: #fff;
-            outline: none;
-            font-size: 0.85rem;
-        }
-
-        .friends-flex-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            text-align: left;
-        }
-
-        .friend-dashboard-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 10px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .friend-name-tag {
-            font-size: 0.95rem;
-            font-weight: 700;
-        }
-
-        .friend-status-activity {
-            font-size: 0.8rem;
-            color: var(--neon-accent);
-        }
-
-        .chat-pane-layout {
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            height: 280px;
-        }
-
-        .chat-history-box {
-            flex-grow: 1;
-            background: var(--bg-main);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 12px;
-            overflow-y: auto;
-            margin-bottom: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            text-align: left;
-        }
-
-        .chat-message-bubble {
-            max-width: 80%;
-            padding: 8px 12px;
-            border-radius: 10px;
-            font-size: 0.85rem;
-        }
-
-        .chat-message-bubble.incoming {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            align-self: flex-start;
-        }
-
-        .chat-message-bubble.outgoing {
-            background: var(--neon-accent);
-            color: #fff;
-            align-self: flex-end;
-        }
-
-        .chat-meta-header {
-            font-size: 0.7rem;
-            font-weight: 800;
-            display: block;
-            margin-bottom: 2px;
-            opacity: 0.8;
-        }
-
-        .chat-input-bar {
-            display: flex;
-            gap: 8px;
-        }
-
-        .chat-input-bar input {
-            flex: 1;
-            padding: 8px 12px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: #fff;
-            outline: none;
-            font-size: 0.85rem;
-        }
-
-        .horror-overlay, .auth-overlay, .name-setup-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.85);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 99999;
-        }
-
-        .modal-box {
-            width: 320px;
-            background: var(--bg-surface);
-            border: 2px solid var(--neon-accent);
-            border-radius: 14px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .pinpad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
-            margin-top: 10px;
-        }
-
-        #pinInput {
-            width: 100%;
-            padding: 8px;
-            font-size: 1.2rem;
-            text-align: center;
-            margin-bottom: 8px;
-            background: var(--bg-main);
-            border: 1px solid var(--border-color);
-            color: #fff;
-            border-radius: 6px;
-        }
-    </style>
+@media(max-width:860px){
+  .app{grid-template-columns:1fr}
+  .side{position:static;height:auto;flex-direction:row;align-items:center;padding:12px;gap:12px;border-right:0;border-bottom:1px solid var(--line)}
+  .logo{font-size:1.1rem;flex:none}.logo b{font-size:1.4rem}
+  .nav{flex-direction:row;overflow-x:auto;gap:6px}
+  .nav button{white-space:nowrap;border:1px solid var(--line)}
+  .side-note{display:none}
+  .hero{grid-template-columns:1fr}
+  .top{flex-wrap:wrap}
+  .search{flex-basis:100%;order:-1}
+  .search kbd{display:none}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
 </head>
 <body>
+<div class="app">
+  <aside class="side">
+    <div class="logo">Jax<b>Games</b></div>
+    <nav class="nav" id="nav" aria-label="Game categories"></nav>
+    <p class="side-note">Tip: press / to search, or hit Surprise me if you can’t decide.</p>
+  </aside>
 
-    <div class="page-wrapper">
-        <header>
-            <div class="logo"><span class="jax">JAX</span> <span class="games-cyan">GAMES</span></div>
-            <div class="action-toolbar">
-                <button id="horrorBtn" class="mini-btn">Horror 🔒</button>
-                <button id="authHeaderBtn" class="mini-btn" onclick="openAuthSystem()">Sign In 👤</button>
-                <select id="themeSelect" class="mini-btn" aria-label="Switch Design Theme">
-                    <option value="crimson">Crimson Neo</option>
-                    <option value="midnight">Midnight Dark</option>
-                    <option value="cyber">Cyber Shadow</option>
-                    <option value="emerald">Emerald Matrix</option>
-                    <option value="sunset">Sunset Neon</option>
-                    <option value="amethyst">Amethyst Void</option>
-                </select>
-            </div>
-        </header>
-
-        <div class="container">
-            <div class="top-shelf">
-                <h1 class="section-title">Popular Games</h1>
-                <div class="search-container">
-                    <input type="text" id="gameSearch" class="search-bar" placeholder="Search game...">
-                </div>
-            </div>
-
-            <div class="game-grid">
-                <a href="https://jaxgames47.github.io/gtag/" class="game-link" data-title="gorilla tag gtag">
-                    <div class="game-button"><img src="gtag.jpeg" alt="Gorilla Tag"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/blockblast/" class="game-link" data-title="block blast">
-                    <div class="game-button"><img src="blockblast.png" alt="Block Blast"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/minecraftpocket/" class="game-link" data-title="minecraft pocket edition pe mc">
-                    <div class="game-button"><img src="pocketminecraft.png" alt="Minecraft Pocket Edition"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/1v1.lol/" class="game-link" data-title="1v1.lol one v one shooter">
-                    <div class="game-button"><img src="6764d93be2b78_lol.onevone.png" alt="1v1.lol"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/adgac/" class="game-link" data-title="adgac">
-                    <div class="game-button"><img src="672.png" alt="ADGAC"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/cookieclicker/" class="game-link" data-title="cookie clicker idle tycoon">
-                    <div class="game-button"><img src="cookiegames.png" alt="Cookie Clicker"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/candy-crush/" class="game-link" data-title="candy crush match 3">
-                    <div class="game-button"><img src="171.png" alt="Candy Crush"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/camoflaugeandsniper/" class="game-link" data-title="camoflauge and sniper shooter shooting">
-                    <div class="game-button"><img src="378.png" alt="Camoflauge and Sniper"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/makeoverrun/" class="game-link" data-title="makeover run arcade">
-                    <div class="game-button"><img src="398.png" alt="Makeover Run"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/redball4/" class="game-link" data-title="red ball 4 platformer">
-                    <div class="game-button"><img src="242.png" alt="Red Ball 4"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/hollowknightsilksong/" class="game-link" data-title="hollow knight silksong hk metroidvania">
-                    <div class="game-button"><img src="hollowknightsilksong.jpg" alt="Hollow Knight Silksong"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/animalcrossing-game-cube-/" class="game-link" data-title="animal crossing gamecube retro simulator ac">
-                    <div class="game-button"><img src="animal crossing gc.png" alt="Animal Crossing (GAMECUBE)"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/attackhole/" class="game-link" data-title="attack hole arcade black hole">
-                    <div class="game-button"><img src="13.png" alt="Attack Hole"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/hidenseek/" class="game-link" data-title="hide and seek n">
-                    <div class="game-button"><img src="hide n seek.png" alt="Hide and Seek"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/aquapark/" class="game-link" data-title="aquapark.io water slide runner">
-                    <div class="game-button"><img src="aquapark.webp" alt="Aquapark.io"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/amaze/" class="game-link" data-title="amaze puzzle ball">
-                    <div class="game-button"><img src="26.png" alt="Amaze"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/2dworldcup/" class="game-link" data-title="a small world cup football soccer sports 2d">
-                    <div class="game-button"><img src="a small world cup.png" alt="A Small World Cup"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/cheeserolling/" class="game-link" data-title="cheese rolling race arcade">
-                    <div class="game-button"><img src="cheeserolling.png" alt="Cheese Rolling"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/peaksoundboard/" class="game-link" data-title="peak soundboard audio">
-                    <div class="game-button"><img src="Screenshot 2026-06-05 174505.png" alt="Peak Soundboard"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/flappybird/" class="game-link" data-title="flappy bird arcade retro classic tap">
-                    <div class="game-button"><img src="flappybird.png" alt="Flappy Bird"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/rocketgoal/" class="game-link" data-title="rocket goal soccer sports car">
-                    <div class="game-button"><img src="rocketgoal.png" alt="Rocket Goal"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/soundboard/" class="game-link" data-title="soundboard sound audio effects ear">
-                    <div class="game-button"><img src="ear.jpg" alt="Soundboard"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/basketbattle/" class="game-link" data-title="basket battle basketball sports hoops">
-                    <div class="game-button"><img src="basket battle.png" alt="Basket Battle"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/buildaqueen/" class="game-link" data-title="build a queen casual run">
-                    <div class="game-button"><img src="319.png" alt="Build A Queen"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/jaxbot/" class="game-link" data-title="Jaxons Own AI Assistant!">
-                    <div class="game-button"><img src="jax bot.png" alt="Jax Bot"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/amplerlauncher/" class="game-link" data-title="eagercraft minecraft ampler launcher">
-                    <div class="game-button"><img src="eaglercraft.jpg" alt="Ampler Launcher"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/geometerydashlite/" class="game-link" data-title="geometery dash lite rhythm arcade gd dash">
-                    <div class="game-button"><img src="geometery dash lite.png" alt="Geometery Dash Lite"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/memesoundboard/" class="game-link" data-title="loud and meme sounds coming from ur chromebook">
-                    <div class="game-button"><img src="soundboard.jpg" alt="Meme Sound Board"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/amongusonline/" class="game-link" data-title="online multiplayer">
-                    <div class="game-button"><img src="amongus.jpg" alt="Among Us Online"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/subwaysurfers/" class="game-link" data-title="subway surfers runner">
-                    <div class="game-button"><img src="subway-surfers-logo.png" alt="Subway Surfers"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/slope1/" class="game-link" data-title="fun ball games 1 slope">
-                    <div class="game-button"><img src="slope1.png" alt="Slope 1"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/slope2/" class="game-link" data-title="fun ball games 2 slope">
-                    <div class="game-button"><img src="slope2.png" alt="Slope 2"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/tinyfishing/" class="game-link" data-title="fishing game tiny">
-                    <div class="game-button"><img src="tinyfishing.png" alt="Tiny Fishing"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/stickmanhook/" class="game-link" data-title="hook on stickman">
-                    <div class="game-button"><img src="stckman hook.png" alt="Stickman Hook"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/bitlife/" class="game-link" data-title="growing new life game bitlife">
-                    <div class="game-button"><img src="bitlife.png" alt="BitLife"></div>
-                </a>
-                <a href="https://jaxgames47.github.io/magictiles3" class="game-link" data-title="magic tiles 3 music piano">
-                    <div class="game-button"><img src="IMG_0100.jpeg" alt="Magic Tiles 3"></div>
-                </a>
-            </div>
-
-            <div class="social-dashboard-section">
-                <div class="dashboard-tabs">
-                    <button class="dashboard-tab-btn active" id="dashFriendsTabHead" onclick="toggleDashboardTab('friends')">Network Friends</button>
-                    <button class="dashboard-tab-btn" id="dashChatTabHead" onclick="toggleDashboardTab('chat')">Live Local Chat 💬</button>
-                </div>
-                
-                <div class="dashboard-tab-content" id="dashFriendsPane">
-                    <div class="friends-layout">
-                        <div class="social-search-bar">
-                            <input type="text" id="addFriendUsernameInput" placeholder="Enter target username to link...">
-                            <button class="mini-btn" onclick="handleAddFriendSubmit()">+ Add</button>
-                        </div>
-                        <div class="friends-flex-list" id="dashboardFriendsRenderBox"></div>
-                    </div>
-                </div>
-
-                <div class="dashboard-tab-content" id="dashChatPane" style="display:none;">
-                    <div class="chat-pane-layout" id="chatActiveWindowArea"></div>
-                </div>
-            </div>
-        </div>
+  <main>
+    <div class="top">
+      <label class="search">
+        <input id="q" type="search" placeholder="Search games" aria-label="Search games" autocomplete="off">
+        <kbd>/</kbd>
+      </label>
+      <button class="btn" id="friendsBtn">Friends &amp; chat</button>
+      <button class="btn" id="horrorBtn">Horror 🔒</button>
+      <select class="btn" id="theme" aria-label="Theme">
+        <option value="crimson">Crimson</option><option value="midnight">Midnight</option>
+        <option value="cyber">Cyber</option><option value="emerald">Emerald</option>
+        <option value="sunset">Sunset</option><option value="amethyst">Amethyst</option>
+      </select>
+      <button class="btn primary" id="authBtn">Sign in</button>
     </div>
 
-    <div class="horror-overlay" id="horrorOverlay">
-        <div class="modal-box">
-            <div id="pinSection">
-                <h3>🔒 Horror Games</h3>
-                <input id="pinInput" type="password" readonly>
-                <div class="pinpad">
-                    <button class="mini-btn" onclick="pinPress('1')">1</button>
-                    <button class="mini-btn" onclick="pinPress('2')">2</button>
-                    <button class="mini-btn" onclick="pinPress('3')">3</button>
-                    <button class="mini-btn" onclick="pinPress('4')">4</button>
-                    <button class="mini-btn" onclick="pinPress('5')">5</button>
-                    <button class="mini-btn" onclick="pinPress('6')">6</button>
-                    <button class="mini-btn" onclick="pinPress('7')">7</button>
-                    <button class="mini-btn" onclick="pinPress('8')">8</button>
-                    <button class="mini-btn" onclick="pinPress('9')">9</button>
-                    <button class="mini-btn" onclick="clearPin()">C</button>
-                    <button class="mini-btn" onclick="pinPress('0')">0</button>
-                    <button class="mini-btn" onclick="closeHorror()">✕</button>
-                </div>
-            </div>
-            <div id="horrorGames" style="display:none;">
-                <h3 style="margin-bottom:12px;">Horror Games</h3>
-                <div class="game-grid" style="grid-template-columns: repeat(2, 1fr);">
-                    <a href="https://jaxgames47.github.io/granny/" class="game-link"><div class="game-button"><img src="Granny.png"></div></a>
-                    <a href="https://jaxgames47.github.io/thebackrooms/" class="game-link"><div class="game-button"><img src="backrooms.png"></div></a>
-                </div>
-                <button class="mini-btn" style="margin-top:12px;" onclick="closeHorror()">Close</button>
-            </div>
+    <section class="hero">
+      <div class="hero-main">
+        <div>
+          <h1>What are we playing?</h1>
+          <p id="count"></p>
         </div>
-    </div>
-
-    <div class="auth-overlay" id="authOverlay">
-        <div class="modal-box">
-            <div style="text-align: right; margin-bottom: 5px;"><span style="cursor:pointer;" onclick="closeAuthSystem()">✕</span></div>
-            <h3 id="authTitle" style="margin-bottom:12px;">Sign In</h3>
-            <input type="email" id="authEmail" class="search-bar" style="margin-bottom:8px; border-radius:8px;" placeholder="Email Address">
-            <input type="password" id="authPassword" class="search-bar" style="margin-bottom:8px; border-radius:8px;" placeholder="Password">
-            <button class="mini-btn" style="width:100%; padding:8px;" id="authSubmitBtn" onclick="submitAuthData()">Submit</button>
+        <div class="hero-actions">
+          <button class="btn primary" id="random">Surprise me</button>
+          <button class="btn" id="favShortcut">My favorites</button>
         </div>
+      </div>
+      <div class="recent">
+        <h2>Jump back in</h2>
+        <div class="recent-row" id="recent"></div>
+      </div>
+    </section>
+
+    <div class="sec-head"><h2 id="gridTitle">All games</h2><span id="shown"></span></div>
+    <div class="grid" id="grid"></div>
+  </main>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Friends and chat">
+  <div class="drawer-head"><h2>Friends &amp; chat</h2><button class="x" id="drawerClose" aria-label="Close">✕</button></div>
+  <div class="tabs"><button class="on" data-tab="friends">Friends</button><button data-tab="chat">Chat</button></div>
+  <div class="pane" id="paneFriends">
+    <div class="row"><input id="friendIn" placeholder="Add a friend by username"><button class="btn" id="friendAdd">Add</button></div>
+    <div class="list" id="friendList"></div>
+  </div>
+  <div class="pane" id="paneChat" hidden>
+    <div class="chat-log" id="chatLog"></div>
+    <div class="row"><input id="chatIn" placeholder="Type a message"><button class="btn primary" id="chatSend">Send</button></div>
+    <p class="hint">Chat is saved on this device only, so friends can’t see these messages yet.</p>
+  </div>
+</aside>
+
+<div class="modal" id="horrorModal">
+  <div class="box">
+    <div id="pinView">
+      <h3>Horror games</h3><p class="hint">Enter the PIN to unlock.</p>
+      <div class="dots" id="dots"><i></i><i></i><i></i><i></i></div>
+      <div class="pad" id="pad"></div>
     </div>
-
-    <div class="name-setup-overlay" id="nameSetupOverlay">
-        <div class="modal-box">
-            <h3>Choose Display Name</h3>
-            <p style="color:var(--text-muted); font-size:0.8rem; margin: 8px 0 12px 0;">Set your public tag for chat & friends.</p>
-            <input type="text" id="displayNameInput" class="search-bar" style="margin-bottom:8px; border-radius:8px;" placeholder="Gamertag...">
-            <button class="mini-btn" style="width:100%; padding:8px;" onclick="saveDisplayName()">Save Tag</button>
-        </div>
+    <div id="horrorView" hidden>
+      <h3>Horror games</h3>
+      <div class="hgrid">
+        <div class="tile"><a href="https://jaxgames47.github.io/granny/"><div class="thumb"><img src="Granny.png" alt="Granny"></div><div class="name">Granny</div></a></div>
+        <div class="tile"><a href="https://jaxgames47.github.io/thebackrooms/"><div class="thumb"><img src="backrooms.png" alt="The Backrooms"></div><div class="name">The Backrooms</div></a></div>
+      </div>
+      <button class="btn" data-close>Close</button>
     </div>
+  </div>
+</div>
 
-    <script>
-        const themeSelect = document.getElementById('themeSelect');
-        themeSelect.addEventListener('change', (e) => {
-            const theme = e.target.value;
-            if (theme === 'crimson') {
-                document.documentElement.removeAttribute('data-theme');
-            } else {
-                document.documentElement.setAttribute('data-theme', theme);
-            }
-        });
+<div class="modal" id="authModal">
+  <div class="box">
+    <h3 id="authTitle">Pick your gamertag</h3>
+    <p class="hint" style="margin-bottom:14px">This is the name friends and chat will show.</p>
+    <input class="field" id="tagIn" maxlength="20" placeholder="Gamertag" style="width:100%;margin-bottom:12px">
+    <div class="row"><button class="btn" data-close>Cancel</button><button class="btn primary" id="tagSave" style="flex:1">Save gamertag</button></div>
+    <button class="btn" id="signOut" style="width:100%;margin-top:8px" hidden>Sign out</button>
+  </div>
+</div>
 
-        const gameSearch = document.getElementById('gameSearch');
-        const gameLinks = document.querySelectorAll('.game-grid .game-link');
+<script>
+const BASE='https://jaxgames47.github.io/';
+const CATS=['arcade','shooter','sports','puzzle','sandbox','multiplayer','tools'];
+// slug | name | image | category
+const GAMES=`guessit|Guess It!||multiplayer
+gtag|Gorilla Tag|gtag.jpeg|multiplayer
+blockblast|Block Blast|blockblast.png|puzzle
+minecraftpocket|Minecraft Pocket Edition|pocketminecraft.png|sandbox
+1v1.lol|1v1.lol|6764d93be2b78_lol.onevone.png|shooter
+adgac|ADGAC|672.png|arcade
+cookieclicker|Cookie Clicker|cookiegames.png|arcade
+candy-crush|Candy Crush|171.png|puzzle
+camoflaugeandsniper|Camoflauge and Sniper|378.png|shooter
+makeoverrun|Makeover Run|398.png|arcade
+redball4|Red Ball 4|242.png|arcade
+hollowknightsilksong|Hollow Knight Silksong|hollowknightsilksong.jpg|arcade
+animalcrossing-game-cube-|Animal Crossing (GameCube)|animal crossing gc.png|sandbox
+attackhole|Attack Hole|13.png|arcade
+hidenseek|Hide and Seek|hide n seek.png|multiplayer
+aquapark|Aquapark.io|aquapark.webp|arcade
+amaze|Amaze|26.png|puzzle
+2dworldcup|A Small World Cup|a small world cup.png|sports
+cheeserolling|Cheese Rolling|cheeserolling.png|arcade
+peaksoundboard|Peak Soundboard|Screenshot 2026-06-05 174505.png|tools
+flappybird|Flappy Bird|flappybird.png|arcade
+rocketgoal|Rocket Goal|rocketgoal.png|sports
+soundboard|Soundboard|ear.jpg|tools
+basketbattle|Basket Battle|basket battle.png|sports
+buildaqueen|Build A Queen|319.png|arcade
+jaxbot|Jax Bot|jax bot.png|tools
+amplerlauncher|Ampler Launcher|eaglercraft.jpg|sandbox
+geometerydashlite|Geometry Dash Lite|geometery dash lite.png|arcade
+memesoundboard|Meme Sound Board|soundboard.jpg|tools
+amongusonline|Among Us Online|amongus.jpg|multiplayer
+subwaysurfers|Subway Surfers|subway-surfers-logo.png|arcade
+slope1|Slope 1|slope1.png|arcade
+slope2|Slope 2|slope2.png|arcade
+tinyfishing|Tiny Fishing|tinyfishing.png|arcade
+stickmanhook|Stickman Hook|stckman hook.png|arcade
+bitlife|BitLife|bitlife.png|sandbox
+magictiles3|Magic Tiles 3|IMG_0100.jpeg|arcade`.split('\n').map(l=>{const [slug,name,img,cat]=l.split('|');return{slug,name,img,cat,url:BASE+slug+'/'}});
 
-        gameSearch.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase().trim();
-            gameLinks.forEach(link => {
-                const title = link.getAttribute('data-title') || '';
-                const altText = link.querySelector('img')?.alt.toLowerCase() || '';
-                if (title.toLowerCase().includes(query) || altText.includes(query)) {
-                    link.classList.remove('is-hidden');
-                } else {
-                    link.classList.add('is-hidden');
-                }
-            });
-        });
+const $=id=>document.getElementById(id);
+const store={get:(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch{return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+let favs=store.get('jax_favs',[]),recent=store.get('jax_recent',[]),friends=store.get('jax_friends2',[]),chat=store.get('jax_chat',[]),user=store.get('jax_user2',null);
+let cat='all',term='';
 
-        let favorites = JSON.parse(localStorage.getItem('jax_favorites') || '[]');
-        gameLinks.forEach((link, index) => {
-            const heartBtn = document.createElement('button');
-            heartBtn.className = 'favorite-heart-btn';
-            heartBtn.innerHTML = '♥';
-            if (favorites.includes(index)) {
-                heartBtn.classList.add('is-active');
-            }
+/* ---------- theme ---------- */
+function setTheme(t){t==='crimson'?document.documentElement.removeAttribute('data-theme'):document.documentElement.setAttribute('data-theme',t);$('theme').value=t;store.set('jax_theme',t)}
+setTheme(store.get('jax_theme','crimson'));
+$('theme').onchange=e=>setTheme(e.target.value);
 
-            heartBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (favorites.includes(index)) {
-                    favorites = favorites.filter(i => i !== index);
-                    heartBtn.classList.remove('is-active');
-                } else {
-                    favorites.push(index);
-                    heartBtn.classList.add('is-active');
-                }
-                localStorage.setItem('jax_favorites', JSON.stringify(favorites));
-            });
+/* ---------- nav ---------- */
+function renderNav(){
+  const items=[['all','All games',GAMES.length],['fav','Favorites',favs.length],...CATS.map(c=>[c,c[0].toUpperCase()+c.slice(1),GAMES.filter(g=>g.cat===c).length])];
+  $('nav').innerHTML='';
+  items.forEach(([id,label,n])=>{
+    const b=document.createElement('button');b.className=id===cat?'on':'';
+    b.innerHTML=`<span>${label}</span><small>${n}</small>`;
+    b.onclick=()=>{cat=id;renderNav();renderGrid()};
+    $('nav').appendChild(b);
+  });
+}
 
-            link.appendChild(heartBtn);
-        });
+/* ---------- tiles ---------- */
+function tile(g,withMeta=true){
+  const d=document.createElement('div');d.className='tile';
+  const a=document.createElement('a');a.href=g.url;
+  a.addEventListener('click',()=>{recent=[g.slug,...recent.filter(s=>s!==g.slug)].slice(0,3);store.set('jax_recent',recent)});
+  const th=document.createElement('div');th.className='thumb';
+  const ph=document.createElement('div');ph.className='ph';ph.textContent=g.name.replace(/[^A-Za-z0-9 ]/g,'').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  if(g.img){const i=document.createElement('img');i.alt=g.name;i.onerror=()=>{i.remove();th.prepend(ph)};i.src=IMG_BASE+encodeURI(g.img);th.appendChild(i)}else th.appendChild(ph);
+  if(g.slug==='guessit'){const b=document.createElement('span');b.className='badge';b.textContent='New';th.appendChild(b)}
+  a.appendChild(th);
+  if(withMeta){a.insertAdjacentHTML('beforeend',`<div class="name">${g.name}</div><div class="cat">${g.cat}</div>`)}
+  d.appendChild(a);
+  if(withMeta){
+    const h=document.createElement('button');h.className='heart'+(favs.includes(g.slug)?' on':'');h.textContent='♥';h.setAttribute('aria-label','Favorite '+g.name);
+    h.onclick=()=>{favs=favs.includes(g.slug)?favs.filter(s=>s!==g.slug):[...favs,g.slug];store.set('jax_favs',favs);h.classList.toggle('on');renderNav();if(cat==='fav')renderGrid()};
+    d.appendChild(h);
+  }
+  return d;
+}
+function renderGrid(){
+  const t=term.toLowerCase();
+  const list=GAMES.filter(g=>(cat==='all'||(cat==='fav'?favs.includes(g.slug):g.cat===cat))&&(!t||(g.name+' '+g.cat).toLowerCase().includes(t)));
+  const grid=$('grid');grid.innerHTML='';
+  list.forEach(g=>grid.appendChild(tile(g)));
+  if(!list.length)grid.innerHTML=`<div class="empty">${cat==='fav'&&!term?'No favorites yet. Tap the heart on any game to save it here.':'No games match that search. Try a shorter name.'}</div>`;
+  $('gridTitle').textContent=cat==='all'?'All games':cat==='fav'?'Favorites':cat[0].toUpperCase()+cat.slice(1);
+  $('shown').textContent=list.length+(list.length===1?' game':' games');
+}
+function renderRecent(){
+  const box=$('recent');box.innerHTML='';
+  const gs=recent.map(s=>GAMES.find(g=>g.slug===s)).filter(Boolean);
+  if(!gs.length){box.className='recent-empty';box.innerHTML='Games you play show up here so you can get back to them in one tap.';return}
+  box.className='recent-row';gs.forEach(g=>box.appendChild(tile(g,false)));
+}
+$('count').textContent=`${GAMES.length} games and counting. Pick one, or let us choose.`;
+$('q').addEventListener('input',e=>{term=e.target.value.trim();renderGrid()});
+$('random').onclick=()=>{location.href=GAMES[Math.floor(Math.random()*GAMES.length)].url};
+$('favShortcut').onclick=()=>{cat='fav';renderNav();renderGrid();$('gridTitle').scrollIntoView()};
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();$('q').focus()}
+  if(e.key==='Escape'){closeDrawer();document.querySelectorAll('.modal.show').forEach(m=>closeModal(m))}
+});
 
-        const horrorBtn = document.getElementById('horrorBtn');
-        const horrorOverlay = document.getElementById('horrorOverlay');
-        const pinInput = document.getElementById('pinInput');
-        const pinSection = document.getElementById('pinSection');
-        const horrorGames = document.getElementById('horrorGames');
-        const CORRECT_PIN = "1234";
+/* ---------- modals ---------- */
+const openModal=m=>m.classList.add('show');
+function closeModal(m){m.classList.remove('show');if(m.id==='horrorModal')resetPin()}
+document.querySelectorAll('.modal').forEach(m=>{
+  m.addEventListener('click',e=>{if(e.target===m||e.target.hasAttribute('data-close'))closeModal(m)});
+});
 
-        horrorBtn.addEventListener('click', () => {
-            horrorOverlay.style.display = 'flex';
-        });
+/* ---------- horror pin ---------- */
+const PIN='1234';let pin='';
+const pad=$('pad');
+['1','2','3','4','5','6','7','8','9','C','0','✕'].forEach(k=>{
+  const b=document.createElement('button');b.className='btn';b.textContent=k;
+  b.onclick=()=>k==='C'?(pin='',paintPin()):k==='✕'?closeModal($('horrorModal')):press(k);pad.appendChild(b);
+});
+function paintPin(){[...$('dots').children].forEach((d,i)=>d.classList.toggle('f',i<pin.length))}
+function resetPin(){pin='';paintPin();$('pinView').hidden=false;$('horrorView').hidden=true}
+function press(k){
+  if(pin.length>=4)return;pin+=k;paintPin();
+  if(pin.length===4){
+    if(pin===PIN){setTimeout(()=>{$('pinView').hidden=true;$('horrorView').hidden=false},150)}
+    else{const d=$('dots');d.classList.add('bad');setTimeout(()=>{d.classList.remove('bad');pin='';paintPin()},380)}
+  }
+}
+document.addEventListener('keydown',e=>{if($('horrorModal').classList.contains('show')&&!$('pinView').hidden&&/^\d$/.test(e.key))press(e.key)});
+$('horrorBtn').onclick=()=>openModal($('horrorModal'));
 
-        function pinPress(num) {
-            if (pinInput.value.length < 4) {
-                pinInput.value += num;
-            }
-            if (pinInput.value === CORRECT_PIN) {
-                pinSection.style.display = 'none';
-                horrorGames.style.display = 'block';
-            } else if (pinInput.value.length === 4) {
-                setTimeout(() => {
-                    alert('Incorrect PIN!');
-                    clearPin();
-                }, 100);
-            }
-        }
+/* ---------- account ---------- */
+function paintAuth(){$('authBtn').textContent=user?user:'Sign in';$('signOut').hidden=!user;$('authTitle').textContent=user?'Your gamertag':'Pick your gamertag';$('tagIn').value=user||''}
+$('authBtn').onclick=()=>{paintAuth();openModal($('authModal'));$('tagIn').focus()};
+$('tagSave').onclick=()=>{const v=$('tagIn').value.trim();if(!v){$('tagIn').focus();return}user=v;store.set('jax_user2',user);paintAuth();closeModal($('authModal'));renderChat()};
+$('tagIn').addEventListener('keydown',e=>{if(e.key==='Enter')$('tagSave').click()});
+$('signOut').onclick=()=>{user=null;localStorage.removeItem('jax_user2');paintAuth();closeModal($('authModal'));renderChat()};
+paintAuth();
 
-        function clearPin() {
-            pinInput.value = '';
-        }
+/* ---------- drawer ---------- */
+function openDrawer(tab){$('drawer').classList.add('open');$('scrim').classList.add('show');showTab(tab||'friends')}
+function closeDrawer(){$('drawer').classList.remove('open');$('scrim').classList.remove('show')}
+function showTab(t){
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
+  $('paneFriends').hidden=t!=='friends';$('paneChat').hidden=t!=='chat';
+  if(t==='chat'){renderChat();$('chatIn').focus()}
+}
+$('friendsBtn').onclick=()=>openDrawer();
+$('drawerClose').onclick=closeDrawer;$('scrim').onclick=closeDrawer;
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
 
-        function closeHorror() {
-            horrorOverlay.style.display = 'none';
-            clearPin();
-            pinSection.style.display = 'block';
-            horrorGames.style.display = 'none';
-        }
+function renderFriends(){
+  const box=$('friendList');box.innerHTML='';
+  if(!friends.length){box.innerHTML='<p class="hint">No friends yet. Type a username above and tap Add.</p>';return}
+  friends.forEach(n=>{
+    const r=document.createElement('div');r.className='friend';
+    const av=document.createElement('div');av.className='avatar';av.textContent=n[0].toUpperCase();
+    const nm=document.createElement('span');nm.className='n';nm.textContent=n;
+    const m=document.createElement('button');m.className='btn';m.textContent='Message';m.onclick=()=>showTab('chat');
+    const x=document.createElement('button');x.className='x';x.textContent='✕';x.setAttribute('aria-label','Remove '+n);
+    x.onclick=()=>{friends=friends.filter(f=>f!==n);store.set('jax_friends2',friends);renderFriends()};
+    r.append(av,nm,m,x);box.appendChild(r);
+  });
+}
+function addFriend(){
+  const v=$('friendIn').value.trim();
+  if(v&&!friends.some(f=>f.toLowerCase()===v.toLowerCase())){friends.push(v);store.set('jax_friends2',friends);$('friendIn').value='';renderFriends()}
+}
+$('friendAdd').onclick=addFriend;
+$('friendIn').addEventListener('keydown',e=>{if(e.key==='Enter')addFriend()});
 
-        const authOverlay = document.getElementById('authOverlay');
-        const nameSetupOverlay = document.getElementById('nameSetupOverlay');
-        let currentUser = localStorage.getItem('jax_user') || null;
+function renderChat(){
+  const log=$('chatLog');log.innerHTML='';
+  const all=[{who:'System',text:'Welcome to Jax Games chat!'},...chat];
+  all.forEach(m=>{
+    const d=document.createElement('div');d.className='msg'+(m.who===(user||'You')?' me':'');
+    const b=document.createElement('b');b.textContent=m.who;d.append(b,document.createTextNode(m.text));log.appendChild(d);
+  });
+  log.scrollTop=log.scrollHeight;
+}
+function sendChat(){
+  const v=$('chatIn').value.trim();if(!v)return;
+  chat=[...chat,{who:user||'You',text:v}].slice(-50);store.set('jax_chat',chat);$('chatIn').value='';renderChat();
+}
+$('chatSend').onclick=sendChat;
+$('chatIn').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});
 
-        function updateAuthHeader() {
-            const authHeaderBtn = document.getElementById('authHeaderBtn');
-            if (currentUser) {
-                authHeaderBtn.textContent = `${currentUser} 👤`;
-            } else {
-                authHeaderBtn.textContent = 'Sign In 👤';
-            }
-        }
-        updateAuthHeader();
-
-        function openAuthSystem() {
-            authOverlay.style.display = 'flex';
-        }
-
-        function closeAuthSystem() {
-            authOverlay.style.display = 'none';
-        }
-
-        function submitAuthData() {
-            const email = document.getElementById('authEmail').value;
-            const password = document.getElementById('authPassword').value;
-
-            if (!email || !password) {
-                alert('Please enter both email and password.');
-                return;
-            }
-
-            closeAuthSystem();
-            nameSetupOverlay.style.display = 'flex';
-        }
-
-        function saveDisplayName() {
-            const nameInput = document.getElementById('displayNameInput').value.trim();
-            if (nameInput) {
-                currentUser = nameInput;
-                localStorage.setItem('jax_user', currentUser);
-                updateAuthHeader();
-                nameSetupOverlay.style.display = 'none';
-                renderFriendsList();
-            } else {
-                alert('Please enter a valid display name.');
-            }
-        }
-
-        let friends = JSON.parse(localStorage.getItem('jax_friends') || '["GamerTag99", "PixelNinja"]');
-        let messages = [
-            { sender: 'System', text: 'Welcome to Jax Games Live Chat!' }
-        ];
-
-        function toggleDashboardTab(tab) {
-            const friendsTab = document.getElementById('dashFriendsTabHead');
-            const chatTab = document.getElementById('dashChatTabHead');
-            const friendsPane = document.getElementById('dashFriendsPane');
-            const chatPane = document.getElementById('dashChatPane');
-
-            if (tab === 'friends') {
-                friendsTab.classList.add('active');
-                chatTab.classList.remove('active');
-                friendsPane.style.display = 'flex';
-                chatPane.style.display = 'none';
-            } else {
-                chatTab.classList.add('active');
-                friendsTab.classList.remove('active');
-                chatPane.style.display = 'flex';
-                friendsPane.style.display = 'none';
-                renderChatWindow();
-            }
-        }
-
-        function renderFriendsList() {
-            const box = document.getElementById('dashboardFriendsRenderBox');
-            box.innerHTML = '';
-            
-            if (friends.length === 0) {
-                box.innerHTML = '<p style="color:var(--text-muted); font-size:0.85rem;">No friends added yet.</p>';
-                return;
-            }
-
-            friends.forEach(name => {
-                const card = document.createElement('div');
-                card.className = 'friend-dashboard-card';
-                card.innerHTML = `
-                    <div>
-                        <span class="friend-name-tag">${name}</span>
-                        <div class="friend-status-activity">Online</div>
-                    </div>
-                    <button class="mini-btn" onclick="toggleDashboardTab('chat')">Message</button>
-                `;
-                box.appendChild(card);
-            });
-        }
-        renderFriendsList();
-
-        function handleAddFriendSubmit() {
-            const input = document.getElementById('addFriendUsernameInput');
-            const target = input.value.trim();
-            if (target && !friends.includes(target)) {
-                friends.push(target);
-                localStorage.setItem('jax_friends', JSON.stringify(friends));
-                input.value = '';
-                renderFriendsList();
-            }
-        }
-
-        function renderChatWindow() {
-            const chatArea = document.getElementById('chatActiveWindowArea');
-            chatArea.innerHTML = `
-                <div class="chat-history-box" id="chatHistoryBox"></div>
-                <div class="chat-input-bar">
-                    <input type="text" id="chatMessageInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendChatMessage()">
-                    <button class="mini-btn" onclick="sendChatMessage()">Send</button>
-                </div>
-            `;
-
-            const historyBox = document.getElementById('chatHistoryBox');
-            messages.forEach(msg => {
-                const isUser = msg.sender === (currentUser || 'You');
-                const bubble = document.createElement('div');
-                bubble.className = `chat-message-bubble ${isUser ? 'outgoing' : 'incoming'}`;
-                bubble.innerHTML = `<span class="chat-meta-header">${msg.sender}</span>${msg.text}`;
-                historyBox.appendChild(bubble);
-            });
-            historyBox.scrollTop = historyBox.scrollHeight;
-        }
-
-        function sendChatMessage() {
-            const input = document.getElementById('chatMessageInput');
-            const text = input.value.trim();
-            if (text) {
-                messages.push({ sender: currentUser || 'You', text: text });
-                input.value = '';
-                renderChatWindow();
-            }
-        }
-    </script>
+renderNav();renderGrid();renderRecent();renderFriends();
+</script>
 </body>
 </html>
