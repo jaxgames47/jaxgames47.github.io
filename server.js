@@ -37,6 +37,12 @@ async function init() {
     recipient int references users(id) on delete cascade,
     text text not null, created_at timestamptz default now())`);
   await q(`create index if not exists msg_pair on messages(sender, recipient, id)`);
+  await q(`create table if not exists notifications(
+    id serial primary key, user_id int references users(id) on delete cascade,
+    type text not null, text text not null, data text,
+    read boolean not null default false, created_at timestamptz default now())`);
+  await q(`create index if not exists notif_user on notifications(user_id, id)`);
+  await q(`delete from notifications where created_at < now() - interval '30 days'`);
 }
 
 function auth(req, res, next) {
@@ -46,6 +52,8 @@ function auth(req, res, next) {
 }
 const sign = u => jwt.sign({ id: u.id, username: u.username }, SECRET, { expiresIn: '30d' });
 const findUser = async name => (await q('select id, username from users where username_lower=$1', [String(name || '').toLowerCase()])).rows[0];
+const notify = (uid, type, text, data) =>
+  q('insert into notifications(user_id,type,text,data) values($1,$2,$3,$4)', [uid, type, text, data || null]).catch(() => {});
 const areFriends = async (a, b) => (await q(
   `select 1 from friendships where status='accepted' and ((requester=$1 and addressee=$2) or (requester=$2 and addressee=$1))`, [a, b])).rowCount > 0;
 
@@ -99,11 +107,13 @@ app.post('/friends/request', auth, wrap(async (req, res) => {
     if (ex.status === 'accepted') return res.status(409).json({ error: 'You’re already friends.' });
     if (ex.requester === other.id) {
       await q(`update friendships set status='accepted' where id=$1`, [ex.id]);
+      await notify(other.id, 'friend_accept', `${req.user.username} accepted your friend request`, req.user.username);
       return res.json({ status: 'accepted' });
     }
     return res.status(409).json({ error: 'Request already sent.' });
   }
   await q('insert into friendships(requester, addressee) values($1,$2)', [me, other.id]);
+  await notify(other.id, 'friend_request', `${req.user.username} sent you a friend request`, req.user.username);
   res.json({ status: 'pending' });
 }));
 
@@ -112,6 +122,7 @@ app.post('/friends/accept', auth, wrap(async (req, res) => {
   if (!other) return res.status(404).json({ error: 'No player with that username.' });
   const r = await q(`update friendships set status='accepted' where requester=$1 and addressee=$2 and status='pending'`, [other.id, req.user.id]);
   if (!r.rowCount) return res.status(404).json({ error: 'No request from that player.' });
+  await notify(other.id, 'friend_accept', `${req.user.username} accepted your friend request`, req.user.username);
   res.json({ ok: true });
 }));
 
@@ -138,9 +149,69 @@ app.post('/chat/:username', auth, wrap(async (req, res) => {
   if (!other || !(await areFriends(req.user.id, other.id))) return res.status(403).json({ error: 'You can only chat with friends.' });
   const text = String((req.body && req.body.text) || '').trim().slice(0, 500);
   if (!text) return res.status(400).json({ error: 'Message is empty.' });
+  const isGif = text.startsWith('[gif]');
+  if (isGif && !/^\[gif\]https:\/\/media\d*\.giphy\.com\/\S+$/.test(text)) return res.status(400).json({ error: 'That GIF isn’t allowed.' });
   const r = await q('insert into messages(sender, recipient, text) values($1,$2,$3) returning id', [req.user.id, other.id, text]);
+  await q(`delete from notifications where user_id=$1 and type='message' and data=$2 and read=false`, [other.id, req.user.username]);
+  await notify(other.id, 'message', `${req.user.username}: ${isGif ? 'sent a GIF' : text.slice(0, 60)}`, req.user.username);
   res.json({ id: r.rows[0].id });
 }));
+
+// ---- notifications ----
+app.get('/notifications', auth, wrap(async (req, res) => {
+  const after = parseInt(req.query.after, 10) || 0;
+  const r = await q('select id,type,text,data,read,created_at from notifications where user_id=$1 and id>$2 order by id desc limit 50', [req.user.id, after]);
+  const u = await q('select count(*)::int as n from notifications where user_id=$1 and read=false', [req.user.id]);
+  res.json({ items: r.rows.reverse(), unread: u.rows[0].n });
+}));
+
+app.post('/notifications/read', auth, wrap(async (req, res) => {
+  const { id, type, data } = req.body || {};
+  if (id) await q('update notifications set read=true where user_id=$1 and id=$2', [req.user.id, parseInt(id, 10) || 0]);
+  else if (type && data) await q('update notifications set read=true where user_id=$1 and type=$2 and data=$3', [req.user.id, String(type), String(data)]);
+  else await q('update notifications set read=true where user_id=$1', [req.user.id]);
+  res.json({ ok: true });
+}));
+
+// ---- GIFs (Giphy, kept family-friendly with rating=pg) ----
+app.get('/gifs', auth, wrap(async (req, res) => {
+  const key = process.env.GIPHY_KEY;
+  if (!key) return res.status(503).json({ error: 'GIFs aren’t set up on the server yet.' });
+  const term = String(req.query.q || '').trim().slice(0, 50);
+  const url = term
+    ? `https://api.giphy.com/v1/gifs/search?api_key=${key}&q=${encodeURIComponent(term)}&limit=24&rating=pg`
+    : `https://api.giphy.com/v1/gifs/trending?api_key=${key}&limit=24&rating=pg`;
+  const r = await fetch(url);
+  if (!r.ok) return res.status(502).json({ error: 'GIF search is busy. Try again in a minute.' });
+  const d = await r.json();
+  res.json({ gifs: (d.data || []).map(g => ({ id: g.id, preview: g.images.fixed_width_small.url, url: g.images.fixed_width.url }))
+    .filter(g => /^https:\/\/media\d*\.giphy\.com\//.test(g.url)) });
+}));
+
+// ---- call signalling (voice calls use WebRTC; this only passes the handshake between friends) ----
+const signals = [];
+let sigId = 0;
+app.post('/signal', auth, wrap(async (req, res) => {
+  const { to, type, data } = req.body || {};
+  if (!['offer', 'answer', 'ice', 'hangup', 'decline'].includes(type)) return res.status(400).json({ error: 'Bad signal.' });
+  const other = await findUser(to);
+  if (!other || !(await areFriends(req.user.id, other.id))) return res.status(403).json({ error: 'You can only call friends.' });
+  if (JSON.stringify(data || {}).length > 8000) return res.status(400).json({ error: 'Too big.' });
+  const now = Date.now();
+  while (signals.length && now - signals[0].t > 60000) signals.shift();
+  signals.push({ id: ++sigId, t: now, to: other.id, from: req.user.username, type, data: data || {} });
+  if (type === 'offer') await notify(other.id, 'call', `${req.user.username} called you`, req.user.username);
+  res.json({ ok: true });
+}));
+app.get('/signal', auth, (req, res) => {
+  const after = parseInt(req.query.after, 10) || 0;
+  const now = Date.now();
+  res.json({
+    signals: signals.filter(s => s.to === req.user.id && s.id > after)
+      .map(s => ({ id: s.id, from: s.from, type: s.type, data: s.data, age: now - s.t })),
+    last: sigId,
+  });
+});
 
 const PORT = process.env.PORT || 3000;
 init().then(() => app.listen(PORT, () => console.log('Server running on', PORT)))
