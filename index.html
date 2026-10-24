@@ -121,6 +121,14 @@ select.btn{appearance:none;padding-right:14px}
 .pad .btn{padding:14px 0;font-size:1.1rem}
 .hgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
 
+[hidden]{display:none!important}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);z-index:200;background:var(--card);border:1px solid var(--accent);border-radius:12px;padding:10px 16px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.err{color:#ff7b7b;font-size:.85rem;min-height:1.1em}
+.form{display:flex;flex-direction:column;gap:10px;margin:14px 0 4px;text-align:left}
+.form .btn{width:100%}
+.box>.btn[data-close]{margin-top:8px;width:100%}
+.sub{font-weight:700;color:var(--text);font-size:.85rem;margin-top:4px}
 @media(max-width:860px){
   .app{grid-template-columns:1fr}
   .side{position:static;height:auto;flex-direction:row;align-items:center;padding:12px;gap:12px;border-right:0;border-bottom:1px solid var(--line)}
@@ -188,12 +196,16 @@ select.btn{appearance:none;padding-right:14px}
   <div class="tabs"><button class="on" data-tab="friends">Friends</button><button data-tab="chat">Chat</button></div>
   <div class="pane" id="paneFriends">
     <div class="row"><input id="friendIn" placeholder="Add a friend by username"><button class="btn" id="friendAdd">Add</button></div>
+    <p class="hint" id="friendMsg"></p>
     <div class="list" id="friendList"></div>
   </div>
   <div class="pane" id="paneChat" hidden>
-    <div class="chat-log" id="chatLog"></div>
-    <div class="row"><input id="chatIn" placeholder="Type a message"><button class="btn primary" id="chatSend">Send</button></div>
-    <p class="hint">Chat is saved on this device only, so friends can’t see these messages yet.</p>
+    <p class="hint" id="chatEmpty"></p>
+    <div id="chatBody" class="pane" style="padding:0" hidden>
+      <select class="field" id="chatWith" aria-label="Chat with"></select>
+      <div class="chat-log" id="chatLog"></div>
+      <div class="row"><input id="chatIn" maxlength="500" placeholder="Type a message"><button class="btn primary" id="chatSend">Send</button></div>
+    </div>
   </div>
 </aside>
 
@@ -217,13 +229,22 @@ select.btn{appearance:none;padding-right:14px}
 
 <div class="modal" id="authModal">
   <div class="box">
-    <h3 id="authTitle">Pick your gamertag</h3>
-    <p class="hint" style="margin-bottom:14px">This is the name friends and chat will show.</p>
-    <input class="field" id="tagIn" maxlength="20" placeholder="Gamertag" style="width:100%;margin-bottom:12px">
-    <div class="row"><button class="btn" data-close>Cancel</button><button class="btn primary" id="tagSave" style="flex:1">Save gamertag</button></div>
-    <button class="btn" id="signOut" style="width:100%;margin-top:8px" hidden>Sign out</button>
+    <h3 id="authTitle"></h3>
+    <form class="form" id="authForm">
+      <input class="field" id="uIn" maxlength="20" placeholder="Username" autocomplete="username">
+      <input class="field" id="pIn" type="password" placeholder="Password (6+ characters)" autocomplete="current-password">
+      <p class="err" id="authMsg" role="alert"></p>
+      <button class="btn primary" id="authSubmit" type="submit">Log in</button>
+      <button class="btn" id="authSwitch" type="button"></button>
+    </form>
+    <div id="acct" hidden>
+      <p class="hint" style="margin:14px 0">Signed in as <b id="acctName"></b></p>
+      <button class="btn" id="signOut" style="width:100%">Sign out</button>
+    </div>
+    <button class="btn" data-close>Close</button>
   </div>
 </div>
+<div class="toast" id="toast" role="status"></div>
 
 <script>
 const BASE='https://jaxgames47.github.io/';
@@ -272,7 +293,7 @@ magictiles3|Magic Tiles 3|IMG_0100.jpeg|arcade`.split('\n').map(l=>{const [slug,
 
 const $=id=>document.getElementById(id);
 const store={get:(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch{return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
-let favs=store.get('jax_favs',[]),recent=store.get('jax_recent',[]),friends=store.get('jax_friends2',[]),chat=store.get('jax_chat',[]),user=store.get('jax_user2',null);
+let favs=store.get('jax_favs',[]),recent=store.get('jax_recent',[]);
 let cat='all',term='';
 
 /* ---------- theme ---------- */
@@ -361,63 +382,156 @@ function press(k){
 document.addEventListener('keydown',e=>{if($('horrorModal').classList.contains('show')&&!$('pinView').hidden&&/^\d$/.test(e.key))press(e.key)});
 $('horrorBtn').onclick=()=>openModal($('horrorModal'));
 
+/* ---------- server ---------- */
+const API='https://jaxgamesserver.onrender.com';
+let token=store.get('jax_token',null),user=token?store.get('jax_acct_user',null):null;
+function toast(msg,ms=3000){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.t);if(ms)toast.t=setTimeout(()=>t.classList.remove('show'),ms)}
+async function api(path,method='GET',body){
+  const wake=setTimeout(()=>toast('Waking up the server, this can take up to a minute…',0),4000);
+  try{
+    const r=await fetch(API+path,{method,headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:body?JSON.stringify(body):undefined});
+    const d=await r.json().catch(()=>({}));
+    if(r.status===401&&token)signOut();
+    if(!r.ok)throw new Error(d.error||'Something went wrong.');
+    return d;
+  }catch(e){
+    if(e instanceof TypeError)throw new Error('Can’t reach the server. Check your connection and try again.');
+    throw e;
+  }finally{
+    clearTimeout(wake);
+    if($('toast').textContent.startsWith('Waking'))$('toast').classList.remove('show');
+  }
+}
+const mk=(tag,cls,txt)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e};
+
 /* ---------- account ---------- */
-function paintAuth(){$('authBtn').textContent=user?user:'Sign in';$('signOut').hidden=!user;$('authTitle').textContent=user?'Your gamertag':'Pick your gamertag';$('tagIn').value=user||''}
-$('authBtn').onclick=()=>{paintAuth();openModal($('authModal'));$('tagIn').focus()};
-$('tagSave').onclick=()=>{const v=$('tagIn').value.trim();if(!v){$('tagIn').focus();return}user=v;store.set('jax_user2',user);paintAuth();closeModal($('authModal'));renderChat()};
-$('tagIn').addEventListener('keydown',e=>{if(e.key==='Enter')$('tagSave').click()});
-$('signOut').onclick=()=>{user=null;localStorage.removeItem('jax_user2');paintAuth();closeModal($('authModal'));renderChat()};
-paintAuth();
+let mode='login';
+function paintAuth(){
+  $('authBtn').textContent=user||'Sign in';
+  $('authForm').hidden=!!user;$('acct').hidden=!user;
+  $('authTitle').textContent=user?'Your account':(mode==='login'?'Welcome back':'Create your account');
+  $('authSubmit').textContent=mode==='login'?'Log in':'Sign up';
+  $('authSwitch').textContent=mode==='login'?'New here? Create an account':'Have an account? Log in';
+  $('pIn').autocomplete=mode==='login'?'current-password':'new-password';
+  $('authMsg').textContent='';$('acctName').textContent=user||'';
+}
+function signOut(){
+  token=null;user=null;localStorage.removeItem('jax_token');localStorage.removeItem('jax_acct_user');
+  fdata={friends:[],incoming:[],outgoing:[]};activeFriend=null;paintAuth();renderFriends();
+}
+$('authBtn').onclick=()=>{paintAuth();openModal($('authModal'));if(!user)$('uIn').focus()};
+$('authSwitch').onclick=()=>{mode=mode==='login'?'signup':'login';paintAuth()};
+$('signOut').onclick=()=>{signOut();closeModal($('authModal'));toast('Signed out')};
+$('authForm').onsubmit=async e=>{
+  e.preventDefault();const b=$('authSubmit');b.disabled=true;$('authMsg').textContent='';
+  try{
+    const d=await api('/'+mode,'POST',{username:$('uIn').value.trim(),password:$('pIn').value});
+    token=d.token;user=d.username;store.set('jax_token',token);store.set('jax_acct_user',user);
+    $('pIn').value='';closeModal($('authModal'));paintAuth();loadFriends();toast('Signed in as '+user);
+  }catch(err){$('authMsg').textContent=err.message}
+  finally{b.disabled=false}
+};
 
 /* ---------- drawer ---------- */
-function openDrawer(tab){$('drawer').classList.add('open');$('scrim').classList.add('show');showTab(tab||'friends')}
+function openDrawer(tab){$('drawer').classList.add('open');$('scrim').classList.add('show');showTab(tab||'friends');loadFriends()}
 function closeDrawer(){$('drawer').classList.remove('open');$('scrim').classList.remove('show')}
 function showTab(t){
   document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
   $('paneFriends').hidden=t!=='friends';$('paneChat').hidden=t!=='chat';
-  if(t==='chat'){renderChat();$('chatIn').focus()}
+  if(t==='chat'){fillSelect();pollChat();if(activeFriend)$('chatIn').focus()}
 }
 $('friendsBtn').onclick=()=>openDrawer();
 $('drawerClose').onclick=closeDrawer;$('scrim').onclick=closeDrawer;
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
 
+/* ---------- friends ---------- */
+let fdata={friends:[],incoming:[],outgoing:[]},activeFriend=null,lastId=0;
+async function loadFriends(){
+  if(!token){renderFriends();return}
+  try{fdata=await api('/friends')}catch(e){$('friendMsg').textContent=e.message}
+  renderFriends();
+}
+async function act(path,name,okMsg){
+  try{await api(path,'POST',{username:name});$('friendMsg').textContent=okMsg||''}
+  catch(e){$('friendMsg').textContent=e.message}
+  loadFriends();
+}
+function friendRow(name,btns){
+  const r=mk('div','friend');r.append(mk('div','avatar',name[0].toUpperCase()),mk('span','n',name));
+  btns.forEach(([label,cls,fn])=>{const b=mk('button',cls,label);b.onclick=fn;r.appendChild(b)});
+  return r;
+}
 function renderFriends(){
   const box=$('friendList');box.innerHTML='';
-  if(!friends.length){box.innerHTML='<p class="hint">No friends yet. Type a username above and tap Add.</p>';return}
-  friends.forEach(n=>{
-    const r=document.createElement('div');r.className='friend';
-    const av=document.createElement('div');av.className='avatar';av.textContent=n[0].toUpperCase();
-    const nm=document.createElement('span');nm.className='n';nm.textContent=n;
-    const m=document.createElement('button');m.className='btn';m.textContent='Message';m.onclick=()=>showTab('chat');
-    const x=document.createElement('button');x.className='x';x.textContent='✕';x.setAttribute('aria-label','Remove '+n);
-    x.onclick=()=>{friends=friends.filter(f=>f!==n);store.set('jax_friends2',friends);renderFriends()};
-    r.append(av,nm,m,x);box.appendChild(r);
-  });
+  $('friendsBtn').textContent='Friends & chat'+(token&&fdata.incoming.length?' ('+fdata.incoming.length+')':'');
+  if(!token){
+    box.append(mk('p','hint','Sign in to add friends and chat with them from any device.'));
+    const b=mk('button','btn primary','Sign in');b.onclick=()=>$('authBtn').click();box.appendChild(b);return;
+  }
+  if(fdata.incoming.length){
+    box.append(mk('p','sub','Friend requests'));
+    fdata.incoming.forEach(n=>box.append(friendRow(n,[
+      ['Accept','btn primary',()=>act('/friends/accept',n,'You’re now friends with '+n+'.')],
+      ['✕','x',()=>act('/friends/remove',n)]])));
+  }
+  box.append(mk('p','sub','Friends'));
+  if(!fdata.friends.length)box.append(mk('p','hint','No friends yet. Type a username above and tap Add.'));
+  fdata.friends.forEach(n=>box.append(friendRow(n,[
+    ['Message','btn',()=>{activeFriend=n;lastId=0;$('chatLog').innerHTML='';showTab('chat')}],
+    ['✕','x',()=>act('/friends/remove',n)]])));
+  if(fdata.outgoing.length){
+    box.append(mk('p','sub','Waiting for a reply'));
+    fdata.outgoing.forEach(n=>box.append(friendRow(n,[['Cancel','btn',()=>act('/friends/remove',n)]])));
+  }
 }
-function addFriend(){
-  const v=$('friendIn').value.trim();
-  if(v&&!friends.some(f=>f.toLowerCase()===v.toLowerCase())){friends.push(v);store.set('jax_friends2',friends);$('friendIn').value='';renderFriends()}
+async function addFriend(){
+  if(!token){$('authBtn').click();return}
+  const v=$('friendIn').value.trim();if(!v)return;
+  try{
+    const d=await api('/friends/request','POST',{username:v});
+    $('friendIn').value='';$('friendMsg').textContent=d.status==='accepted'?'You’re now friends with '+v+'.':'Request sent to '+v+'.';
+  }catch(e){$('friendMsg').textContent=e.message}
+  loadFriends();
 }
 $('friendAdd').onclick=addFriend;
 $('friendIn').addEventListener('keydown',e=>{if(e.key==='Enter')addFriend()});
 
-function renderChat(){
-  const log=$('chatLog');log.innerHTML='';
-  const all=[{who:'System',text:'Welcome to Jax Games chat!'},...chat];
-  all.forEach(m=>{
-    const d=document.createElement('div');d.className='msg'+(m.who===(user||'You')?' me':'');
-    const b=document.createElement('b');b.textContent=m.who;d.append(b,document.createTextNode(m.text));log.appendChild(d);
-  });
-  log.scrollTop=log.scrollHeight;
+/* ---------- chat ---------- */
+function fillSelect(){
+  const s=$('chatWith');s.innerHTML='';
+  fdata.friends.forEach(n=>s.add(new Option(n,n)));
+  if(activeFriend&&!fdata.friends.includes(activeFriend))activeFriend=null;
+  if(!activeFriend)activeFriend=fdata.friends[0]||null;
+  if(activeFriend)s.value=activeFriend;
+  $('chatEmpty').textContent=!token?'Sign in and add a friend to start chatting.':'Add a friend and wait for them to accept, then you can chat here.';
+  $('chatEmpty').hidden=!!(token&&activeFriend);$('chatBody').hidden=!(token&&activeFriend);
 }
-function sendChat(){
-  const v=$('chatIn').value.trim();if(!v)return;
-  chat=[...chat,{who:user||'You',text:v}].slice(-50);store.set('jax_chat',chat);$('chatIn').value='';renderChat();
+$('chatWith').onchange=e=>{activeFriend=e.target.value;lastId=0;$('chatLog').innerHTML='';pollChat()};
+function addMsg(m){
+  const d=mk('div','msg'+(m.sender===user?' me':''));
+  d.append(mk('b',null,m.sender),document.createTextNode(m.text));
+  const log=$('chatLog');log.appendChild(d);log.scrollTop=log.scrollHeight;
+}
+async function pollChat(){
+  if(!token||!activeFriend||$('paneChat').hidden||!$('drawer').classList.contains('open'))return;
+  const who=activeFriend;
+  try{
+    const d=await api('/chat/'+encodeURIComponent(who)+'?after='+lastId);
+    if(who!==activeFriend)return;
+    d.messages.forEach(m=>{addMsg(m);lastId=Math.max(lastId,m.id)});
+  }catch(e){}
+}
+async function sendChat(){
+  const v=$('chatIn').value.trim();if(!v||!activeFriend)return;
+  try{await api('/chat/'+encodeURIComponent(activeFriend),'POST',{text:v});$('chatIn').value='';pollChat()}
+  catch(e){toast(e.message)}
 }
 $('chatSend').onclick=sendChat;
 $('chatIn').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});
+setInterval(pollChat,3000);
+setInterval(()=>{if(token&&!document.hidden)loadFriends()},30000);
 
-renderNav();renderGrid();renderRecent();renderFriends();
+renderNav();renderGrid();renderRecent();paintAuth();loadFriends();
 </script>
 </body>
 </html>
