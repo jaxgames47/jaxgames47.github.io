@@ -122,6 +122,21 @@ select.btn{appearance:none;padding-right:14px}
 .hgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
 
 [hidden]{display:none!important}
+.bellwrap{position:relative}
+.dot{position:absolute;top:-7px;right:-7px;min-width:19px;height:19px;padding:0 5px;border-radius:10px;background:var(--accent);color:var(--on-accent);font-size:.72rem;font-weight:800;display:grid;place-items:center}
+.npanel{position:absolute;right:0;top:calc(100% + 8px);width:min(370px,92vw);z-index:40;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px;box-shadow:0 18px 40px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:8px}
+.nhead{display:flex;justify-content:space-between;align-items:center;padding:0 4px}
+.nlist{max-height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:6px}
+.nitem{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 11px}
+.nitem:hover{border-color:var(--accent)}
+.nitem.unread{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--card))}
+.nitem .ic{font-size:1.2rem;line-height:1.3}
+.nitem small{display:block;color:var(--muted);margin-top:2px}
+.gifpanel{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:6px}
+.gifgrid{height:190px;overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;gap:6px;align-content:start}
+.gifgrid img{width:100%;border-radius:8px;cursor:pointer;display:block;background:var(--card);min-height:70px;object-fit:cover}
+.msg img{max-width:100%;border-radius:8px;display:block;margin-top:2px}
+.avatar.big{width:84px;height:84px;font-size:2.1rem;margin:0 auto 14px}
 .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);z-index:200;background:var(--card);border:1px solid var(--accent);border-radius:12px;padding:10px 16px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .err{color:#ff7b7b;font-size:.85rem;min-height:1.1em}
@@ -165,6 +180,14 @@ select.btn{appearance:none;padding-right:14px}
         <option value="cyber">Cyber</option><option value="emerald">Emerald</option>
         <option value="sunset">Sunset</option><option value="amethyst">Amethyst</option>
       </select>
+      <div class="bellwrap">
+        <button class="btn" id="bell" aria-label="Notifications">🔔<span class="dot" id="bellN" hidden>0</span></button>
+        <div class="npanel" id="npanel" hidden>
+          <div class="nhead"><b>Notifications</b><button class="x" id="nread" title="Mark all as read" aria-label="Mark all as read">✓</button></div>
+          <div class="nlist" id="nlist"></div>
+          <button class="btn" id="nperm" hidden>Turn on pop-up alerts</button>
+        </div>
+      </div>
       <button class="btn primary" id="authBtn">Sign in</button>
     </div>
 
@@ -202,9 +225,14 @@ select.btn{appearance:none;padding-right:14px}
   <div class="pane" id="paneChat" hidden>
     <p class="hint" id="chatEmpty"></p>
     <div id="chatBody" class="pane" style="padding:0" hidden>
-      <select class="field" id="chatWith" aria-label="Chat with"></select>
+      <div class="row"><select class="field" id="chatWith" aria-label="Chat with"></select><button class="btn" id="callBtn">📞 Call</button></div>
       <div class="chat-log" id="chatLog"></div>
-      <div class="row"><input id="chatIn" maxlength="500" placeholder="Type a message"><button class="btn primary" id="chatSend">Send</button></div>
+      <div class="gifpanel" id="gifPanel" hidden>
+        <input class="field" id="gifQ" placeholder="Search GIFs" autocomplete="off">
+        <div class="gifgrid" id="gifGrid"></div>
+        <span class="hint">Powered by GIPHY</span>
+      </div>
+      <div class="row"><input id="chatIn" maxlength="500" placeholder="Type a message"><button class="btn" id="gifBtn" aria-label="Send a GIF">GIF</button><button class="btn primary" id="chatSend">Send</button></div>
     </div>
   </div>
 </aside>
@@ -244,6 +272,15 @@ select.btn{appearance:none;padding-right:14px}
     <button class="btn" data-close>Close</button>
   </div>
 </div>
+<div class="modal call" id="callModal">
+  <div class="box">
+    <div class="avatar big" id="callAv"></div>
+    <h3 id="callName"></h3>
+    <p class="hint" id="callState" style="margin-bottom:16px"></p>
+    <div class="row" id="callBtns" style="justify-content:center"></div>
+  </div>
+</div>
+<audio id="remoteAudio" autoplay></audio>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -353,14 +390,14 @@ $('random').onclick=()=>{location.href=GAMES[Math.floor(Math.random()*GAMES.leng
 $('favShortcut').onclick=()=>{cat='fav';renderNav();renderGrid();$('gridTitle').scrollIntoView()};
 document.addEventListener('keydown',e=>{
   if(e.key==='/'&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();$('q').focus()}
-  if(e.key==='Escape'){closeDrawer();document.querySelectorAll('.modal.show').forEach(m=>closeModal(m))}
+  if(e.key==='Escape'){closeDrawer();document.querySelectorAll('.modal.show:not(.call)').forEach(m=>closeModal(m));$('npanel').hidden=true}
 });
 
 /* ---------- modals ---------- */
 const openModal=m=>m.classList.add('show');
 function closeModal(m){m.classList.remove('show');if(m.id==='horrorModal')resetPin()}
 document.querySelectorAll('.modal').forEach(m=>{
-  m.addEventListener('click',e=>{if(e.target===m||e.target.hasAttribute('data-close'))closeModal(m)});
+  m.addEventListener('click',e=>{if((e.target===m&&!m.classList.contains('call'))||e.target.hasAttribute('data-close'))closeModal(m)});
 });
 
 /* ---------- horror pin ---------- */
@@ -417,7 +454,7 @@ function paintAuth(){
 }
 function signOut(){
   token=null;user=null;localStorage.removeItem('jax_token');localStorage.removeItem('jax_acct_user');
-  fdata={friends:[],incoming:[],outgoing:[]};activeFriend=null;paintAuth();renderFriends();
+  fdata={friends:[],incoming:[],outgoing:[]};activeFriend=null;notifs=[];nLast=0;nInit=false;sigLast=0;if(call)endCall(false);paintAuth();renderFriends();paintBell();
 }
 $('authBtn').onclick=()=>{paintAuth();openModal($('authModal'));if(!user)$('uIn').focus()};
 $('authSwitch').onclick=()=>{mode=mode==='login'?'signup':'login';paintAuth()};
@@ -477,7 +514,7 @@ function renderFriends(){
   box.append(mk('p','sub','Friends'));
   if(!fdata.friends.length)box.append(mk('p','hint','No friends yet. Type a username above and tap Add.'));
   fdata.friends.forEach(n=>box.append(friendRow(n,[
-    ['Message','btn',()=>{activeFriend=n;lastId=0;$('chatLog').innerHTML='';showTab('chat')}],
+    ['Message','btn',()=>openChat(n)],['Call','btn',()=>startCall(n)],
     ['✕','x',()=>act('/friends/remove',n)]])));
   if(fdata.outgoing.length){
     box.append(mk('p','sub','Waiting for a reply'));
@@ -509,7 +546,7 @@ function fillSelect(){
 $('chatWith').onchange=e=>{activeFriend=e.target.value;lastId=0;$('chatLog').innerHTML='';pollChat()};
 function addMsg(m){
   const d=mk('div','msg'+(m.sender===user?' me':''));
-  d.append(mk('b',null,m.sender),document.createTextNode(m.text));
+  d.append(mk('b',null,m.sender));const gm=GIF_RE.exec(m.text);if(gm){const im=mk('img');im.src=gm[1];im.alt='GIF';im.onload=()=>{$('chatLog').scrollTop=$('chatLog').scrollHeight};d.append(im)}else d.append(document.createTextNode(m.text));
   const log=$('chatLog');log.appendChild(d);log.scrollTop=log.scrollHeight;
 }
 async function pollChat(){
@@ -519,19 +556,175 @@ async function pollChat(){
     const d=await api('/chat/'+encodeURIComponent(who)+'?after='+lastId);
     if(who!==activeFriend)return;
     d.messages.forEach(m=>{addMsg(m);lastId=Math.max(lastId,m.id)});
+    if(d.messages.some(m=>m.sender!==user))markRead({type:'message',data:who});
   }catch(e){}
 }
-async function sendChat(){
-  const v=$('chatIn').value.trim();if(!v||!activeFriend)return;
-  try{await api('/chat/'+encodeURIComponent(activeFriend),'POST',{text:v});$('chatIn').value='';pollChat()}
+async function sendText(v){
+  if(!v||!activeFriend)return;
+  try{await api('/chat/'+encodeURIComponent(activeFriend),'POST',{text:v});pollChat()}
   catch(e){toast(e.message)}
 }
+function sendChat(){const v=$('chatIn').value.trim();if(v){$('chatIn').value='';sendText(v)}}
 $('chatSend').onclick=sendChat;
 $('chatIn').addEventListener('keydown',e=>{if(e.key==='Enter')sendChat()});
 setInterval(pollChat,3000);
 setInterval(()=>{if(token&&!document.hidden)loadFriends()},30000);
 
-renderNav();renderGrid();renderRecent();paintAuth();loadFriends();
+
+/* ---------- notifications ---------- */
+const NEW_GAMES=['guessit']; // add a game's slug here when you add it, and everyone gets a "New game" alert
+const ICONS={friend_request:'👋',friend_accept:'🤝',message:'💬',call:'📞',game:'🎮'};
+let notifs=[],nLast=0,nInit=false,seenGames=store.get('jax_seen_games',[]);
+function localNotifs(){return NEW_GAMES.filter(sl=>!seenGames.includes(sl)).map(sl=>GAMES.find(g=>g.slug===sl)).filter(Boolean).map(g=>({id:'g-'+g.slug,type:'game',text:'New game: '+g.name,data:g.url,read:false,slug:g.slug}))}
+function ago(t){if(!t)return'New';const m=Math.round((Date.now()-new Date(t))/60000);return m<1?'Just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' d ago'}
+function unreadCount(){return notifs.filter(n=>!n.read).length+localNotifs().length}
+function paintBell(){
+  const n=unreadCount();$('bellN').hidden=!n;$('bellN').textContent=n>9?'9+':n;
+  document.title=(n?'('+n+') ':'')+'Jax Games 47';
+  const list=$('nlist');list.innerHTML='';
+  const items=[...localNotifs(),...notifs.slice().reverse()];
+  if(!items.length)list.append(mk('p','hint','You’re all caught up.'));
+  items.forEach(i=>{
+    const b=mk('button','nitem'+(i.read?'':' unread'));
+    const t=mk('div');t.append(document.createTextNode(i.text),mk('small',null,ago(i.created_at)));
+    b.append(mk('span','ic',ICONS[i.type]||'🔔'),t);b.onclick=()=>openNotif(i);list.appendChild(b);
+  });
+  if(!token)list.append(mk('p','hint','Sign in to get friend, message and call alerts.'));
+  const canAsk='Notification' in window&&Notification.permission==='default';$('nperm').hidden=!canAsk;
+}
+function openNotif(i){
+  $('npanel').hidden=true;
+  if(i.type==='game'){seenGames.push(i.slug);store.set('jax_seen_games',seenGames);paintBell();location.href=i.data;return}
+  if(!i.read){i.read=true;markRead({id:i.id});paintBell()}
+  if(i.type==='friend_request')openDrawer('friends');
+  else if(i.data){openChat(i.data);openDrawer('chat')}
+}
+function markRead(body){if(!token)return;fetch(API+'/notifications/read',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify(body||{})}).catch(()=>{});if(body&&body.type){notifs.forEach(n=>{if(n.type===body.type&&n.data===body.data)n.read=true});paintBell()}}
+function popAlert(text){toast(text);if(document.hidden&&'Notification' in window&&Notification.permission==='granted'){try{new Notification('Jax Games',{body:text})}catch{}}}
+async function pollNotifs(){
+  if(!token)return;
+  try{
+    const d=await api('/notifications?after='+nLast);
+    d.items.forEach(i=>{
+      nLast=Math.max(nLast,i.id);
+      if(i.type==='message')notifs=notifs.filter(n=>!(n.type==='message'&&n.data===i.data&&!n.read));
+      const viewing=$('drawer').classList.contains('open')&&!$('paneChat').hidden&&activeFriend===i.data&&(i.type==='message');
+      if(viewing)i.read=true;
+      notifs.push(i);
+      if(nInit&&!viewing)popAlert(i.text);
+      if(nInit&&(i.type==='friend_request'||i.type==='friend_accept'))loadFriends();
+    });
+    nInit=true;paintBell();
+  }catch(e){}
+}
+$('bell').onclick=e=>{e.stopPropagation();$('npanel').hidden=!$('npanel').hidden;paintBell()};
+$('npanel').onclick=e=>e.stopPropagation();
+document.addEventListener('click',()=>{$('npanel').hidden=true});
+$('nread').onclick=()=>{notifs.forEach(n=>n.read=true);seenGames=[...new Set([...seenGames,...NEW_GAMES])];store.set('jax_seen_games',seenGames);markRead({});paintBell()};
+$('nperm').onclick=()=>Notification.requestPermission().then(paintBell);
+
+/* ---------- GIFs ---------- */
+const GIF_RE=/^\[gif\](https:\/\/media\d*\.giphy\.com\/\S+)$/;
+let gifT;
+async function loadGifs(){
+  const g=$('gifGrid');g.innerHTML='';g.append(mk('p','hint','Loading…'));
+  try{
+    const d=await api('/gifs?q='+encodeURIComponent($('gifQ').value.trim()));
+    g.innerHTML='';
+    if(!d.gifs.length)g.append(mk('p','hint','No GIFs found. Try another word.'));
+    d.gifs.forEach(x=>{const im=mk('img');im.src=x.preview;im.alt='GIF';im.loading='lazy';im.onclick=()=>{sendText('[gif]'+x.url);$('gifPanel').hidden=true};g.appendChild(im)});
+  }catch(e){g.innerHTML='';g.append(mk('p','hint',e.message))}
+}
+$('gifBtn').onclick=()=>{const p=$('gifPanel');p.hidden=!p.hidden;if(!p.hidden){$('gifQ').value='';loadGifs();$('gifQ').focus()}};
+$('gifQ').addEventListener('input',()=>{clearTimeout(gifT);gifT=setTimeout(loadGifs,450)});
+function openChat(n){activeFriend=n;lastId=0;$('chatLog').innerHTML='';showTab('chat');markRead({type:'message',data:n})}
+
+/* ---------- voice calls ---------- */
+const ICE={iceServers:[{urls:'stun:stun.l.google.com:19302'}]};
+let call=null,sigLast=0,sigBusy=false,ringT,actx;
+const sendSig=(to,type,data)=>api('/signal','POST',{to,type,data:data||{}}).catch(()=>{});
+function ring(on){
+  clearInterval(ringT);if(!on)return;
+  const beep=()=>{try{actx=actx||new(window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=520;g.gain.value=.08;o.connect(g);g.connect(actx.destination);o.start();o.stop(actx.currentTime+.4)}catch{}};
+  beep();ringT=setInterval(beep,1800);
+}
+function paintCall(){
+  const m=$('callModal');if(!call){m.classList.remove('show');return}
+  m.classList.add('show');$('callAv').textContent=call.peer[0].toUpperCase();$('callName').textContent=call.peer;
+  const st=call.state;
+  $('callState').textContent=st==='ringing'?'Incoming call…':st==='calling'?'Calling…':st==='connecting'?'Connecting…':(()=>{const s=Math.floor((Date.now()-call.t0)/1000);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')})();
+  const box=$('callBtns');box.innerHTML='';
+  const add=(t,c,f)=>{const b=mk('button',c,t);b.onclick=f;box.appendChild(b)};
+  if(st==='ringing'){add('Accept','btn primary',acceptCall);add('Decline','btn',()=>endCall(true))}
+  else if(st==='calling')add('Cancel','btn',()=>endCall(true));
+  else{add(call.muted?'Unmute':'Mute','btn',()=>{call.muted=!call.muted;call.stream.getAudioTracks().forEach(t=>t.enabled=!call.muted);paintCall()});add('Hang up','btn primary',()=>endCall(true))}
+}
+setInterval(()=>{if(call&&call.state==='live')paintCall()},1000);
+function endCall(tell,msg){
+  if(!call)return;const c=call;call=null;ring(false);clearTimeout(c.timer);
+  if(tell)sendSig(c.peer,c.state==='ringing'?'decline':'hangup');
+  if(c.stream)c.stream.getTracks().forEach(t=>t.stop());
+  if(c.pc)c.pc.close();$('remoteAudio').srcObject=null;paintCall();if(msg)toast(msg);
+}
+function makePc(){
+  const pc=new RTCPeerConnection(ICE);call.pc=pc;
+  call.stream.getTracks().forEach(t=>pc.addTrack(t,call.stream));
+  pc.onicecandidate=e=>{if(e.candidate&&call)sendSig(call.peer,'ice',{c:e.candidate})};
+  pc.ontrack=e=>{$('remoteAudio').srcObject=e.streams[0]};
+  pc.onconnectionstatechange=()=>{
+    if(!call||call.pc!==pc)return;
+    if(pc.connectionState==='connected'){call.state='live';call.t0=Date.now();clearTimeout(call.timer);paintCall()}
+    else if(pc.connectionState==='failed')endCall(true,'Couldn’t connect. Some school and public Wi-Fi networks block calls.');
+  };
+}
+async function mic(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error('Calls need a secure page and a microphone.');
+  try{return await navigator.mediaDevices.getUserMedia({audio:true})}catch{throw new Error('Microphone blocked. Allow it in your browser and try again.')}
+}
+async function startCall(name){
+  if(!token){$('authBtn').click();return}
+  if(call){toast('You’re already in a call.');return}
+  call={peer:name,state:'calling',pending:[]};paintCall();
+  try{
+    call.stream=await mic();makePc();
+    const off=await call.pc.createOffer();await call.pc.setLocalDescription(off);
+    await api('/signal','POST',{to:name,type:'offer',data:{sdp:off}});
+    call.timer=setTimeout(()=>{if(call&&call.state==='calling')endCall(true,'No answer.')},45000);
+  }catch(e){endCall(false,e.message)}
+}
+function flushIce(){call.pending.splice(0).forEach(c=>call.pc.addIceCandidate(c).catch(()=>{}))}
+async function acceptCall(){
+  ring(false);call.state='connecting';paintCall();
+  try{
+    call.stream=await mic();makePc();
+    await call.pc.setRemoteDescription(call.offer);flushIce();
+    const a=await call.pc.createAnswer();await call.pc.setLocalDescription(a);
+    await api('/signal','POST',{to:call.peer,type:'answer',data:{sdp:a}});
+  }catch(e){const p=call&&call.peer;if(p)sendSig(p,'decline');endCall(false,e.message)}
+}
+async function handleSignal(s){
+  if(s.type==='offer'){
+    if(s.age>40000)return;
+    if(call){sendSig(s.from,'decline');return}
+    call={peer:s.from,state:'ringing',pending:[],offer:s.data.sdp};paintCall();ring(true);
+    if(document.hidden&&'Notification' in window&&Notification.permission==='granted'){try{new Notification('Jax Games',{body:s.from+' is calling you'})}catch{}}
+    return;
+  }
+  if(!call||s.from!==call.peer)return;
+  if(s.type==='answer'&&call.pc){await call.pc.setRemoteDescription(s.data.sdp);flushIce()}
+  else if(s.type==='ice'){if(call.pc&&call.pc.remoteDescription)call.pc.addIceCandidate(s.data.c).catch(()=>{});else call.pending.push(s.data.c)}
+  else if(s.type==='hangup'||s.type==='decline')endCall(false,s.type==='decline'?'Call declined.':'Call ended.');
+}
+async function pollSig(){
+  if(!token||sigBusy)return;sigBusy=true;
+  try{const d=await api('/signal?after='+sigLast);for(const s of d.signals){sigLast=Math.max(sigLast,s.id);await handleSignal(s)}}
+  catch(e){}finally{sigBusy=false}
+}
+$('callBtn').onclick=()=>{if(activeFriend)startCall(activeFriend)};
+setInterval(pollSig,2000);
+setInterval(pollNotifs,6000);
+
+renderNav();renderGrid();renderRecent();paintAuth();paintBell();loadFriends();pollNotifs();
 </script>
 </body>
 </html>
