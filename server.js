@@ -12,7 +12,7 @@ if (!SECRET || !DB_URL) {
 }
 
 // Websites allowed to talk to this server
-const ORIGINS = ['https://jaxgames47.github.io'];
+const ORIGINS = ['https://jaxoneater.github.io'];
 
 const app = express();
 app.use(cors({ origin: (o, cb) => cb(null, !o || ORIGINS.includes(o) || /^http:\/\/localhost/.test(o)) }));
