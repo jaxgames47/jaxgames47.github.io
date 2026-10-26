@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jax Games 47</title>
+<title>Jax Games</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -247,8 +247,8 @@ select.btn{appearance:none;padding-right:14px}
     <div id="horrorView" hidden>
       <h3>Horror games</h3>
       <div class="hgrid">
-        <div class="tile"><a href="https://jaxgames47.github.io/granny/"><div class="thumb"><img src="Granny.png" alt="Granny"></div><div class="name">Granny</div></a></div>
-        <div class="tile"><a href="https://jaxgames47.github.io/thebackrooms/"><div class="thumb"><img src="backrooms.png" alt="The Backrooms"></div><div class="name">The Backrooms</div></a></div>
+        <div class="tile"><a href="https://jaxoneater.github.io/granny/"><div class="thumb"><img src="Granny.png" alt="Granny"></div><div class="name">Granny</div></a></div>
+        <div class="tile"><a href="https://jaxoneater.github.io/thebackrooms/"><div class="thumb"><img src="backrooms.png" alt="The Backrooms"></div><div class="name">The Backrooms</div></a></div>
       </div>
       <button class="btn" data-close>Close</button>
     </div>
@@ -284,9 +284,9 @@ select.btn{appearance:none;padding-right:14px}
 <div class="toast" id="toast" role="status"></div>
 
 <script>
-const BASE='https://jaxgames47.github.io/';
+const BASE='https://jaxoneater.github.io/';
 // Your game images (gtag.jpeg, blockblast.png, ...) must sit in the same folder as this file.
-// If they live somewhere else, put that folder here, e.g. 'images/' or 'https://jaxgames47.github.io/yourrepo/'
+// If they live somewhere else, put that folder here, e.g. 'images/' or 'https://jaxoneater.github.io/yourrepo/'
 const IMG_BASE='';
 const CATS=['arcade','shooter','sports','puzzle','sandbox','multiplayer','tools'];
 // slug | name | image | category
@@ -580,7 +580,7 @@ function ago(t){if(!t)return'New';const m=Math.round((Date.now()-new Date(t))/60
 function unreadCount(){return notifs.filter(n=>!n.read).length+localNotifs().length}
 function paintBell(){
   const n=unreadCount();$('bellN').hidden=!n;$('bellN').textContent=n>9?'9+':n;
-  document.title=(n?'('+n+') ':'')+'Jax Games 47';
+  document.title='Jax Games 47';
   const list=$('nlist');list.innerHTML='';
   const items=[...localNotifs(),...notifs.slice().reverse()];
   if(!items.length)list.append(mk('p','hint','You’re all caught up.'));
