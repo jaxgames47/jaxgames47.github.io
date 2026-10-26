@@ -580,7 +580,7 @@ function ago(t){if(!t)return'New';const m=Math.round((Date.now()-new Date(t))/60
 function unreadCount(){return notifs.filter(n=>!n.read).length+localNotifs().length}
 function paintBell(){
   const n=unreadCount();$('bellN').hidden=!n;$('bellN').textContent=n>9?'9+':n;
-  document.title='Jax Games 47';
+  document.title='Jax Games';
   const list=$('nlist');list.innerHTML='';
   const items=[...localNotifs(),...notifs.slice().reverse()];
   if(!items.length)list.append(mk('p','hint','You’re all caught up.'));
